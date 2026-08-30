@@ -1,0 +1,1037 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#071a14">
+<title>ركلات الترجيح</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lalezar&family=Tajawal:wght@400;500;700&display=swap">
+<style>
+  :root{
+    --ground:#071a14;
+    --panel:#0d271e;
+    --panel-2:#123227;
+    --line:rgba(238,247,241,.14);
+    --chalk:#eef7f1;
+    --muted:#8fb3a2;
+    --grass:#1d7a4a;
+    --gold:#f0c060;
+    --red:#e2564a;
+    --shadow:0 10px 30px rgba(0,0,0,.45);
+    --display:"Lalezar", "Tajawal", system-ui, sans-serif;
+    --body:"Tajawal", system-ui, -apple-system, sans-serif;
+  }
+
+  *{box-sizing:border-box}
+
+  html,body{
+    height:100%;
+    margin:0;
+    overflow:hidden;
+    overscroll-behavior:none;
+    background:var(--ground);
+  }
+
+  body{
+    direction:rtl;
+    font-family:var(--body);
+    color:var(--chalk);
+    -webkit-text-size-adjust:100%;
+    -webkit-tap-highlight-color:transparent;
+    user-select:none;
+    -webkit-user-select:none;
+    touch-action:manipulation;
+  }
+
+  .app{
+    height:100dvh;
+    display:flex;
+    flex-direction:column;
+    gap:clamp(6px,1.2vh,14px);
+    padding:calc(env(safe-area-inset-top) + 10px) calc(env(safe-area-inset-right) + 12px)
+            calc(env(safe-area-inset-bottom) + 10px) calc(env(safe-area-inset-left) + 12px);
+    max-width:1100px;
+    margin:0 auto;
+    width:100%;
+  }
+
+  /* ---------- لوحة النتيجة ---------- */
+  .board{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:10px;
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:clamp(6px,1.1vh,12px) clamp(10px,2vw,18px);
+    box-shadow:var(--shadow);
+  }
+  .team{display:flex;align-items:center;gap:clamp(6px,1.4vw,12px);min-width:0}
+  .team.cpu{flex-direction:row-reverse}
+  .team .name{
+    font-family:var(--display);
+    font-size:clamp(15px,2.2vh,22px);
+    letter-spacing:.5px;
+    white-space:nowrap;
+  }
+  .team.you .name{color:var(--chalk)}
+  .team.cpu .name{color:var(--muted)}
+  .team .num{
+    font-family:var(--display);
+    font-size:clamp(24px,4.4vh,40px);
+    line-height:1;
+    font-variant-numeric:tabular-nums;
+    color:var(--gold);
+    min-width:1.1ch;
+    text-align:center;
+  }
+  .team.cpu .num{color:var(--chalk)}
+  .pips{display:flex;gap:5px;flex-wrap:wrap}
+  .pip{
+    width:clamp(9px,1.5vh,13px);height:clamp(9px,1.5vh,13px);
+    border-radius:50%;
+    border:1.5px solid var(--line);
+    background:transparent;
+  }
+  .pip.scored{background:var(--gold);border-color:var(--gold)}
+  .pip.missed{background:transparent;border-color:var(--red);position:relative}
+  .pip.missed::after{
+    content:"";position:absolute;inset:2px;border-radius:50%;background:var(--red);opacity:.35;
+  }
+  .round{
+    font-size:clamp(11px,1.6vh,14px);
+    color:var(--muted);
+    text-align:center;
+    white-space:nowrap;
+    letter-spacing:.4px;
+  }
+  .round b{display:block;font-family:var(--display);color:var(--chalk);font-size:clamp(13px,2vh,18px);font-weight:400}
+
+  /* ---------- الملعب ---------- */
+  .stage{
+    flex:1 1 auto;
+    min-height:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    touch-action:none;
+  }
+  canvas{
+    display:block;
+    border-radius:16px;
+    box-shadow:var(--shadow);
+    background:#06131f;
+    max-width:100%;
+    max-height:100%;
+  }
+
+  /* ---------- لوحة التحكم ---------- */
+  .panel{
+    flex:0 0 auto;
+    display:flex;
+    flex-direction:column;
+    gap:clamp(6px,1.1vh,12px);
+    align-items:center;
+  }
+  .hint{
+    margin:0;
+    text-align:center;
+    color:var(--muted);
+    font-size:clamp(13px,1.9vh,17px);
+    min-height:1.4em;
+    line-height:1.4;
+  }
+  .hint b{color:var(--chalk);font-weight:700}
+
+  .act{
+    font-family:var(--display);
+    font-size:clamp(18px,2.8vh,26px);
+    color:#06170f;
+    background:linear-gradient(180deg,#3ecf82,var(--grass));
+    border:none;
+    border-radius:999px;
+    padding:0 clamp(24px,5vw,48px);
+    min-height:56px;
+    width:min(100%,420px);
+    letter-spacing:.5px;
+    box-shadow:0 6px 0 #0f4a2c, var(--shadow);
+    cursor:pointer;
+    transition:transform .06s ease, box-shadow .06s ease;
+  }
+  .act:active{transform:translateY(4px);box-shadow:0 2px 0 #0f4a2c}
+  .act[disabled]{opacity:.45;box-shadow:0 6px 0 #0f4a2c}
+
+  .zones{
+    direction:ltr;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:clamp(6px,1.2vw,10px);
+    width:min(100%,520px);
+  }
+  .zone{
+    font-family:var(--body);
+    font-weight:700;
+    font-size:clamp(12px,1.7vh,15px);
+    color:var(--chalk);
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-radius:12px;
+    min-height:56px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:2px;
+    cursor:pointer;
+    transition:transform .06s ease, background .12s ease, border-color .12s ease;
+  }
+  .zone .arrow{font-size:clamp(15px,2.2vh,20px);line-height:1;color:var(--gold)}
+  .zone:active,.zone.picked{background:var(--grass);border-color:#3ecf82;transform:scale(.97)}
+  .zone[disabled]{opacity:.5}
+
+  .timer{
+    width:min(100%,520px);
+    height:8px;
+    border-radius:999px;
+    background:rgba(238,247,241,.1);
+    overflow:hidden;
+  }
+  .timer i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--gold),var(--red));transform-origin:left center}
+
+  .mute{
+    position:fixed;
+    bottom:calc(env(safe-area-inset-bottom) + 10px);
+    inset-inline-start:calc(env(safe-area-inset-left) + 10px);
+    width:44px;height:44px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    background:rgba(7,26,20,.7);
+    color:var(--chalk);
+    font-size:18px;
+    cursor:pointer;
+    display:grid;place-items:center;
+    z-index:5;
+  }
+
+  [hidden]{display:none !important}
+
+  button:focus-visible,.stage:focus-visible{
+    outline:3px solid var(--gold);
+    outline-offset:3px;
+  }
+
+  /* الوضع العمودي: مساحة أكبر للمس تحت الملعب */
+  @media (orientation:portrait) and (min-height:700px){
+    .app{gap:clamp(10px,1.8vh,20px)}
+    .panel{gap:16px;padding-bottom:6px}
+    .hint{font-size:clamp(15px,2.1vh,20px)}
+    .act{min-height:68px;font-size:clamp(22px,3vh,30px)}
+    .zone{min-height:76px;font-size:clamp(14px,1.8vh,17px)}
+    .zone .arrow{font-size:clamp(19px,2.4vh,24px)}
+    .zones,.timer{width:min(100%,620px)}
+  }
+
+  /* شاشات قصيرة (الآيباد أفقياً) */
+  @media (max-height:560px){
+    .hint{font-size:13px}
+    .act{min-height:50px;font-size:19px}
+    .zone{min-height:50px}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .act,.zone{transition:none}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="board">
+    <div class="team you">
+      <span class="name">أنت</span>
+      <span class="num" id="scoreYou">0</span>
+      <div class="pips" id="pipsYou"></div>
+    </div>
+    <div class="round"><b id="roundNum">الجولة ١</b><span id="roundSub">من ٥</span></div>
+    <div class="team cpu">
+      <span class="name">الخصم</span>
+      <span class="num" id="scoreCpu">0</span>
+      <div class="pips" id="pipsCpu"></div>
+    </div>
+  </header>
+
+  <div class="stage" id="stage">
+    <canvas id="cv" aria-label="ملعب ركلات الترجيح"></canvas>
+  </div>
+
+  <div class="panel">
+    <p class="hint" id="hint">خمس ركلات لك، وخمس تصدّها. الأعصاب أولاً.</p>
+    <button class="act" id="act">ابدأ المباراة</button>
+    <div class="zones" id="zones" hidden></div>
+    <div class="timer" id="timer" hidden><i id="timerFill"></i></div>
+  </div>
+</div>
+<button class="mute" id="mute" aria-label="كتم الصوت">🔊</button>
+
+<script>
+(() => {
+  "use strict";
+
+  /* ===================== ثوابت الملعب (إحداثيات منطقية ثابتة) ===================== */
+  const W = 800, H = 500;
+  const GX = 190, GY = 116, GW = 420, GH = 152;   // إطار المرمى
+  const GOAL_LINE = GY + GH;                       // خط المرمى = 268
+  const HORIZON = 176;
+  const SPOT = { x: 400, y: 392 };                 // نقطة الجزاء
+  const AIM = { xMin: GX - 46, xMax: GX + GW + 46, yMin: GY - 34, yMax: GY + GH - 14 };
+  const KICKS = 5;
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ===================== عناصر الواجهة ===================== */
+  const cv = document.getElementById("cv");
+  const ctx = cv.getContext("2d");
+  const stage = document.getElementById("stage");
+  const elHint = document.getElementById("hint");
+  const elAct = document.getElementById("act");
+  const elZones = document.getElementById("zones");
+  const elTimer = document.getElementById("timer");
+  const elTimerFill = document.getElementById("timerFill");
+  const elScoreYou = document.getElementById("scoreYou");
+  const elScoreCpu = document.getElementById("scoreCpu");
+  const elPipsYou = document.getElementById("pipsYou");
+  const elPipsCpu = document.getElementById("pipsCpu");
+  const elRoundNum = document.getElementById("roundNum");
+  const elRoundSub = document.getElementById("roundSub");
+  const elMute = document.getElementById("mute");
+
+  /* ===================== أدوات ===================== */
+  const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const rand = (a, b) => a + Math.random() * (b - a);
+  const AR_DIGITS = ["٠","١","٢","٣","٤","٥","٦","٧","٨","٩"];
+  const ar = n => String(n).split("").map(c => AR_DIGITS[+c] ?? c).join("");
+  // موجة مثلثية 0→1→0 لتأرجح المؤشر
+  const tri = (ms, period) => { const p = (ms % period) / period; return p < .5 ? p * 2 : 2 - p * 2; };
+
+  function zoneCol(z) { return z % 3; }
+  function zoneRow(z) { return (z / 3) | 0; }
+  function zoneTarget(z) {
+    return {
+      x: GX + GW * (zoneCol(z) * 2 + 1) / 6,
+      y: zoneRow(z) === 0 ? GY + GH * 0.30 : GY + GH * 0.78
+    };
+  }
+  function zoneOf(x, y) {
+    if (x < GX + 8 || x > GX + GW - 8 || y < GY + 8 || y > GOAL_LINE) return -1; // خارج المرمى
+    const col = clamp(Math.floor((x - GX) / (GW / 3)), 0, 2);
+    const row = y < GY + GH * 0.45 ? 0 : 1;
+    return row * 3 + col;
+  }
+  // مناطق أقرب للأرض أكثر شيوعاً في اختيار الحاسوب
+  const ZONE_WEIGHTS = [1, .9, 1, 1.5, 1.2, 1.5];
+  function pickZone() {
+    const total = ZONE_WEIGHTS.reduce((a, b) => a + b, 0);
+    let r = Math.random() * total;
+    for (let i = 0; i < 6; i++) { r -= ZONE_WEIGHTS[i]; if (r <= 0) return i; }
+    return 4;
+  }
+
+  /* ===================== الصوت (WebAudio، يُفتح عند أول لمسة) ===================== */
+  let actx = null, muted = false, noiseBuf = null;
+  function audio() {
+    try {
+      if (!actx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return null;
+        actx = new AC();
+      }
+      if (actx.state === "suspended") actx.resume();
+      return actx;
+    } catch (e) { return null; }
+  }
+  function noise(a) {
+    if (!noiseBuf) {
+      noiseBuf = a.createBuffer(1, a.sampleRate * 2, a.sampleRate);
+      const d = noiseBuf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    }
+    const s = a.createBufferSource(); s.buffer = noiseBuf; s.loop = true; return s;
+  }
+  function tone(freq, dur, type, vol, slideTo) {
+    const a = audio(); if (!a || muted) return;
+    const o = a.createOscillator(), g = a.createGain();
+    o.type = type || "sine";
+    o.frequency.setValueAtTime(freq, a.currentTime);
+    if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, a.currentTime + dur);
+    g.gain.setValueAtTime(0.0001, a.currentTime);
+    g.gain.exponentialRampToValueAtTime(vol ?? .18, a.currentTime + .01);
+    g.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + dur);
+    o.connect(g).connect(a.destination);
+    o.start(); o.stop(a.currentTime + dur + .02);
+  }
+  function crowd(dur, vol) {
+    const a = audio(); if (!a || muted) return;
+    const s = noise(a), f = a.createBiquadFilter(), g = a.createGain();
+    f.type = "bandpass"; f.frequency.value = 900; f.Q.value = .7;
+    g.gain.setValueAtTime(0.0001, a.currentTime);
+    g.gain.exponentialRampToValueAtTime(vol ?? .12, a.currentTime + .12);
+    g.gain.exponentialRampToValueAtTime(0.0001, a.currentTime + dur);
+    s.connect(f).connect(g).connect(a.destination);
+    s.start(); s.stop(a.currentTime + dur + .05);
+  }
+  const sfx = {
+    tick: () => tone(660, .05, "square", .06),
+    kick: () => { tone(150, .18, "triangle", .3, 60); crowd(.3, .05); },
+    goal: () => { tone(523, .16, "square", .16); setTimeout(() => tone(659, .16, "square", .16), 110); setTimeout(() => tone(784, .5, "square", .18), 220); crowd(1.6, .16); },
+    save: () => { tone(190, .22, "square", .22, 90); crowd(1.1, .12); },
+    miss: () => { tone(320, .45, "sawtooth", .12, 110); },
+    whistle: () => { tone(1900, .35, "sine", .1, 2300); }
+  };
+
+  /* ===================== حالة اللعبة ===================== */
+  const G = {
+    phase: "title",       // title | aimX | aimY | power | flight | result | dive | over
+    who: "you",           // من يسدّد الآن
+    round: 1,
+    sudden: false,
+    scoreYou: 0, scoreCpu: 0,
+    shotsYou: [], shotsCpu: [],   // "goal" | "no"
+    aimX: 0, aimY: 0, power: 0,
+    lockedX: 0, lockedY: 0,
+    pickedZone: -1,
+    diveDeadline: 0,
+    anim: null,
+    banner: null,         // {text, color, until}
+    shake: 0,
+    winner: null
+  };
+
+  /* ===================== قياس الكانفاس (يتكيّف مع الوضعين) ===================== */
+  let scale = 1;
+  function resize() {
+    const box = stage.getBoundingClientRect();
+    const availW = Math.max(160, box.width);
+    const availH = Math.max(120, box.height);
+    const cssW = Math.min(availW, availH * (W / H));
+    const cssH = cssW * (H / W);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.style.width = cssW + "px";
+    cv.style.height = cssH + "px";
+    cv.width = Math.round(cssW * dpr);
+    cv.height = Math.round(cssH * dpr);
+    scale = (cssW * dpr) / W;
+  }
+  if (window.ResizeObserver) new ResizeObserver(resize).observe(stage);
+  window.addEventListener("resize", resize);
+  window.addEventListener("orientationchange", () => setTimeout(resize, 250));
+
+  /* ===================== الرسم ===================== */
+  const crowdDots = [];
+  for (let i = 0; i < 420; i++) {
+    crowdDots.push({
+      x: rand(-20, W + 20),
+      y: rand(58, HORIZON - 4),
+      r: rand(1.6, 3.4),
+      c: ["#2b4a5e", "#3c6274", "#54798a", "#7f5f4a", "#3f7a55", "#8a8f6f"][(Math.random() * 6) | 0],
+      p: Math.random() * 6.28
+    });
+  }
+
+  function drawSky(t) {
+    const g = ctx.createLinearGradient(0, 0, 0, HORIZON);
+    g.addColorStop(0, "#04121e");
+    g.addColorStop(.62, "#0a2434");
+    g.addColorStop(1, "#123a3f");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, HORIZON);
+
+    // كشافات الملعب
+    for (const lx of [130, 670]) {
+      const glow = ctx.createRadialGradient(lx, 24, 4, lx, 24, 190);
+      glow.addColorStop(0, "rgba(226,246,255,.55)");
+      glow.addColorStop(.25, "rgba(190,230,255,.14)");
+      glow.addColorStop(1, "rgba(190,230,255,0)");
+      ctx.fillStyle = glow; ctx.fillRect(lx - 200, 0, 400, 220);
+      ctx.fillStyle = "#dff2ff";
+      ctx.fillRect(lx - 26, 12, 52, 12);
+    }
+
+    // المدرجات
+    ctx.fillStyle = "#0b1b26";
+    ctx.fillRect(0, 62, W, HORIZON - 62);
+    for (const d of crowdDots) {
+      const wob = Math.sin(t / 620 + d.p) * 1.4;
+      ctx.globalAlpha = .55;
+      ctx.fillStyle = d.c;
+      ctx.beginPath(); ctx.arc(d.x, d.y + wob, d.r, 0, 6.283); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = "rgba(4,18,26,.55)";
+    ctx.fillRect(0, 62, W, HORIZON - 62);
+
+    // لوحات الإعلانات خلف المرمى — تفصل المدرج عن أرض الملعب
+    ctx.fillStyle = "#0f2c22";
+    ctx.fillRect(0, HORIZON - 15, W, 15);
+    ctx.fillStyle = "rgba(238,247,241,.07)";
+    for (let x = 6; x < W; x += 74) ctx.fillRect(x, HORIZON - 12, 60, 9);
+    ctx.fillStyle = "rgba(240,192,96,.16)";
+    for (let x = 43; x < W; x += 148) ctx.fillRect(x, HORIZON - 12, 60, 9);
+    ctx.fillStyle = "rgba(0,0,0,.35)";
+    ctx.fillRect(0, HORIZON - 2, W, 3);
+  }
+
+  function drawGrass() {
+    const g = ctx.createLinearGradient(0, HORIZON, 0, H);
+    g.addColorStop(0, "#14563a");
+    g.addColorStop(.35, "#1d7a4a");
+    g.addColorStop(1, "#0f4d31");
+    ctx.fillStyle = g; ctx.fillRect(0, HORIZON, W, H - HORIZON);
+
+    // خطوط الجزّ بمنظور
+    const bands = 9;
+    for (let i = 0; i < bands; i++) {
+      if (i % 2) continue;
+      const y0 = HORIZON + (H - HORIZON) * Math.pow(i / bands, 1.7);
+      const y1 = HORIZON + (H - HORIZON) * Math.pow((i + 1) / bands, 1.7);
+      ctx.fillStyle = "rgba(255,255,255,.035)";
+      ctx.fillRect(0, y0, W, y1 - y0);
+    }
+
+    // منطقة الجزاء ونقطة التسديد
+    ctx.strokeStyle = "rgba(238,247,241,.5)";
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(60, H - 40); ctx.lineTo(GX - 40, GOAL_LINE + 6);
+    ctx.lineTo(GX + GW + 40, GOAL_LINE + 6); ctx.lineTo(W - 60, H - 40);
+    ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, GOAL_LINE + 6); ctx.lineTo(W, GOAL_LINE + 6); ctx.stroke();
+    ctx.fillStyle = "rgba(238,247,241,.8)";
+    ctx.beginPath(); ctx.ellipse(SPOT.x, SPOT.y + 12, 5, 2.4, 0, 0, 6.283); ctx.fill();
+  }
+
+  function drawGoal() {
+    // الشباك
+    ctx.save();
+    ctx.beginPath(); ctx.rect(GX, GY, GW, GH); ctx.clip();
+    ctx.fillStyle = "rgba(6,22,16,.35)"; ctx.fillRect(GX, GY, GW, GH);
+    ctx.strokeStyle = "rgba(238,247,241,.20)";
+    ctx.lineWidth = 1;
+    for (let x = GX; x <= GX + GW; x += 15) { ctx.beginPath(); ctx.moveTo(x, GY); ctx.lineTo(x, GY + GH); ctx.stroke(); }
+    for (let y = GY; y <= GY + GH; y += 15) { ctx.beginPath(); ctx.moveTo(GX, y); ctx.lineTo(GX + GW, y); ctx.stroke(); }
+    ctx.restore();
+
+    // القوائم والعارضة
+    ctx.strokeStyle = "#f4faf6";
+    ctx.lineWidth = 8;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(GX, GOAL_LINE); ctx.lineTo(GX, GY);
+    ctx.lineTo(GX + GW, GY); ctx.lineTo(GX + GW, GOAL_LINE);
+    ctx.stroke();
+  }
+
+  // الحارس: زاوية الارتماء ومدّ الذراعين مشتقّة من المنطقة المستهدفة
+  function drawKeeper(zone, d) {
+    const baseX = GX + GW / 2, baseY = GOAL_LINE;
+    let dx = 0, lift = 0, angle = 0;
+    if (zone >= 0) {
+      const col = zoneCol(zone), row = zoneRow(zone);
+      dx = (col - 1) * 148 * d;
+      lift = (row === 0 ? 62 : 22) * d;
+      angle = (col - 1) * 0.95 * d;
+    }
+    ctx.save();
+    ctx.translate(baseX + dx, baseY - lift);
+    ctx.rotate(angle);
+
+    // الظل
+    ctx.save();
+    ctx.rotate(-angle);
+    ctx.fillStyle = "rgba(0,0,0,.28)";
+    ctx.beginPath(); ctx.ellipse(0, lift + 4, 26, 6, 0, 0, 6.283); ctx.fill();
+    ctx.restore();
+
+    const kitA = "#f0c060", kitB = "#1a1f2b";
+    // الساقان
+    ctx.strokeStyle = kitB; ctx.lineWidth = 9; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(-5, -34); ctx.lineTo(-11 - 10 * d, -2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(5, -34); ctx.lineTo(11 + 6 * d, -2); ctx.stroke();
+    // الجذع
+    ctx.fillStyle = kitA;
+    ctx.beginPath();
+    if (ctx.roundRect) { ctx.roundRect(-14, -80, 28, 48, 9); } else { ctx.rect(-14, -80, 28, 48); }
+    ctx.fill();
+    // الذراعان (تمتدّان مع الارتماء)
+    const reach = 22 + 30 * d;
+    ctx.strokeStyle = kitA; ctx.lineWidth = 8;
+    ctx.beginPath(); ctx.moveTo(-10, -74); ctx.lineTo(-reach, -74 - 16 * d); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(10, -74); ctx.lineTo(reach, -74 - 16 * d); ctx.stroke();
+    // القفازان
+    ctx.fillStyle = "#eef7f1";
+    ctx.beginPath(); ctx.arc(-reach - 2, -74 - 16 * d, 6.5, 0, 6.283); ctx.fill();
+    ctx.beginPath(); ctx.arc(reach + 2, -74 - 16 * d, 6.5, 0, 6.283); ctx.fill();
+    // الرأس
+    ctx.fillStyle = "#d9a06a";
+    ctx.beginPath(); ctx.arc(0, -92, 11, 0, 6.283); ctx.fill();
+
+    ctx.restore();
+  }
+
+  function drawBall(x, y, s) {
+    // ظل على الأرض عندما تكون الكرة قريبة
+    if (y > GOAL_LINE - 40) {
+      ctx.fillStyle = "rgba(0,0,0,.25)";
+      ctx.beginPath(); ctx.ellipse(x, Math.min(H - 12, y + 16 * s), 13 * s, 4.5 * s, 0, 0, 6.283); ctx.fill();
+    }
+    const r = 15 * s;
+    const g = ctx.createRadialGradient(x - r * .35, y - r * .4, r * .2, x, y, r);
+    g.addColorStop(0, "#ffffff"); g.addColorStop(1, "#c8d6cd");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(x, y, r, 0, 6.283); ctx.fill();
+    ctx.fillStyle = "#16281f";
+    ctx.beginPath(); ctx.arc(x, y, r * .3, 0, 6.283); ctx.fill();
+    for (let i = 0; i < 5; i++) {
+      const a = i * 1.256 + .4;
+      ctx.beginPath();
+      ctx.arc(x + Math.cos(a) * r * .68, y + Math.sin(a) * r * .68, r * .17, 0, 6.283);
+      ctx.fill();
+    }
+  }
+
+  function drawReticle(x, y, lockX, lockY) {
+    ctx.save();
+    ctx.strokeStyle = lockY ? "#f0c060" : "#eef7f1";
+    ctx.lineWidth = 2;
+    ctx.globalAlpha = .95;
+    // خط رأسي يمتد على ارتفاع المرمى في مرحلة الاتجاه
+    if (!lockX) {
+      ctx.setLineDash([7, 7]);
+      ctx.beginPath(); ctx.moveTo(x, GY - 40); ctx.lineTo(x, GOAL_LINE + 10); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    ctx.beginPath(); ctx.arc(x, y, 15, 0, 6.283); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x - 24, y); ctx.lineTo(x - 7, y);
+    ctx.moveTo(x + 7, y); ctx.lineTo(x + 24, y);
+    ctx.moveTo(x, y - 24); ctx.lineTo(x, y - 7);
+    ctx.moveTo(x, y + 7); ctx.lineTo(x, y + 24);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawPowerBar(p) {
+    const bw = 300, bh = 20, bx = (W - bw) / 2, by = H - 44;
+    ctx.fillStyle = "rgba(6,22,16,.7)";
+    ctx.strokeStyle = "rgba(238,247,241,.35)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(bx, by, bw, bh, 10); else ctx.rect(bx, by, bw, bh);
+    ctx.fill(); ctx.stroke();
+    const g = ctx.createLinearGradient(bx, 0, bx + bw, 0);
+    g.addColorStop(0, "#3ecf82"); g.addColorStop(.62, "#f0c060"); g.addColorStop(1, "#e2564a");
+    ctx.save();
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(bx + 3, by + 3, (bw - 6) * p, bh - 6, 7); else ctx.rect(bx + 3, by + 3, (bw - 6) * p, bh - 6);
+    ctx.fillStyle = g; ctx.fill();
+    ctx.restore();
+    ctx.fillStyle = "#eef7f1";
+    ctx.font = '16px "Tajawal", sans-serif';
+    ctx.textAlign = "center";
+    ctx.fillText("القوة", W / 2, by - 8);
+  }
+
+  function drawZoneHints() {
+    ctx.save();
+    ctx.strokeStyle = "rgba(238,247,241,.18)";
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 6]);
+    for (let i = 1; i < 3; i++) {
+      const x = GX + GW * i / 3;
+      ctx.beginPath(); ctx.moveTo(x, GY); ctx.lineTo(x, GOAL_LINE); ctx.stroke();
+    }
+    const y = GY + GH * 0.45;
+    ctx.beginPath(); ctx.moveTo(GX, y); ctx.lineTo(GX + GW, y); ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawBanner(text, color) {
+    ctx.save();
+    ctx.textAlign = "center";
+    ctx.font = '58px "Lalezar", sans-serif';
+    ctx.lineWidth = 8;
+    ctx.strokeStyle = "rgba(4,14,10,.75)";
+    ctx.strokeText(text, W / 2, 82);
+    ctx.fillStyle = color;
+    ctx.fillText(text, W / 2, 82);
+    ctx.restore();
+  }
+
+  function render(t) {
+    ctx.setTransform(scale, 0, 0, scale, 0, 0);
+    if (G.shake > 0) {
+      const s = G.shake;
+      ctx.translate(rand(-s, s), rand(-s, s));
+      G.shake = Math.max(0, G.shake - 0.35);
+    }
+    ctx.clearRect(-20, -20, W + 40, H + 40);
+
+    drawSky(t);
+    drawGrass();
+    drawGoal();
+    if (G.phase === "aimX" || G.phase === "aimY" || G.phase === "power" || G.phase === "dive") drawZoneHints();
+
+    // الحارس
+    let keeperZone = -1, dive = 0, ball = { x: SPOT.x, y: SPOT.y, s: 1 };
+    if (G.anim) {
+      const p = clamp((t - G.anim.start) / G.anim.dur, 0, 1);
+      const e = 1 - Math.pow(1 - p, 2);
+      keeperZone = G.anim.keeperZone;
+      dive = clamp((p - 0.08) / 0.45, 0, 1);
+      const stop = G.anim.outcome === "save" ? 0.86 : 1;
+      const ee = Math.min(e, stop);
+      ball.x = lerp(SPOT.x, G.anim.tx, ee);
+      ball.y = lerp(SPOT.y, G.anim.ty, ee) - Math.sin(Math.PI * ee) * 26;
+      ball.s = lerp(1, 0.48, ee);
+      if (p >= 1) finishFlight();
+    } else if (G.phase === "dive") {
+      keeperZone = G.pickedZone;
+      dive = G.pickedZone >= 0 ? 1 : 0;
+    } else if (G.phase === "result" && G.last) {
+      keeperZone = G.last.keeperZone;
+      dive = 1;
+      ball = G.last.ball;
+    }
+    drawKeeper(keeperZone, dive);
+    drawBall(ball.x, ball.y, ball.s);
+
+    // مؤشرات التصويب
+    if (G.phase === "aimX") {
+      G.aimX = lerp(AIM.xMin, AIM.xMax, tri(t, G.sudden ? 1150 : 1400));
+      drawReticle(G.aimX, GY + GH * .5, false, false);
+    } else if (G.phase === "aimY") {
+      G.aimY = lerp(AIM.yMax, AIM.yMin, tri(t, G.sudden ? 900 : 1100));
+      drawReticle(G.lockedX, G.aimY, true, false);
+    } else if (G.phase === "power") {
+      G.power = tri(t, G.sudden ? 850 : 1000);
+      drawReticle(G.lockedX, G.lockedY, true, true);
+      drawPowerBar(G.power);
+    }
+
+    if (G.banner && t < G.banner.until) drawBanner(G.banner.text, G.banner.color);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+  }
+
+  /* ===================== واجهة الحالة ===================== */
+  const ZONE_LABELS = [
+    { arrow: "↖", text: "عالية يسار" }, { arrow: "↑", text: "عالية وسط" }, { arrow: "↗", text: "عالية يمين" },
+    { arrow: "↙", text: "أرضية يسار" }, { arrow: "↓", text: "أرضية وسط" }, { arrow: "↘", text: "أرضية يمين" }
+  ];
+  ZONE_LABELS.forEach((z, i) => {
+    const b = document.createElement("button");
+    b.className = "zone";
+    b.type = "button";
+    b.dataset.zone = String(i);
+    b.innerHTML = '<span class="arrow">' + z.arrow + '</span><span>' + z.text + "</span>";
+    b.addEventListener("pointerdown", ev => { ev.preventDefault(); chooseDive(i); });
+    elZones.appendChild(b);
+  });
+
+  function renderPips(el, shots, total) {
+    el.textContent = "";
+    const n = Math.max(total, shots.length);
+    for (let i = 0; i < n; i++) {
+      const d = document.createElement("span");
+      d.className = "pip" + (shots[i] ? (shots[i] === "goal" ? " scored" : " missed") : "");
+      el.appendChild(d);
+    }
+  }
+
+  function updateHUD() {
+    elScoreYou.textContent = ar(G.scoreYou);
+    elScoreCpu.textContent = ar(G.scoreCpu);
+    renderPips(elPipsYou, G.shotsYou, KICKS);
+    renderPips(elPipsCpu, G.shotsCpu, KICKS);
+    if (G.sudden) { elRoundNum.textContent = "الموت المفاجئ"; elRoundSub.textContent = "الجولة " + ar(G.round); }
+    else { elRoundNum.textContent = "الجولة " + ar(G.round); elRoundSub.textContent = "من " + ar(KICKS); }
+  }
+
+  function setUI(mode, hint, btnLabel) {
+    elHint.innerHTML = hint;
+    if (mode === "zones") {
+      elZones.hidden = false; elTimer.hidden = false; elAct.hidden = true;
+      for (const b of elZones.children) { b.disabled = false; b.classList.remove("picked"); }
+    } else if (mode === "button") {
+      elZones.hidden = true; elTimer.hidden = true; elAct.hidden = false;
+      elAct.disabled = false; elAct.textContent = btnLabel;
+    } else { // wait
+      elZones.hidden = true; elTimer.hidden = true; elAct.hidden = false;
+      elAct.disabled = true; elAct.textContent = btnLabel || "…";
+    }
+  }
+
+  function banner(text, color, ms) {
+    G.banner = { text, color, until: performance.now() + (ms || 1500) };
+  }
+
+  /* ===================== مجريات المباراة ===================== */
+  function startGame() {
+    G.round = 1; G.sudden = false;
+    G.scoreYou = 0; G.scoreCpu = 0;
+    G.shotsYou = []; G.shotsCpu = [];
+    G.winner = null; G.anim = null; G.last = null; G.banner = null;
+    updateHUD();
+    sfx.whistle();
+    beginYourShot();
+  }
+
+  function beginYourShot() {
+    G.who = "you";
+    G.phase = "aimX";
+    setUI("button", "دورك بالتسديد. <b>اضغط لتثبيت الاتجاه</b>", "ثبّت الاتجاه");
+  }
+
+  function lockStep() {
+    if (G.phase === "aimX") {
+      G.lockedX = G.aimX;
+      G.phase = "aimY";
+      sfx.tick();
+      setUI("button", "الآن الارتفاع. <b>اضغط لتثبيت العلوّ</b>", "ثبّت الارتفاع");
+    } else if (G.phase === "aimY") {
+      G.lockedY = G.aimY;
+      G.phase = "power";
+      sfx.tick();
+      setUI("button", "القوة العالية تُربك الحارس، لكنها تُبعد الكرة عن الهدف.", "اضرب!");
+    } else if (G.phase === "power") {
+      takeYourShot();
+    }
+  }
+
+  function takeYourShot() {
+    const power = G.power;
+    const spread = power * power * 36;
+    const tx = G.lockedX + rand(-spread, spread);
+    const ty = G.lockedY + rand(-spread * .7, spread * .7);
+    const shotZone = zoneOf(tx, ty);
+    const keeperZone = pickZone();
+
+    let outcome;
+    if (shotZone < 0) outcome = "miss";
+    else {
+      let p;
+      if (keeperZone === shotZone) p = 0.80 - 0.30 * power;
+      else if (zoneRow(keeperZone) === zoneRow(shotZone) && Math.abs(zoneCol(keeperZone) - zoneCol(shotZone)) === 1) p = 0.17 - 0.08 * power;
+      else p = 0.03;
+      if (G.sudden) p += 0.05;
+      outcome = Math.random() < p ? "save" : "goal";
+    }
+    launch(tx, ty, keeperZone, outcome, "you");
+  }
+
+  function beginYourSave() {
+    G.who = "cpu";
+    G.phase = "dive";
+    G.pickedZone = -1;
+    G.cpuZone = pickZone();
+    G.cpuMiss = Math.random() < 0.07;
+    G.diveDeadline = performance.now() + (reduceMotion ? 2600 : 1900);
+    setUI("zones", "دورك في المرمى. <b>اختر جهة الارتماء قبل انتهاء الوقت</b>");
+    elTimerFill.style.transform = "scaleX(1)";
+    tickTimer();
+  }
+
+  let timerRaf = 0;
+  function tickTimer() {
+    cancelAnimationFrame(timerRaf);
+    const total = G.diveDeadline - performance.now();
+    const step = () => {
+      if (G.phase !== "dive") return;
+      const left = G.diveDeadline - performance.now();
+      elTimerFill.style.transform = "scaleX(" + clamp(left / total, 0, 1) + ")";
+      if (left <= 0) { chooseDive((Math.random() * 6) | 0, true); return; }
+      timerRaf = requestAnimationFrame(step);
+    };
+    timerRaf = requestAnimationFrame(step);
+  }
+
+  function chooseDive(zone, auto) {
+    if (G.phase !== "dive") return;
+    cancelAnimationFrame(timerRaf);
+    G.pickedZone = zone;
+    for (const b of elZones.children) { b.disabled = true; }
+    elZones.children[zone].classList.add("picked");
+    if (!auto) sfx.tick();
+
+    const shotZone = G.cpuZone;
+    let outcome;
+    if (G.cpuMiss) outcome = "miss";
+    else {
+      let p;
+      if (zone === shotZone) p = 0.75;
+      else if (zoneRow(zone) === zoneRow(shotZone) && Math.abs(zoneCol(zone) - zoneCol(shotZone)) === 1) p = 0.14;
+      else p = 0.02;
+      outcome = Math.random() < p ? "save" : "goal";
+    }
+    const target = zoneTarget(shotZone);
+    const tx = G.cpuMiss ? (Math.random() < .5 ? GX - 30 : GX + GW + 30) : target.x;
+    const ty = G.cpuMiss ? GY - 20 : target.y;
+    setUI("wait", "التسديدة قادمة…", "…");
+    launch(tx, ty, zone, outcome, "cpu");
+  }
+
+  function launch(tx, ty, keeperZone, outcome, who) {
+    G.phase = "flight";
+    G.who = who;
+    sfx.kick();
+    G.anim = {
+      start: performance.now(),
+      dur: reduceMotion ? 450 : 900,
+      tx, ty, keeperZone, outcome, who
+    };
+  }
+
+  function finishFlight() {
+    const a = G.anim;
+    G.anim = null;
+    G.phase = "result";
+
+    const stop = a.outcome === "save" ? 0.86 : 1;
+    G.last = {
+      keeperZone: a.keeperZone,
+      ball: {
+        x: lerp(SPOT.x, a.tx, stop),
+        y: lerp(SPOT.y, a.ty, stop) - Math.sin(Math.PI * stop) * 26,
+        s: lerp(1, 0.48, stop)
+      }
+    };
+
+    const scored = a.outcome === "goal";
+    let note;
+    if (a.who === "you") {
+      G.shotsYou.push(scored ? "goal" : "no");
+      if (scored) {
+        G.scoreYou++; banner("هدف!", "#f0c060"); sfx.goal(); if (!reduceMotion) G.shake = 7;
+        note = "<b>سكنت الشباك!</b> الحارس ذهب في الاتجاه الآخر.";
+      } else if (a.outcome === "save") {
+        banner("تصدّى الحارس!", "#e2564a"); sfx.save();
+        note = "<b>تصدّى لها الحارس</b> — قرأ اتجاهك.";
+      } else {
+        banner("خارج المرمى!", "#e2564a"); sfx.miss();
+        note = "<b>طارت خارج المرمى</b> — قوة أكبر من اللازم.";
+      }
+    } else {
+      G.shotsCpu.push(scored ? "goal" : "no");
+      if (scored) {
+        G.scoreCpu++; banner("سكنت الشباك", "#eef7f1"); sfx.goal(); if (!reduceMotion) G.shake = 5;
+        note = "<b>سجّل الخصم</b> — ارتميت في الجهة الخطأ.";
+      } else if (a.outcome === "save") {
+        banner("صدّيتها! 🧤", "#3ecf82"); sfx.save(); if (!reduceMotion) G.shake = 6;
+        note = "<b>صدّيتها!</b> يد الحارس في مكانها.";
+      } else {
+        banner("أضاعها الخصم!", "#3ecf82"); sfx.miss();
+        note = "<b>أضاعها الخصم</b> — خرجت عن المرمى.";
+      }
+    }
+    updateHUD();
+    setUI("wait", note, "…");
+    setTimeout(nextStep, reduceMotion ? 900 : 1700);
+  }
+
+  function decide() {
+    const takenYou = G.shotsYou.length, takenCpu = G.shotsCpu.length;
+    if (!G.sudden) {
+      const leftYou = Math.max(0, KICKS - takenYou), leftCpu = Math.max(0, KICKS - takenCpu);
+      if (G.scoreYou > G.scoreCpu + leftCpu) return "you";
+      if (G.scoreCpu > G.scoreYou + leftYou) return "cpu";
+      if (takenYou >= KICKS && takenCpu >= KICKS) {
+        if (G.scoreYou !== G.scoreCpu) return G.scoreYou > G.scoreCpu ? "you" : "cpu";
+        G.sudden = true;
+      }
+      return null;
+    }
+    if (takenYou === takenCpu && G.scoreYou !== G.scoreCpu) return G.scoreYou > G.scoreCpu ? "you" : "cpu";
+    return null;
+  }
+
+  function nextStep() {
+    G.banner = null;
+    const w = decide();
+    if (w) return endGame(w);
+
+    if (G.shotsYou.length > G.shotsCpu.length) {
+      beginYourSave();
+    } else {
+      G.round++;
+      updateHUD();
+      beginYourShot();
+    }
+  }
+
+  function endGame(w) {
+    G.phase = "over";
+    G.winner = w;
+    updateHUD();
+    sfx.whistle();
+    if (w === "you") {
+      banner("فزت! 🏆", "#f0c060", 6000);
+      crowd(2.2, .18);
+      setUI("button", "<b>فزت بركلات الترجيح</b> — " + ar(G.scoreYou) + " مقابل " + ar(G.scoreCpu), "العب مجدداً");
+    } else {
+      banner("خسرت", "#e2564a", 6000);
+      setUI("button", "<b>خسرت هذه المرة</b> — " + ar(G.scoreCpu) + " مقابل " + ar(G.scoreYou), "العب مجدداً");
+    }
+  }
+
+  /* ===================== المدخلات ===================== */
+  function primaryAction(ev) {
+    if (ev) ev.preventDefault();
+    audio(); // فتح الصوت عند أول لمسة (شرط سفاري)
+    if (G.phase === "title" || G.phase === "over") { startGame(); return; }
+    if (G.phase === "aimX" || G.phase === "aimY" || G.phase === "power") lockStep();
+  }
+
+  elAct.addEventListener("pointerdown", primaryAction);
+  stage.addEventListener("pointerdown", primaryAction);
+  stage.addEventListener("contextmenu", e => e.preventDefault());
+  // منع السحب المطاطي أثناء اللمس على الملعب
+  stage.addEventListener("touchmove", e => e.preventDefault(), { passive: false });
+  document.addEventListener("gesturestart", e => e.preventDefault());
+
+  window.addEventListener("keydown", e => {
+    if (e.key === " " || e.key === "Enter") { primaryAction(e); return; }
+    if (G.phase === "dive") {
+      const n = "123456".indexOf(e.key);
+      if (n >= 0) { e.preventDefault(); chooseDive(n); }
+    }
+  });
+
+  elMute.addEventListener("pointerdown", e => {
+    e.preventDefault(); e.stopPropagation();
+    muted = !muted;
+    elMute.textContent = muted ? "🔇" : "🔊";
+    elMute.setAttribute("aria-label", muted ? "تشغيل الصوت" : "كتم الصوت");
+    if (!muted) audio();
+  });
+
+  // إيقاف المؤقّت عند إخفاء الصفحة (تبديل التطبيقات على الآيباد)
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden && G.phase === "dive") G.diveDeadline += 1e9;
+    else if (!document.hidden && G.phase === "dive" && G.diveDeadline > 1e8) {
+      G.diveDeadline = performance.now() + 1900;
+      tickTimer();
+    }
+  });
+
+  /* ===================== الحلقة ===================== */
+  function loop(t) { render(t); requestAnimationFrame(loop); }
+  resize();
+  updateHUD();
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
