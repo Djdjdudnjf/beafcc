@@ -18,6 +18,15 @@
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234b3ff0'/%3E%3Ctext x='32' y='43' font-size='30' font-family='monospace' font-weight='700' fill='%23fff' text-anchor='middle'%3E%26lt;%2F%26gt;%3C/text%3E%3C/svg%3E">
 
+<!-- PWA Manifest -->
+<link rel="manifest" href="manifest.json">
+
+<!-- iOS App Meta Tags -->
+<meta name="apple-mobile-web-app-capable" content="true">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="إتقان HTML">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%234b3ff0'/%3E%3Ctext x='90' y='110' font-size='90' font-family='monospace' font-weight='700' fill='%23fff' text-anchor='middle'%3E%26lt;%2F%26gt;%3C/text%3E%3C/svg%3E">
+
 <script>
   /* تطبيق اللغة والثيم قبل أول رسم لتفادي الوميض */
   (function () {
@@ -121,5 +130,52 @@
 <script src="assets/js/playground.js"></script>
 <script src="assets/js/quiz.js"></script>
 <script src="assets/js/app.js"></script>
+
+<!-- Service Worker Registration for PWA -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('service-worker.js', { scope: './' })
+        .then(function(registration) {
+          console.log('[PWA] Service Worker registered:', registration);
+
+          // Check for updates periodically
+          setInterval(function() {
+            registration.update();
+          }, 60000); // Check every minute
+
+          // Listen for updates
+          registration.addEventListener('updatefound', function() {
+            var newWorker = registration.installing;
+            newWorker.addEventListener('statechange', function() {
+              if (newWorker.state === 'activated') {
+                var msg = 'تم تحديث المنصة. أعد تحميل الصفحة للحصول على النسخة الجديدة.';
+                if (localStorage.getItem('etqan.lang') === 'en') {
+                  msg = 'Platform updated. Reload the page to get the latest version.';
+                }
+                console.log('[PWA] Update available:', msg);
+                // Optional: show a toast notification
+                var root = document.getElementById('toastRoot');
+                if (root) {
+                  root.innerHTML = '<div class="toast"><span>' + msg + '</span></div>';
+                }
+              }
+            });
+          });
+        })
+        .catch(function(error) {
+          console.log('[PWA] Service Worker registration failed:', error);
+        });
+    });
+  }
+
+  // Handle app installation prompt
+  var installPrompt = null;
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    installPrompt = e;
+    console.log('[PWA] Install prompt available');
+  });
+</script>
 </body>
 </html>

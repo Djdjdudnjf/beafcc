@@ -1,0 +1,58 @@
+{
+  "name": "إتقان HTML — تعلّم لغة HTML من الصفر بالعربية والإنجليزية",
+  "short_name": "إتقان HTML",
+  "description": "منصة تفاعلية لتعلّم HTML من الصفر: دروس مرتّبة، أمثلة حيّة، محرّر كود مباشر، تحديات عملية، واختبارات — بالعربية والإنجليزية.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#4b3ff0",
+  "background_color": "#ffffff",
+  "categories": ["education", "productivity"],
+  "screenshots": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "lang": "ar",
+  "dir": "rtl",
+  "shortcuts": [
+    {
+      "name": "المنهج",
+      "short_name": "المنهج",
+      "description": "عرض دروس المنهج الكامل",
+      "url": "./#/curriculum",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "المحرّر",
+      "short_name": "المحرّر",
+      "description": "فتح محرّر الأكواد",
+      "url": "./#/playground",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
