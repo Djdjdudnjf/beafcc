@@ -474,14 +474,10 @@
     ctx.fillStyle = "rgba(4,18,26,.55)";
     ctx.fillRect(0, 62, W, HORIZON - 62);
 
-    // لوحات الإعلانات خلف المرمى — تفصل المدرج عن أرض الملعب
-    ctx.fillStyle = "#0f2c22";
-    ctx.fillRect(0, HORIZON - 15, W, 15);
-
-    // إعلانات متحركة
-    const adWidth = 140, adHeight = 12, adGap = 20;
+    // إعلانات متحركة خلف المرمى (في منطقة المدرجات)
+    const adWidth = 160, adHeight = 22, adGap = 24;
     const totalAd = adWidth + adGap;
-    const adX = (t / 25) % totalAd - totalAd;  // تتحرك من اليمين لـ اليسار
+    const adX = (t / 30) % totalAd - totalAd;  // تتحرك من اليمين لـ اليسار
     const ads = ["🏆 Al Hilal", "⚽ GOAL", "🔥 Speed", "💪 Power", "🎯 Kick", "⭐ Soccer"];
     const adColors = ["#d4af37", "#e2564a", "#3ecf82", "#f0c060", "#1d7a4a", "#8fb3a2"];
 
@@ -491,18 +487,21 @@
       const color = adColors[i % adColors.length];
 
       ctx.fillStyle = color;
-      ctx.globalAlpha = .75;
-      ctx.fillRect(x, HORIZON - 13, adWidth, adHeight);
+      ctx.globalAlpha = .68;
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(x, HORIZON - 80, adWidth, adHeight, 6);
+      else ctx.rect(x, HORIZON - 80, adWidth, adHeight);
+      ctx.fill();
       ctx.globalAlpha = 1;
 
       ctx.fillStyle = "#06170f";
-      ctx.font = '9px "Tajawal", sans-serif';
+      ctx.font = '14px "Tajawal", sans-serif';
       ctx.textAlign = "center";
-      ctx.fillText(ad, x + adWidth / 2, HORIZON - 3);
+      ctx.fillText(ad, x + adWidth / 2, HORIZON - 65);
     }
 
-    ctx.fillStyle = "rgba(0,0,0,.35)";
-    ctx.fillRect(0, HORIZON - 2, W, 3);
+    ctx.fillStyle = "#0f2c22";
+    ctx.fillRect(0, HORIZON - 15, W, 15);
   }
 
   function drawGrass() {
