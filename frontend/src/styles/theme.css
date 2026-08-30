@@ -1,0 +1,213 @@
+/* ==========================================================================
+   نظام التصميم — الألوان والخطوط والمسافات
+   نستخدم "متغيرات CSS" (تبدأ بـ --) لتعريف اللون مرة واحدة واستخدامه في كل مكان،
+   وتبديل قيمته كاملاً عند التحويل للوضع الليلي.
+   ========================================================================== */
+
+:root {
+  /* --- الخط --- */
+  --font: 'Tajawal', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* --- الوضع النهاري (الافتراضي) --- */
+  --bg: #f6f7fb;
+  --bg-soft: #eef0f7;
+  --surface: #ffffff;
+  --surface-2: #f8f9fc;
+  --surface-hover: #f1f3f9;
+  --border: #e3e6ef;
+  --border-strong: #d2d7e5;
+  --text: #131722;
+  --text-soft: #545b6e;
+  --text-muted: #858da3;
+  --shadow-sm: 0 1px 2px rgba(17, 23, 41, 0.05);
+  --shadow-md: 0 4px 16px rgba(17, 23, 41, 0.07);
+  --shadow-lg: 0 16px 48px rgba(17, 23, 41, 0.12);
+  --shadow-glow: 0 12px 40px -12px var(--accent-shadow);
+
+  /* --- ألوان المساعدين --- */
+  --medical-1: #0e9f8a;
+  --medical-2: #1d7fd4;
+  --cooking-1: #f0821e;
+  --cooking-2: #e0503a;
+  --math-1: #7b5cf5;
+  --math-2: #3b3aa8;
+
+  /* --- اللون المميز الحالي (يتغير حسب المساعد المفتوح) --- */
+  --accent: #4b5a7a;
+  --accent-2: #2f3b52;
+  --accent-soft: rgba(75, 90, 122, 0.1);
+  --accent-shadow: rgba(75, 90, 122, 0.35);
+  --on-accent: #ffffff;
+
+  /* --- ألوان الحالة --- */
+  --danger: #d4443c;
+  --danger-soft: rgba(212, 68, 60, 0.1);
+
+  /* --- الزوايا والانتقالات --- */
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-full: 999px;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --t-fast: 0.15s var(--ease);
+  --t-med: 0.28s var(--ease);
+}
+
+/* --- الوضع الليلي --- */
+:root[data-theme='dark'] {
+  --bg: #0b0e14;
+  --bg-soft: #10141d;
+  --surface: #151a24;
+  --surface-2: #1b2130;
+  --surface-hover: #212838;
+  --border: #262d3d;
+  --border-strong: #364054;
+  --text: #eef1f7;
+  --text-soft: #a8b1c4;
+  --text-muted: #737d94;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 20px 56px rgba(0, 0, 0, 0.6);
+
+  --medical-1: #2ec4ac;
+  --medical-2: #4b9fe8;
+  --cooking-1: #ff9d3f;
+  --cooking-2: #f0705a;
+  --math-1: #9d84ff;
+  --math-2: #6a67d8;
+
+  --accent: #8f9bb5;
+  --accent-2: #6d7a96;
+  --accent-soft: rgba(143, 155, 181, 0.14);
+  --accent-shadow: rgba(0, 0, 0, 0.5);
+  --on-accent: #0b0e14;
+
+  --danger: #f0736a;
+  --danger-soft: rgba(240, 115, 106, 0.14);
+}
+
+/* ==========================================================================
+   إعادة الضبط الأساسية
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background var(--t-med), color var(--t-med);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+}
+
+/* شريط التمرير بمظهر أنيق */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: var(--r-full);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+  background-clip: content-box;
+}
+
+/* إطار التركيز — مهم لمن يتنقل بلوحة المفاتيح */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+/* احترام تفضيل المستخدم بتقليل الحركة */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* أدوات مساعدة */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
