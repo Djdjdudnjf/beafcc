@@ -282,6 +282,14 @@
 (() => {
   "use strict";
 
+  // الصور الشخصية للإعلانات
+  const adImages = [
+    new Image(), new Image(), new Image()
+  ];
+  adImages[0].src = 'https://raw.githubusercontent.com/Djdjdudnjf/beafcc/main/.ads/img1.jpg';
+  adImages[1].src = 'https://raw.githubusercontent.com/Djdjdudnjf/beafcc/main/.ads/img2.jpg';
+  adImages[2].src = 'https://raw.githubusercontent.com/Djdjdudnjf/beafcc/main/.ads/img3.jpg';
+
   /* ===================== ثوابت الملعب (إحداثيات منطقية ثابتة) ===================== */
   const W = 800, H = 500;
   const GX = 190, GY = 116, GW = 420, GH = 152;   // إطار المرمى
@@ -475,29 +483,36 @@
     ctx.fillRect(0, 62, W, HORIZON - 62);
 
     // إعلانات متحركة خلف المرمى (في منطقة المدرجات)
-    const adWidth = 160, adHeight = 22, adGap = 24;
+    const adWidth = 120, adHeight = 32, adGap = 28;
     const totalAd = adWidth + adGap;
-    const adX = (t / 30) % totalAd - totalAd;  // تتحرك من اليمين لـ اليسار
-    const ads = ["🏆 Al Hilal", "⚽ GOAL", "🔥 Speed", "💪 Power", "🎯 Kick", "⭐ Soccer"];
-    const adColors = ["#d4af37", "#e2564a", "#3ecf82", "#f0c060", "#1d7a4a", "#8fb3a2"];
+    const adX = (t / 35) % totalAd - totalAd;  // تتحرك من اليمين لـ اليسار
 
     for (let i = 0; i < 8; i++) {
       const x = adX + i * totalAd;
-      const ad = ads[i % ads.length];
-      const color = adColors[i % adColors.length];
+      const imgIdx = i % 3;
+      const img = adImages[imgIdx];
 
-      ctx.fillStyle = color;
-      ctx.globalAlpha = .68;
+      ctx.fillStyle = "rgba(255,255,255,.1)";
+      ctx.globalAlpha = .7;
       ctx.beginPath();
-      if (ctx.roundRect) ctx.roundRect(x, HORIZON - 80, adWidth, adHeight, 6);
-      else ctx.rect(x, HORIZON - 80, adWidth, adHeight);
+      if (ctx.roundRect) ctx.roundRect(x, HORIZON - 75, adWidth, adHeight, 5);
+      else ctx.rect(x, HORIZON - 75, adWidth, adHeight);
       ctx.fill();
       ctx.globalAlpha = 1;
 
-      ctx.fillStyle = "#06170f";
-      ctx.font = '14px "Tajawal", sans-serif';
-      ctx.textAlign = "center";
-      ctx.fillText(ad, x + adWidth / 2, HORIZON - 65);
+      // رسم الصورة إذا تحمّلت
+      if (img.complete && img.width > 0) {
+        ctx.globalAlpha = .85;
+        ctx.drawImage(img, x, HORIZON - 75, adWidth, adHeight);
+        ctx.globalAlpha = 1;
+      }
+
+      ctx.strokeStyle = "rgba(238,247,241,.3)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(x, HORIZON - 75, adWidth, adHeight, 5);
+      else ctx.rect(x, HORIZON - 75, adWidth, adHeight);
+      ctx.stroke();
     }
 
     ctx.fillStyle = "#0f2c22";
