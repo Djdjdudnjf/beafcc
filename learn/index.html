@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>إتقان HTML — تعلّم لغة HTML من الصفر بالعربية والإنجليزية</title>
+<meta name="description" content="منصة تفاعلية لتعلّم HTML من الصفر: دروس مرتّبة، أمثلة حيّة، محرّر كود مباشر، تحديات عملية، واختبارات — بالعربية والإنجليزية.">
+<meta name="theme-color" content="#4b3ff0">
+<meta name="color-scheme" content="light dark">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="إتقان HTML — Etqan HTML">
+<meta property="og:description" content="تعلّم HTML من الصفر: دروس، أمثلة حيّة، محرّر تفاعلي، وتحديات عملية.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234b3ff0'/%3E%3Ctext x='32' y='43' font-size='30' font-family='monospace' font-weight='700' fill='%23fff' text-anchor='middle'%3E%26lt;%2F%26gt;%3C/text%3E%3C/svg%3E">
+
+<script>
+  /* تطبيق اللغة والثيم قبل أول رسم لتفادي الوميض */
+  (function () {
+    try {
+      var lang = localStorage.getItem('etqan.lang') || 'ar';
+      var theme = localStorage.getItem('etqan.theme');
+      if (!theme) {
+        theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      var el = document.documentElement;
+      el.lang = lang;
+      el.dir = lang === 'ar' ? 'rtl' : 'ltr';
+      el.dataset.theme = theme;
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main" data-i18n="skipToContent">تخطَّ إلى المحتوى</a>
+
+<header class="topbar">
+  <button class="icon-btn menu-toggle" id="menuToggle" aria-label="القائمة" aria-expanded="false">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+
+  <a class="brand" href="#/">
+    <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
+    <span class="brand-text">
+      <span data-i18n="brandName">إتقان HTML</span>
+      <small data-i18n="brandTag">تعلّم من الصفر</small>
+    </span>
+  </a>
+
+  <nav class="topnav" aria-label="التنقّل الرئيسي">
+    <a href="#/" data-nav="home" data-i18n="navHome">الرئيسية</a>
+    <a href="#/curriculum" data-nav="curriculum" data-i18n="navCurriculum">المنهج</a>
+    <a href="#/reference" data-nav="reference" data-i18n="navReference">المرجع</a>
+    <a href="#/project" data-nav="project" data-i18n="navProject">المشروع</a>
+    <a href="#/playground" data-nav="playground" data-i18n="navPlayground">المحرّر</a>
+  </nav>
+
+  <div class="topbar-actions">
+    <button class="search-trigger" id="searchBtn">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <span data-i18n="searchPlaceholder">ابحث في الدروس…</span>
+      <kbd>Ctrl K</kbd>
+    </button>
+    <button class="icon-btn" id="langBtn" title="Language / اللغة"><span id="langLabel">EN</span></button>
+    <button class="icon-btn" id="themeBtn" aria-label="الوضع الليلي">
+      <svg id="themeIcon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar" aria-label="فهرس الدروس">
+    <div class="progress-card">
+      <h3 data-i18n="progressTitle">تقدّمك</h3>
+      <p id="progressText">0 / 0</p>
+      <div class="progress-bar"><i id="progressFill"></i></div>
+      <div class="progress-meta">
+        <span id="progressPct">0%</span>
+        <button id="resetProgress" style="background:none;border:0;color:#fff;opacity:.8;font-size:12px;text-decoration:underline;padding:0" data-i18n="resetProgress">تصفير</button>
+      </div>
+    </div>
+    <h4 class="side-title" data-i18n="curriculumTitle">المنهج الدراسي</h4>
+    <nav id="sideTree" aria-label="الدروس"></nav>
+  </aside>
+
+  <main id="main" class="content" tabindex="-1">
+    <div class="content-inner" id="view"></div>
+  </main>
+</div>
+
+<footer class="site-foot">
+  <div class="in">
+    <span class="brand">
+      <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
+      <span data-i18n="brandName">إتقان HTML</span>
+    </span>
+    <span data-i18n="footNote">منصّة تعليمية مفتوحة — تعمل بالكامل داخل متصفحك.</span>
+    <nav>
+      <a href="#/curriculum" data-i18n="navCurriculum">المنهج</a>
+      <a href="#/reference" data-i18n="navReference">المرجع</a>
+      <a href="#/playground" data-i18n="navPlayground">المحرّر</a>
+      <a href="#/about" data-i18n="navAbout">عن المنصة</a>
+    </nav>
+  </div>
+</footer>
+
+<div class="scrim" id="scrim"></div>
+<div id="paletteRoot"></div>
+<div id="toastRoot"></div>
+
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/highlight.js"></script>
+<script src="assets/js/lessons.js"></script>
+<script src="assets/js/videos.js"></script>
+<script src="assets/js/reference.js"></script>
+<script src="assets/js/playground.js"></script>
+<script src="assets/js/quiz.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
