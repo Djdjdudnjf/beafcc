@@ -192,8 +192,11 @@
     shell.appendChild(play);
 
     shell.addEventListener('click', function () {
+      var url = 'https://www.youtube-nocookie.com/embed/' + v.id + '?autoplay=1&rel=0';
+      if (v.start) url += '&start=' + v.start;
+      if (v.end) url += '&end=' + v.end;
       var frame = h('iframe', {
-        src: 'https://www.youtube-nocookie.com/embed/' + v.id + '?autoplay=1&rel=0',
+        src: url,
         title: v.title,
         allow: 'accelerometer; autoplay; encrypted-media; picture-in-picture',
         allowfullscreen: true,
