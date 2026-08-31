@@ -18,6 +18,10 @@ function getClient() {
     client = new Anthropic({
       apiKey: config.apiKey,
       maxRetries: 2, // إعادة المحاولة تلقائياً مرتين عند مشاكل الشبكة المؤقتة
+      // مطلوبة فقط مع المفاتيح "المرتبطة بالهوية" (انظر شرح workspaceId في config.js).
+      defaultHeaders: config.workspaceId
+        ? { 'anthropic-workspace-id': config.workspaceId }
+        : undefined,
     });
   }
   return client;
@@ -196,6 +200,14 @@ export function describeError(err) {
     };
   }
   if (err instanceof Anthropic.BadRequestError) {
+    if (String(err.message ?? '').includes('anthropic-workspace-id')) {
+      return {
+        status: 400,
+        code: 'missing_workspace_id',
+        message:
+          'مفتاحك يحتاج "معرّف مساحة العمل" (Workspace ID) معه. أضِف ANTHROPIC_WORKSPACE_ID في إعدادات الاستضافة — التفاصيل في دليل التشغيل.',
+      };
+    }
     return {
       status: 400,
       code: 'bad_request',
