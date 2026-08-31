@@ -1,0 +1,261 @@
+/* ==========================================================================
+   الصفحة الرئيسية
+   ========================================================================== */
+
+.home {
+  position: relative;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* هالة ملونة ناعمة في الخلفية تعطي عمقاً للصفحة */
+.home__glow {
+  position: fixed;
+  inset: -30% 0 auto 0;
+  height: 70vh;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(46% 52% at 22% 28%, rgba(14, 159, 138, 0.16), transparent 70%),
+    radial-gradient(44% 50% at 78% 22%, rgba(123, 92, 245, 0.16), transparent 70%),
+    radial-gradient(40% 46% at 50% 62%, rgba(240, 130, 30, 0.13), transparent 70%);
+  filter: blur(14px);
+}
+
+:root[data-theme='dark'] .home__glow {
+  opacity: 0.55;
+}
+
+/* ── الشريط العلوي ── */
+.home__bar {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px clamp(18px, 5vw, 48px);
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand__mark {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-md);
+  color: #fff;
+  background: linear-gradient(135deg, var(--medical-1), var(--math-1) 55%, var(--cooking-1));
+  box-shadow: var(--shadow-md);
+}
+
+.brand__name {
+  font-size: 1.32rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+/* ── المحتوى ── */
+.home__main {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: clamp(24px, 6vw, 64px) clamp(18px, 5vw, 48px) 56px;
+}
+
+.hero {
+  text-align: center;
+  max-width: 660px;
+  margin: 0 auto clamp(36px, 6vw, 60px);
+  animation: fade-up 0.6s var(--ease) both;
+}
+
+.hero__eyebrow {
+  display: inline-block;
+  font-size: 0.83rem;
+  font-weight: 700;
+  color: var(--text-soft);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
+  padding: 5px 15px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.hero__title {
+  font-size: clamp(2.3rem, 7vw, 3.7rem);
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+
+.hero__accent {
+  background: linear-gradient(100deg, var(--medical-1), var(--math-1) 52%, var(--cooking-1));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero__sub {
+  font-size: clamp(1rem, 2.4vw, 1.12rem);
+  color: var(--text-soft);
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+/* ── البطاقات ── */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(285px, 1fr));
+  gap: clamp(16px, 2.4vw, 24px);
+  align-items: stretch;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: start;
+  padding: 30px 26px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: transform var(--t-med), box-shadow var(--t-med), border-color var(--t-med);
+  animation: fade-up 0.6s var(--ease) both;
+}
+
+.card::after {
+  /* توهج لوني يظهر عند المرور بالفأرة */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 90% at 50% -20%, var(--card-shadow), transparent 62%);
+  opacity: 0;
+  transition: opacity var(--t-med);
+  pointer-events: none;
+}
+
+.card:hover,
+.card:focus-visible {
+  transform: translateY(-6px);
+  border-color: transparent;
+  box-shadow: var(--shadow-lg), 0 18px 44px -20px var(--card-shadow);
+}
+
+.card:hover::after,
+.card:focus-visible::after {
+  opacity: 0.16;
+}
+
+.card:active {
+  transform: translateY(-2px);
+}
+
+.card__stripe {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--c1), var(--c2));
+}
+
+.card__icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  color: #fff;
+  background: linear-gradient(140deg, var(--c1), var(--c2));
+  box-shadow: 0 10px 26px -10px var(--card-shadow);
+  flex-shrink: 0;
+}
+
+.card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  flex: 1;
+}
+
+.card__tagline {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--c1);
+}
+
+.card__title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.card__desc {
+  font-size: 0.97rem;
+  color: var(--text-soft);
+  line-height: 1.7;
+}
+
+.card__note {
+  font-size: 0.83rem;
+  color: var(--text-muted);
+  padding-top: 15px;
+  border-top: 1px dashed var(--border);
+}
+
+.card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--c1);
+}
+
+.card__cta svg {
+  transition: transform var(--t-fast);
+}
+
+.card:hover .card__cta svg {
+  transform: translateX(-4px);
+}
+
+/* ── التذييل ── */
+.home__foot {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 24px 20px 34px;
+  font-size: 0.86rem;
+  color: var(--text-muted);
+}
+
+/* ── الجوال ── */
+@media (max-width: 620px) {
+  .card {
+    padding: 24px 20px 20px;
+  }
+  .card__icon {
+    width: 48px;
+    height: 48px;
+  }
+}

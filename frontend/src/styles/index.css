@@ -1,0 +1,6 @@
+/* يجمع كل ملفات التنسيق بالترتيب الصحيح */
+@import './theme.css';
+@import './shared.css';
+@import './home.css';
+@import './chat.css';
+@import './prose.css';

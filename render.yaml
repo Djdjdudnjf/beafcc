@@ -1,0 +1,26 @@
+# ملف النشر التلقائي على Render.com
+# عند ربط المستودع بـ Render، يقرأ هذا الملف ويجهّز كل شيء بنفسه.
+services:
+  - type: web
+    name: murshid
+    runtime: node
+    plan: free
+    region: frankfurt # أقرب منطقة للشرق الأوسط
+    # نثبّت مكونات الطرفين ثم نبني الواجهة إلى frontend/dist
+    buildCommand: npm --prefix backend install && npm --prefix frontend install && npm --prefix frontend run build
+    # الخادم يقدّم الواجهة المبنية على نفس الرابط
+    startCommand: npm --prefix backend start
+    healthCheckPath: /api/health
+    envVars:
+      # تضعه أنت بنفسك في لوحة Render (لا يُحفظ في الكود أبداً)
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      # رمز الدخول الذي يحمي موقعك من الغرباء
+      - key: ACCESS_CODE
+        sync: false
+      - key: NODE_VERSION
+        value: "22"
+      - key: ANTHROPIC_MODEL
+        value: claude-opus-5
+      - key: ANTHROPIC_EFFORT
+        value: high

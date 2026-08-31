@@ -1,0 +1,150 @@
+/* ==========================================================================
+   تنسيق نص إجابة المساعد (الناتج عن تحويل Markdown)
+   ========================================================================== */
+
+.prose > *:first-child {
+  margin-top: 0;
+}
+.prose > *:last-child {
+  margin-bottom: 0;
+}
+
+.prose p {
+  margin: 0 0 0.85em;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  font-weight: 800;
+  line-height: 1.5;
+  margin: 1.5em 0 0.55em;
+  letter-spacing: -0.01em;
+}
+
+.prose h1 {
+  font-size: 1.3rem;
+}
+.prose h2 {
+  font-size: 1.17rem;
+}
+.prose h3 {
+  font-size: 1.06rem;
+  color: var(--accent);
+}
+.prose h4 {
+  font-size: 1rem;
+}
+
+.prose ul,
+.prose ol {
+  margin: 0 0 0.9em;
+  padding-inline-start: 1.5em;
+}
+
+.prose li {
+  margin-bottom: 0.4em;
+}
+
+.prose li::marker {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.prose strong {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.prose em {
+  font-style: normal;
+  color: var(--text-soft);
+}
+
+.prose a {
+  color: var(--accent);
+  text-underline-offset: 3px;
+}
+
+/* الاقتباس — يُستخدم للتنبيه الطبي */
+.prose blockquote {
+  margin: 1em 0;
+  padding: 12px 15px;
+  background: var(--accent-soft);
+  border-inline-start: 3px solid var(--accent);
+  border-radius: var(--r-sm);
+  color: var(--text-soft);
+  font-size: 0.95rem;
+}
+
+.prose blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* الكود — مهم لعرض خطوات الرياضيات منسّقة */
+.prose code {
+  font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+  font-size: 0.9em;
+  padding: 2px 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  direction: ltr;
+  unicode-bidi: plaintext;
+  display: inline-block;
+}
+
+.prose pre {
+  margin: 1em 0;
+  padding: 14px 16px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow-x: auto;
+  direction: ltr;
+  text-align: start;
+}
+
+.prose pre code {
+  padding: 0;
+  background: none;
+  border: none;
+  font-size: 0.88rem;
+  line-height: 1.9;
+  display: block;
+  unicode-bidi: plaintext;
+}
+
+/* الجداول */
+.prose table {
+  width: 100%;
+  margin: 1em 0;
+  border-collapse: collapse;
+  font-size: 0.93rem;
+  display: block;
+  overflow-x: auto;
+}
+
+.prose th,
+.prose td {
+  padding: 9px 13px;
+  border: 1px solid var(--border);
+  text-align: start;
+}
+
+.prose th {
+  background: var(--surface-2);
+  font-weight: 700;
+}
+
+.prose hr {
+  margin: 1.4em 0;
+  border: none;
+  border-top: 1px solid var(--border);
+}
+
+.prose img {
+  max-width: 100%;
+  border-radius: var(--r-md);
+}

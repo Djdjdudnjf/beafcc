@@ -1,0 +1,16 @@
+{
+  "name": "مرشد — مساعدون أذكياء",
+  "short_name": "مرشد",
+  "description": "ثلاثة مساعدين أذكياء: طبي، طبخ، ورياضيات.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f6f7fb",
+  "theme_color": "#f6f7fb",
+  "icons": [
+    { "src": "/app-icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/app-icon.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
