@@ -27,7 +27,33 @@ export const config = {
   maxTokens: toInt(process.env.MAX_TOKENS, 8000),
   historyLimit: toInt(process.env.HISTORY_LIMIT, 30),
   dataDir: path.resolve(here, '..', '..', 'data'),
+  // رمز دخول اختياري. إن تُرك فارغاً فالموقع مفتوح (مناسب للاستخدام على جهازك).
+  // إن وُضع فيه رمز، يطلبه الموقع من كل من يفتحه — ضروري عند النشر على الإنترنت.
+  accessCode: (process.env.ACCESS_CODE ?? '').trim(),
+  // مجلد الواجهة المبنية (يُقدَّم تلقائياً في وضع النشر إن كان موجوداً).
+  distDir: path.resolve(here, '..', '..', '..', 'frontend', 'dist'),
 };
+
+/** هل الموقع محمي برمز دخول؟ */
+export function requiresAccessCode() {
+  return config.accessCode.length > 0;
+}
+
+/**
+ * مقارنة آمنة بين رمزين: تأخذ نفس الوقت مهما كان عدد الحروف الصحيحة،
+ * حتى لا يُستدل على الرمز بقياس زمن الرد.
+ */
+export function checkAccessCode(provided) {
+  if (!requiresAccessCode()) return true;
+  const given = String(provided ?? '');
+  const expected = config.accessCode;
+  if (given.length !== expected.length) return false;
+  let diff = 0;
+  for (let i = 0; i < expected.length; i += 1) {
+    diff |= given.charCodeAt(i) ^ expected.charCodeAt(i);
+  }
+  return diff === 0;
+}
 
 /**
  * هل المفتاح موجود ويبدو صحيحاً؟

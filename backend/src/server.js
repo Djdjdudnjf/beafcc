@@ -4,7 +4,10 @@
  */
 import express from 'express';
 import cors from 'cors';
-import { config, apiKeyStatus } from './lib/config.js';
+import fs from 'node:fs';
+import path from 'node:path';
+import { config, apiKeyStatus, requiresAccessCode } from './lib/config.js';
+import { accessGuard } from './lib/guard.js';
 import { initStorage } from './lib/storage.js';
 import { chatRouter } from './routes/chat.js';
 import { conversationsRouter } from './routes/conversations.js';
@@ -25,9 +28,14 @@ app.get('/api/health', (_req, res) => {
     apiKeyIssue: key.ok ? null : key.reason,
     model: config.model,
     effort: config.effort,
+    // تخبر الواجهة إن كانت ستطلب رمز دخول من الزائر.
+    requiresCode: requiresAccessCode(),
   });
 });
 
+// كل ما يلي محميّ برمز الدخول (إن كان مضبوطاً). /api/health أعلاه مفتوح دائماً
+// لأن الواجهة تحتاجه لتعرف أنها يجب أن تطلب الرمز أصلاً.
+app.use('/api', accessGuard);
 app.use('/api', conversationsRouter);
 app.use('/api', chatRouter);
 
@@ -35,6 +43,33 @@ app.use('/api', chatRouter);
 app.use('/api', (_req, res) => {
   res.status(404).json({ error: { code: 'not_found', message: 'هذا العنوان غير موجود.' } });
 });
+
+/*
+ * وضع النشر (Production):
+ * عند نشر المشروع على الإنترنت نبني الواجهة مرة واحدة إلى مجلد frontend/dist،
+ * ثم يقدّمها هذا الخادم بنفسه — فتصبح الواجهة والخادم خدمة واحدة على رابط واحد.
+ * أثناء التطوير على جهازك لا يوجد مجلد dist، فيُتخطى هذا القسم تلقائياً.
+ */
+const hasBuiltFrontend = fs.existsSync(path.join(config.distDir, 'index.html'));
+
+if (hasBuiltFrontend) {
+  // الملفات ذات البصمة في اسمها (مثل index-a1b2c3.js) لا تتغير أبداً، فنخزّنها طويلاً.
+  app.use(
+    express.static(config.distDir, {
+      index: false,
+      setHeaders(res, filePath) {
+        if (filePath.includes(`${path.sep}assets${path.sep}`)) {
+          res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+        }
+      },
+    }),
+  );
+
+  // أي عنوان آخر يُعيد صفحة الواجهة، لأن التنقل بين الصفحات يتم داخل المتصفح.
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(config.distDir, 'index.html'));
+  });
+}
 
 // مصيدة الأخطاء الأخيرة: تمنع انهيار الخادم وتعيد رسالة مفهومة.
 app.use((err, _req, res, _next) => {
@@ -64,10 +99,27 @@ async function main() {
       }`,
     );
     console.log(`  التخزين : ${config.dataDir}`);
+    console.log(
+      `  الحماية : ${requiresAccessCode() ? '🔒 رمز دخول مفعّل' : '🔓 مفتوح (بلا رمز دخول)'}`,
+    );
     console.log('');
-    console.log('  شغّل الآن الواجهة في نافذة طرفية ثانية:  cd frontend && npm run dev');
+    if (hasBuiltFrontend) {
+      console.log(`  ✅ الواجهة جاهزة على نفس الرابط: http://localhost:${config.port}`);
+    } else {
+      console.log('  شغّل الآن الواجهة في نافذة طرفية ثانية:  cd frontend && npm run dev');
+    }
     console.log('  لإيقاف الخادم اضغط: Ctrl + C');
     console.log('');
+
+    // شبكة أمان: رمز قصير جداً غالباً يعني أن علامة # قطعته في ملف .env،
+    // أو أنه ضعيف يسهل تخمينه.
+    if (requiresAccessCode() && config.accessCode.length < 8) {
+      console.warn(
+        `  ⚠️  رمز الدخول قصير (${config.accessCode.length} أحرف فقط).\n` +
+          '     إن كان رمزك يحتوي على علامة # فقد قُطع عندها — ضعه بين علامتي تنصيص\n' +
+          '     في ملف .env هكذا:  ACCESS_CODE="رمزك#هنا"   أو استخدم حروفاً وأرقاماً فقط.\n',
+      );
+    }
   });
 
   // رسالة واضحة بدل خطأ إنجليزي مخيف لو كان الخادم يعمل مسبقاً.

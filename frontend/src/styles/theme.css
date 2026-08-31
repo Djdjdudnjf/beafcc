@@ -211,3 +211,71 @@ a {
     opacity: 1;
   }
 }
+
+/* ==========================================================================
+   تحسينات خاصة بالجوال (خصوصاً الآيفون)
+   ========================================================================== */
+
+/*
+ * 100dvh = ارتفاع الشاشة "الديناميكي": يتعامل بشكل صحيح مع شريط Safari
+ * الذي يظهر ويختفي عند التمرير في الآيفون. نضع 100% كبديل للمتصفحات القديمة.
+ */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+@supports (height: 100dvh) {
+  html,
+  body,
+  #root {
+    height: 100dvh;
+  }
+}
+
+/* يمنع اهتزاز الصفحة عند السحب لأسفل في iOS */
+body {
+  overscroll-behavior-y: none;
+}
+
+/*
+ * env(safe-area-inset-*) = المسافات الآمنة حول شاشة الآيفون:
+ * منطقة النوتش/الكاميرا في الأعلى، وشريط الإيماءات في الأسفل.
+ * بدونها يختفي جزء من الواجهة تحتهما عند الإضافة للشاشة الرئيسية.
+ */
+.home__bar,
+.chat__bar {
+  padding-top: max(11px, env(safe-area-inset-top));
+}
+
+.home__bar,
+.home__main,
+.chat__bar {
+  padding-inline: max(12px, env(safe-area-inset-left)) max(12px, env(safe-area-inset-right));
+}
+
+.home__foot {
+  padding-bottom: max(34px, calc(env(safe-area-inset-bottom) + 20px));
+}
+
+.side {
+  padding-top: env(safe-area-inset-top);
+}
+
+/* منع آيفون من تكبير الصفحة تلقائياً عند الضغط على صندوق الكتابة
+   (يحدث فقط إذا كان حجم الخط أقل من 16 بكسل) */
+@media (max-width: 900px) {
+  .composer__input,
+  input,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+/* تحسين الضغط باللمس: إزالة تأخير 300ms وتظليل الضغط الأزرق */
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}

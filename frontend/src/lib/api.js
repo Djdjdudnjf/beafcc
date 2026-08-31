@@ -7,12 +7,53 @@
 const OFFLINE_MSG =
   'تعذّر الاتصال بالخادم. تأكد أنك شغّلت الخادم في نافذة طرفية أخرى بالأمر: cd backend ثم npm start';
 
+/* ──────────────────────────────────────────────────────────
+   رمز الدخول (يُستخدم فقط إذا كان الموقع منشوراً ومحمياً)
+   ────────────────────────────────────────────────────────── */
+
+const CODE_KEY = 'murshid-access-code';
+
+/** يقرأ الرمز المحفوظ في هذا المتصفح. */
+export function getAccessCode() {
+  try {
+    return localStorage.getItem(CODE_KEY) ?? '';
+  } catch {
+    return '';
+  }
+}
+
+/** يحفظ الرمز في هذا المتصفح ليبقى بعد إغلاق الصفحة. */
+export function setAccessCode(code) {
+  try {
+    if (code) localStorage.setItem(CODE_KEY, code);
+    else localStorage.removeItem(CODE_KEY);
+  } catch {
+    /* تجاهل */
+  }
+}
+
+/** يُبلّغ التطبيق أن الرمز صار غير صالح، فتظهر شاشة الرمز من جديد. */
+function reportUnauthorized() {
+  setAccessCode('');
+  window.dispatchEvent(new CustomEvent('murshid:unauthorized'));
+}
+
+/** الترويسات المرسلة مع كل طلب. */
+function headers(extra) {
+  const h = { 'Content-Type': 'application/json', ...extra };
+  const code = getAccessCode();
+  // ترويسات HTTP تقبل حروفاً إنجليزية فقط، فنُرمّز الرمز حتى يعمل لو كان
+  // بالعربية أو فيه رموز خاصة. الخادم يفكّ الترميز عند استقباله.
+  if (code) h['X-Access-Code'] = encodeURIComponent(code);
+  return h;
+}
+
 async function request(path, options = {}) {
   let res;
   try {
     res = await fetch(`/api${path}`, {
-      headers: { 'Content-Type': 'application/json' },
       ...options,
+      headers: headers(options.headers),
     });
   } catch {
     throw new Error(OFFLINE_MSG);
@@ -21,6 +62,12 @@ async function request(path, options = {}) {
   if (res.status === 204) return null;
 
   const data = await res.json().catch(() => null);
+
+  if (res.status === 401 && data?.error?.code === 'bad_access_code') {
+    reportUnauthorized();
+    throw new Error(data.error.message);
+  }
+
   if (!res.ok) {
     throw new Error(data?.error?.message ?? `فشل الطلب (${res.status})`);
   }
@@ -64,7 +111,7 @@ export async function streamChat({ assistantId, conversationId, message, signal,
   try {
     res = await fetch('/api/chat', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: headers(),
       body: JSON.stringify({ assistant: assistantId, conversationId, message }),
       signal,
     });
@@ -76,6 +123,7 @@ export async function streamChat({ assistantId, conversationId, message, signal,
   // خطأ وقع قبل بدء البث (مثل: المفتاح ناقص) — يصل كـ JSON عادي.
   if (!res.ok && !res.headers.get('content-type')?.includes('text/event-stream')) {
     const data = await res.json().catch(() => null);
+    if (res.status === 401 && data?.error?.code === 'bad_access_code') reportUnauthorized();
     throw new Error(data?.error?.message ?? `فشل الطلب (${res.status})`);
   }
 
