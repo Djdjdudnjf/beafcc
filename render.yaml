@@ -18,6 +18,9 @@ services:
       # رمز الدخول الذي يحمي موقعك من الغرباء
       - key: ACCESS_CODE
         sync: false
+      # مطلوب فقط إذا ظهرت رسالة "workspace_id" في السجل — راجع README
+      - key: ANTHROPIC_WORKSPACE_ID
+        sync: false
       - key: NODE_VERSION
         value: "22"
       - key: ANTHROPIC_MODEL

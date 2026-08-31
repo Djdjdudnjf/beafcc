@@ -22,6 +22,9 @@ const rawEffort = (process.env.ANTHROPIC_EFFORT ?? 'high').trim().toLowerCase();
 export const config = {
   port: toInt(process.env.PORT, 3001),
   apiKey: (process.env.ANTHROPIC_API_KEY ?? '').trim(),
+  // بعض المفاتيح (خصوصاً التي تُنشأ بتسجيل دخول عبر جوجل) "مرتبطة بالهوية"
+  // وتحتاج معرّف مساحة العمل معها. اتركه فارغاً إن لم تصلك رسالة تطلبه.
+  workspaceId: (process.env.ANTHROPIC_WORKSPACE_ID ?? '').trim(),
   model: (process.env.ANTHROPIC_MODEL ?? '').trim() || 'claude-opus-5',
   effort: EFFORT_LEVELS.includes(rawEffort) ? rawEffort : 'high',
   maxTokens: toInt(process.env.MAX_TOKENS, 8000),
