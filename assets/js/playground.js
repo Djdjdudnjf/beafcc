@@ -1,6 +1,11 @@
 /* =============================================================
-   playground.js — المحرّر الحيّ ومُصحِّح التحديات
-   Live editor + challenge checker
+   playground.js — المحرّر ووحدة الإخراج ومُصحِّح التحديات
+   Editor + console output + challenge checker
+
+   بايثون لا يُشغَّل مع كل ضغطة مفتاح كما كانت HTML تُعرض:
+   التنفيذ يحدث عند الطلب فقط (زر تشغيل أو Ctrl+Enter).
+   Unlike HTML preview, Python never runs on keystroke — only
+   on demand (Run button or Ctrl+Enter).
    ============================================================= */
 (function (global) {
   'use strict';
@@ -42,26 +47,12 @@
     return null;
   }
 
-  /* ---------- تغليف كود المتعلّم داخل صفحة معاينة ---------- */
-  var PREVIEW_CSS =
-    'body{font-family:"Tajawal",system-ui,-apple-system,"Segoe UI",sans-serif;' +
-    'line-height:1.7;padding:16px;margin:0;color:#15181f;background:#fff}' +
-    'img{max-width:100%;height:auto}' +
-    'table{border-collapse:collapse}' +
-    'pre{background:#f2f3f7;padding:10px;border-radius:8px;overflow:auto;direction:ltr;text-align:left}' +
-    'input,select,textarea,button{font:inherit;padding:6px 8px;border-radius:6px;border:1px solid #b9bfd0}' +
-    'button{cursor:pointer}' +
-    'label{display:inline-block;margin-block:4px}';
+  /* ---------- هل يحتاج الكود مدخلات؟ / does the code read stdin ---------- */
+  function needsInput(code) { return /(^|[^\w.])input\s*\(/.test(code); }
 
-  function wrapDoc(code) {
-    var lang = global.I18N.lang;
-    var dir = lang === 'ar' ? 'rtl' : 'ltr';
-    if (/<html[\s>]/i.test(code)) return code;
-    return '<!doctype html><html lang="' + lang + '" dir="' + dir + '"><head><meta charset="utf-8">' +
-           '<style>' + PREVIEW_CSS + '</style></head><body>' + code + '</body></html>';
-  }
-
-  /* ---------- محرّر + معاينة / editor + preview ---------- */
+  /* =============================================================
+     محرّر + وحدة إخراج / editor + console
+     ============================================================= */
   function createDemo(options) {
     var opts = options || {};
     var initial = opts.code || '';
@@ -69,12 +60,11 @@
     var saved = storeKey ? store(storeKey) : null;
     var startCode = (saved != null && saved !== '') ? saved : initial;
 
-    var frame = h('iframe', {
-      class: 'preview-frame',
-      sandbox: 'allow-scripts allow-forms allow-modals',
-      title: t('panePreview')
-    });
+    var lastResult = null;
+    var busy = false;
 
+    /* ---- المحرّر مع مسطرة أرقام الأسطر ---- */
+    var gutter = h('div', { class: 'gutter', 'aria-hidden': 'true' });
     var editor = h('textarea', {
       class: 'editor',
       spellcheck: 'false',
@@ -86,29 +76,163 @@
     });
     editor.value = startCode;
 
-    var timer = null;
-    function render() {
-      frame.srcdoc = wrapDoc(editor.value);
-      if (storeKey) store(storeKey, editor.value);
-      if (typeof opts.onChange === 'function') opts.onChange(editor.value);
+    function syncGutter() {
+      var count = editor.value.split('\n').length;
+      var want = '';
+      for (var i = 1; i <= count; i++) want += i + '\n';
+      if (gutter.textContent !== want) gutter.textContent = want;
     }
-    function scheduleRender() {
-      clearTimeout(timer);
-      timer = setTimeout(render, 320);
+    editor.addEventListener('scroll', function () { gutter.scrollTop = editor.scrollTop; });
+
+    /* ---- حقل المدخلات لدوال input() ---- */
+    var stdinBox = h('textarea', {
+      class: 'stdin-box',
+      spellcheck: 'false',
+      dir: 'ltr',
+      rows: '2',
+      placeholder: t('stdinPlaceholder'),
+      'aria-label': t('stdinLabel')
+    });
+    var stdinWrap = h('div', { class: 'stdin-wrap', hidden: true }, [
+      h('label', { class: 'stdin-label' }, ['⌨ ' + t('stdinLabel')]),
+      stdinBox,
+      h('p', { class: 'stdin-hint' }, [t('stdinHint')])
+    ]);
+    if (storeKey) {
+      var sIn = store(storeKey + ':stdin');
+      if (sIn) stdinBox.value = sIn;
+      stdinBox.addEventListener('input', function () { store(storeKey + ':stdin', stdinBox.value); });
     }
 
-    editor.addEventListener('input', scheduleRender);
+    function syncStdinVisibility() {
+      stdinWrap.hidden = !needsInput(editor.value);
+    }
+
+    /* ---- وحدة الإخراج ----
+       الحاوية تتبع اتجاه الواجهة كي تُقرأ الرسائل العربية صحيحة،
+       أما مخرجات البرنامج نفسها فتُجبَر على LTR لأنها كود. */
+    var out = h('div', { class: 'console', role: 'log', 'aria-live': 'polite' });
+
+    function setConsole(cls, text, sub) {
+      out.className = 'console' + (cls ? ' ' + cls : '');
+      out.textContent = '';
+      if (text) out.appendChild(h('div', { class: 'console-line' }, [text]));
+      if (sub) out.appendChild(h('div', { class: 'console-sub' }, [sub]));
+    }
+
+    function showIdle() {
+      setConsole('is-idle', t('consoleIdle'), t('consoleIdleHint'));
+    }
+
+    function showResult(r) {
+      lastResult = r;
+      if (r.error === '__TIMEOUT__') {
+        setConsole('is-error', t('runTimeout'), t('runTimeoutHint'));
+        return;
+      }
+      if (r.error === '__LOADFAIL__') {
+        setConsole('is-error', t('runLoadFail'), t('runLoadFailHint'));
+        return;
+      }
+      out.className = 'console';
+      out.textContent = '';
+      if (r.stdout) {
+        out.appendChild(h('pre', { class: 'console-out', dir: 'ltr' }, [r.stdout]));
+      }
+      if (r.error) {
+        out.appendChild(h('pre', { class: 'console-err', dir: 'ltr' }, [r.error]));
+      }
+      if (!r.stdout && !r.error) {
+        out.appendChild(h('div', { class: 'console-line console-muted' }, [t('runNoOutput')]));
+        out.appendChild(h('div', { class: 'console-sub' }, [t('runNoOutputHint')]));
+      }
+    }
+
+    /* ---- التشغيل ---- */
+    var runBtn = h('button', { class: 'btn btn-sm btn-soft', type: 'button' }, ['▶ ' + t('run')]);
+    var stopBtn = h('button', { class: 'btn btn-sm btn-ghost', type: 'button', hidden: true }, ['■ ' + t('stop')]);
+
+    function run() {
+      if (busy) return Promise.resolve(lastResult);
+      if (!global.PyRun || !global.PyRun.supported()) {
+        setConsole('is-error', t('runUnsupported'), t('runUnsupportedHint'));
+        return Promise.resolve(null);
+      }
+      busy = true;
+      runBtn.disabled = true;
+      stopBtn.hidden = false;
+
+      var firstBoot = !global.PyRun.isReady();
+      setConsole('is-busy',
+        firstBoot ? t('pyLoading') : t('runRunning'),
+        firstBoot ? t('pyLoadingHint') : '');
+
+      if (storeKey) store(storeKey, editor.value);
+
+      return global.PyRun.run(editor.value, stdinBox.value).then(function (r) {
+        busy = false;
+        runBtn.disabled = false;
+        stopBtn.hidden = true;
+        showResult(r);
+        if (typeof opts.onRun === 'function') opts.onRun(r);
+        return r;
+      }, function () {
+        busy = false;
+        runBtn.disabled = false;
+        stopBtn.hidden = true;
+        setConsole('is-error', t('runLoadFail'), t('runLoadFailHint'));
+        return null;
+      });
+    }
+
+    runBtn.addEventListener('click', function () { run(); });
+    stopBtn.addEventListener('click', function () {
+      if (global.PyRun) global.PyRun.stop();
+      busy = false;
+      runBtn.disabled = false;
+      stopBtn.hidden = true;
+      setConsole('is-error', t('runStopped'), t('runStoppedHint'));
+    });
+
+    /* ---- تعديل الكود ---- */
+    editor.addEventListener('input', function () {
+      syncGutter();
+      syncStdinVisibility();
+      if (storeKey) store(storeKey, editor.value);
+      if (typeof opts.onChange === 'function') opts.onChange(editor.value);
+    });
+
     editor.addEventListener('keydown', function (e) {
+      /* Tab يُدخل أربع مسافات — مسافة بايثون القياسية */
       if (e.key === 'Tab') {
         e.preventDefault();
         var s = editor.selectionStart, en = editor.selectionEnd;
-        editor.value = editor.value.slice(0, s) + '  ' + editor.value.slice(en);
-        editor.selectionStart = editor.selectionEnd = s + 2;
-        scheduleRender();
-      } else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+        editor.value = editor.value.slice(0, s) + '    ' + editor.value.slice(en);
+        editor.selectionStart = editor.selectionEnd = s + 4;
+        syncGutter();
+        return;
+      }
+      /* Ctrl/⌘ + Enter يشغّل */
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
-        clearTimeout(timer);
-        render();
+        run();
+        return;
+      }
+      /* Enter يحافظ على الإزاحة ويزيدها بعد النقطتين */
+      if (e.key === 'Enter' && !e.shiftKey) {
+        var pos = editor.selectionStart;
+        var before = editor.value.slice(0, pos);
+        var lineStart = before.lastIndexOf('\n') + 1;
+        var line = before.slice(lineStart);
+        var indent = (/^[ \t]*/.exec(line) || [''])[0];
+        if (/:\s*$/.test(line)) indent += '    ';
+        if (indent) {
+          e.preventDefault();
+          var rest = editor.value.slice(editor.selectionEnd);
+          editor.value = before + '\n' + indent + rest;
+          editor.selectionStart = editor.selectionEnd = pos + 1 + indent.length;
+          syncGutter();
+        }
       }
     });
 
@@ -127,63 +251,79 @@
       }
     });
 
-    var runBtn = h('button', { class: 'btn btn-sm btn-soft', type: 'button' }, [t('run')]);
-    runBtn.addEventListener('click', function () { clearTimeout(timer); render(); });
-
     var resetBtn = h('button', { class: 'btn btn-sm btn-ghost', type: 'button' }, [t('reset')]);
     resetBtn.addEventListener('click', function () {
       editor.value = initial;
-      clearTimeout(timer);
-      render();
+      syncGutter();
+      syncStdinVisibility();
+      if (storeKey) store(storeKey, initial);
+      showIdle();
       editor.focus();
     });
 
-    var actions = h('div', { class: 'demo-actions' }, [runBtn, resetBtn, copyBtn]);
+    var actions = h('div', { class: 'demo-actions' }, [runBtn, stopBtn, resetBtn, copyBtn]);
 
     var head = h('div', { class: 'demo-head' }, [
-      h('h4', {}, [opts.icon || '🧪', ' ' + (opts.title || t('exampleTitle'))]),
+      h('h4', {}, [opts.icon || '🐍', ' ' + (opts.title || t('exampleTitle'))]),
       actions
     ]);
 
     var body = h('div', { class: 'demo-body' }, [
       h('div', { class: 'demo-pane' }, [
-        h('div', { class: 'pane-label' }, ['</> ', t('paneCode')]),
-        h('div', { class: 'editor-wrap' }, [editor])
+        h('div', { class: 'pane-label' }, ['>>> ', t('paneCode')]),
+        h('div', { class: 'editor-wrap' }, [gutter, editor]),
+        stdinWrap
       ]),
       h('div', { class: 'demo-pane' }, [
-        h('div', { class: 'pane-label' }, ['▶ ', t('panePreview')]),
-        frame
+        h('div', { class: 'pane-label' }, ['▶ ', t('paneOutput')]),
+        out
       ])
     ]);
 
     var root = h('div', { class: 'demo' }, [opts.hideHead ? null : head, body]);
 
-    render();
+    syncGutter();
+    syncStdinVisibility();
+    showIdle();
 
     return {
       el: root,
       editor: editor,
-      frame: frame,
+      console: out,
       getValue: function () { return editor.value; },
-      setValue: function (v) { editor.value = v; clearTimeout(timer); render(); },
-      refresh: render
+      getStdin: function () { return stdinBox.value; },
+      setValue: function (v) {
+        editor.value = v;
+        syncGutter();
+        syncStdinVisibility();
+        if (storeKey) store(storeKey, v);
+        showIdle();
+      },
+      run: run,
+      lastResult: function () { return lastResult; },
+      isBusy: function () { return busy; }
     };
   }
 
-  /* ---------- تشغيل فحوص التحدي / running challenge checks ---------- */
-  function runChecks(checks, code) {
-    var doc;
-    try {
-      doc = new DOMParser().parseFromString(code, 'text/html');
-    } catch (e) {
-      return checks.map(function () { return false; });
-    }
-    return checks.map(function (c) {
-      try { return !!c.test(doc, code); } catch (e) { return false; }
-    });
+  /* =============================================================
+     تشغيل فحوص التحدي / running challenge checks
+     كل فحص قد يعيد قيمة منطقية أو Promise — نُوحّدها هنا.
+     A check may return a boolean or a Promise; both are handled.
+     ============================================================= */
+  function runChecks(checks, result) {
+    return Promise.all(checks.map(function (c) {
+      var v;
+      try { v = c.test(result); } catch (e) { return false; }
+      return Promise.resolve(v).then(
+        function (x) { return !!x; },
+        function () { return false; }
+      );
+    }));
   }
 
-  /* ---------- بناء بطاقة التحدي / building the challenge card ---------- */
+  /* =============================================================
+     بطاقة التحدي / the challenge card
+     ============================================================= */
   function createChallenge(challenge, options) {
     var opts = options || {};
     var checks = challenge.checks || [];
@@ -214,8 +354,7 @@
     var solutionBox = h('div', { hidden: true, style: 'padding:0 22px 18px' });
     var solutionBtn = h('button', { class: 'btn btn-sm btn-ghost', type: 'button' }, [t('showSolution')]);
     solutionBtn.addEventListener('click', function () {
-      var showing = !solutionBox.hidden;
-      if (showing) {
+      if (!solutionBox.hidden) {
         solutionBox.hidden = true;
         solutionBtn.textContent = t('showSolution');
         return;
@@ -229,7 +368,7 @@
         solutionBox.appendChild(h('div', { class: 'code-block' }, [
           h('div', { class: 'code-bar' }, [
             h('span', { class: 'dots' }, [h('i'), h('i'), h('i')]),
-            h('span', {}, ['solution.html']),
+            h('span', {}, ['solution.py']),
             insert
           ]),
           pre
@@ -241,28 +380,47 @@
     });
 
     var checkBtn = h('button', { class: 'btn btn-primary', type: 'button' }, ['✓ ' + t('check')]);
+
     checkBtn.addEventListener('click', function () {
+      if (demo.isBusy()) return;
       attempts++;
-      var results = runChecks(checks, demo.getValue());
-      var allPass = true;
+      checkBtn.disabled = true;
+      verdict.className = 'verdict busy';
+      verdict.textContent = t('checkRunning');
 
-      results.forEach(function (ok, i) {
-        var li = items[i];
-        li.className = ok ? 'pass' : 'fail';
-        li.querySelector('.mark').textContent = ok ? '✓' : '✕';
-        var hint = li.querySelector('.hint');
-        hint.hidden = ok || attempts < 1;
-        if (!ok) allPass = false;
+      /* نشغّل كود المتعلّم أولاً، ثم نفحص النتيجة */
+      demo.run().then(function (result) {
+        if (!result) {
+          checkBtn.disabled = false;
+          verdict.className = 'verdict no';
+          verdict.textContent = t('runLoadFail');
+          return null;
+        }
+        return runChecks(checks, result).then(function (results) {
+          var allPass = true;
+          results.forEach(function (ok, i) {
+            var li = items[i];
+            li.className = ok ? 'pass' : 'fail';
+            li.querySelector('.mark').textContent = ok ? '✓' : '✕';
+            li.querySelector('.hint').hidden = ok;
+            if (!ok) allPass = false;
+          });
+
+          verdict.className = 'verdict ' + (allPass ? 'ok' : 'no');
+          verdict.textContent = allPass ? t('challengePass') : t('challengeFail');
+
+          if (allPass && !passedOnce) {
+            passedOnce = true;
+            if (typeof opts.onPass === 'function') opts.onPass();
+          }
+          if (!allPass && attempts >= 2) solutionBtn.hidden = false;
+          checkBtn.disabled = false;
+        });
+      }).catch(function () {
+        checkBtn.disabled = false;
+        verdict.className = 'verdict no';
+        verdict.textContent = t('challengeFail');
       });
-
-      verdict.className = 'verdict ' + (allPass ? 'ok' : 'no');
-      verdict.textContent = allPass ? t('challengePass') : t('challengeFail');
-
-      if (allPass && !passedOnce) {
-        passedOnce = true;
-        if (typeof opts.onPass === 'function') opts.onPass();
-      }
-      if (!allPass && attempts >= 2) solutionBtn.hidden = false;
     });
 
     solutionBtn.hidden = false;
@@ -289,6 +447,6 @@
     createDemo: createDemo,
     createChallenge: createChallenge,
     runChecks: runChecks,
-    wrapDoc: wrapDoc
+    needsInput: needsInput
   };
 })(window);

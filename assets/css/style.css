@@ -18,11 +18,11 @@
   --line:          #dfe5f2;
   --line-strong:   #c8d2e8;
 
-  --brand:         #4b3ff0;
-  --brand-2:       #7b5cff;
+  --brand:         #2f6fed;
+  --brand-2:       #5b8def;
   --brand-ink:     #ffffff;
-  --brand-soft:    #ece9ff;
-  --brand-line:    #d4ccff;
+  --brand-soft:    #e5eeff;
+  --brand-line:    #c4d8fd;
 
   --accent:        #00a98f;
   --accent-soft:   #dcf7f1;
@@ -37,12 +37,16 @@
   --code-bg:       #0f1430;
   --code-ink:      #dfe4ff;
   --code-line:     rgba(255,255,255,.08);
-  --tok-tag:       #7dd3fc;
-  --tok-attr:      #f9c96b;
-  --tok-string:    #98e6b3;
-  --tok-comment:   #7f89b8;
-  --tok-punct:     #9aa4d8;
-  --tok-doctype:   #d8a0ff;
+  --tok-kw:        #c792ea;   /* الكلمات المحجوزة */
+  --tok-builtin:   #7dd3fc;   /* الدوال المدمجة */
+  --tok-fn:        #f9c96b;   /* أسماء الدوال */
+  --tok-string:    #98e6b3;   /* النصوص */
+  --tok-number:    #ffab70;   /* الأعداد */
+  --tok-comment:   #7f89b8;   /* التعليقات */
+  --tok-punct:     #9aa4d8;   /* الرموز */
+  --tok-var:       #dfe4ff;   /* المعرّفات */
+  --tok-dec:       #ffd479;   /* المُزخرِفات */
+  --tok-lit:       #82aaff;   /* True / False / None */
 
   /* الأشكال / Shape */
   --r-sm: 8px;
@@ -81,11 +85,11 @@ html[data-theme="dark"]{
   --line:        rgba(160,178,255,.14);
   --line-strong: rgba(160,178,255,.26);
 
-  --brand:       #8b7cff;
-  --brand-2:     #a78bff;
+  --brand:       #6fa2ff;
+  --brand-2:     #93bcff;
   --brand-ink:   #0b0f24;
-  --brand-soft:  rgba(139,124,255,.16);
-  --brand-line:  rgba(139,124,255,.4);
+  --brand-soft:  rgba(111,162,255,.16);
+  --brand-line:  rgba(111,162,255,.4);
 
   --accent:      #2fd8ba;
   --accent-soft: rgba(47,216,186,.14);
@@ -171,6 +175,8 @@ button{ font-family:inherit; font-size:inherit; cursor:pointer }
   background:linear-gradient(140deg,var(--brand),var(--brand-2));
   color:#fff; font-family:var(--font-mono); font-size:15px; font-weight:700;
   box-shadow:0 6px 16px color-mix(in srgb, var(--brand) 40%, transparent);
+  /* بدونها يقلب محرّك الاتجاه ثنائي الاتجاه الرمز <<< في الواجهة العربية */
+  direction:ltr; unicode-bidi:isolate;
 }
 .brand-text{ font-size:19px; line-height:1.1 }
 .brand-text small{ display:block; font-size:11px; font-weight:500; color:var(--muted); letter-spacing:.06em }
@@ -445,6 +451,20 @@ a.is-done .dot::after{ content:"✓"; color:#fff; font-size:10px; line-height:1 
   background:var(--brand-soft); color:var(--brand);
   border:1px solid var(--brand-line); white-space:nowrap;
 }
+/* كتل الكود داخل نصّ الدرس — سطح داكن ملوّن كمحرّر حقيقي */
+.prose pre{
+  margin:0 0 20px; padding:15px 18px;
+  background:var(--code-bg); color:var(--code-ink);
+  border:1px solid var(--code-line); border-radius:var(--r);
+  font-family:var(--font-mono); font-size:13.5px; line-height:1.75;
+  direction:ltr; text-align:left; unicode-bidi:isolate;
+  overflow-x:auto; tab-size:4;
+}
+.prose pre code{
+  background:none; border:0; padding:0; white-space:pre;
+  font-size:inherit; color:inherit; direction:ltr;
+}
+
 .prose blockquote{
   margin:0 0 20px; padding:14px 18px;
   border-inline-start:4px solid var(--brand);
@@ -499,12 +519,16 @@ a.is-done .dot::after{ content:"✓"; color:#fff; font-size:10px; line-height:1 
 }
 .code-block pre code{ background:none; border:0; padding:0; white-space:pre; font-size:inherit; color:inherit }
 
-.tok-tag{ color:var(--tok-tag) }
-.tok-attr{ color:var(--tok-attr) }
+.tok-kw{ color:var(--tok-kw); font-weight:600 }
+.tok-builtin{ color:var(--tok-builtin) }
+.tok-fn{ color:var(--tok-fn) }
 .tok-str{ color:var(--tok-string) }
+.tok-num{ color:var(--tok-number) }
 .tok-com{ color:var(--tok-comment); font-style:italic }
 .tok-punct{ color:var(--tok-punct) }
-.tok-doctype{ color:var(--tok-doctype) }
+.tok-var{ color:var(--tok-var) }
+.tok-dec{ color:var(--tok-dec) }
+.tok-lit{ color:var(--tok-lit); font-weight:600 }
 
 .demo{
   border:1px solid var(--line); border-radius:var(--r-lg);
@@ -524,17 +548,75 @@ a.is-done .dot::after{ content:"✓"; color:#fff; font-size:10px; line-height:1 
   color:var(--muted); background:var(--surface-3); border-bottom:1px solid var(--line);
   display:flex; align-items:center; gap:7px;
 }
-.editor-wrap{ position:relative; flex:1; background:var(--code-bg); min-height:230px }
+/* المحرّر مع مسطرة أرقام الأسطر — الإزاحة جزء من لغة بايثون فالأرقام تساعد فعلاً */
+/* direction:ltr مقصودة: الكود يُقرأ من اليسار دائماً،
+   فتبقى مسطرة الأرقام على يساره حتى في الواجهة العربية. */
+.editor-wrap{
+  position:relative; flex:1; display:flex; direction:ltr;
+  background:var(--code-bg); min-height:250px; overflow:hidden;
+}
+.gutter{
+  flex:0 0 auto; width:44px; padding:14px 8px 14px 0;
+  background:rgba(0,0,0,.22); border-inline-end:1px solid var(--code-line);
+  color:#5c6698; font-family:var(--font-mono); font-size:13px; line-height:1.7;
+  text-align:right; white-space:pre; overflow:hidden; user-select:none;
+  direction:ltr;
+}
 .editor{
-  width:100%; height:100%; min-height:230px; resize:vertical;
+  flex:1; width:100%; min-height:250px; resize:none;
   border:0; outline:0; padding:14px 16px;
   background:transparent; color:var(--code-ink);
   font-family:var(--font-mono); font-size:13.5px; line-height:1.7;
-  direction:ltr; text-align:left; tab-size:2; white-space:pre;
+  direction:ltr; text-align:left; tab-size:4; white-space:pre;
   overflow:auto;
 }
 .editor::placeholder{ color:#5c6698 }
-.preview-frame{ flex:1; width:100%; min-height:230px; border:0; background:#fff }
+
+/* حقل مدخلات input() — يظهر فقط حين يحتاجه الكود */
+.stdin-wrap{
+  padding:10px 14px 12px; background:var(--surface-3);
+  border-top:1px solid var(--line);
+}
+.stdin-label{
+  display:block; font-size:11.5px; font-weight:700; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:6px;
+}
+.stdin-box{
+  width:100%; resize:vertical; min-height:44px;
+  border:1px solid var(--line-strong); border-radius:var(--r-sm);
+  padding:8px 10px; background:var(--surface); color:var(--ink);
+  font-family:var(--font-mono); font-size:12.5px; line-height:1.6;
+  direction:ltr; text-align:left;
+}
+.stdin-box:focus{ outline:2px solid var(--brand); outline-offset:1px }
+.stdin-hint{ margin:6px 0 0; font-size:12px; color:var(--muted); line-height:1.6 }
+
+/* وحدة الإخراج / console */
+.console{
+  flex:1; min-height:250px; overflow:auto;
+  background:#0b1024; color:#e6ebff;
+  font-family:var(--font-mono); font-size:13.5px; line-height:1.7;
+  padding:14px 16px;
+}
+/* مخرجات البرنامج كود، فتُقرأ من اليسار مهما كان اتجاه الواجهة */
+.console pre{
+  margin:0; background:none; padding:0; border:0;
+  font:inherit; color:inherit; white-space:pre-wrap; word-break:break-word;
+  direction:ltr; text-align:left; unicode-bidi:isolate;
+}
+.console-out{ color:#e6ebff }
+.console-err{ color:#ff9a9a; margin-top:10px !important }
+.console-line{ font-weight:600 }
+.console-sub{ margin-top:6px; font-size:12.5px; color:#7f89b8; line-height:1.6 }
+.console-muted{ color:#9aa4d8; font-weight:500 }
+.console.is-idle .console-line{ color:#8f9ac6; font-weight:500 }
+.console.is-busy .console-line{ color:var(--tok-number) }
+.console.is-busy .console-line::after{
+  content:''; display:inline-block; width:8px; height:8px; margin-inline-start:8px;
+  border-radius:50%; background:currentColor; animation:pulse 1s ease-in-out infinite;
+}
+.console.is-error .console-line{ color:#ff9a9a }
+@keyframes pulse{ 0%,100%{ opacity:.25 } 50%{ opacity:1 } }
 
 /* ==========================================================================
    التحدي العملي / Practice challenge
@@ -574,6 +656,7 @@ a.is-done .dot::after{ content:"✓"; color:#fff; font-size:10px; line-height:1 
 .verdict{ font-weight:700; font-size:14.5px; margin-inline-start:auto }
 .verdict.ok{ color:var(--ok) }
 .verdict.no{ color:var(--danger) }
+.verdict.busy{ color:var(--muted); font-weight:600 }
 
 /* ==========================================================================
    الاختبار / Quiz
@@ -637,6 +720,14 @@ a.is-done .dot::after{ content:"✓"; color:#fff; font-size:10px; line-height:1 
 .video-shell iframe{ position:absolute; inset:0; width:100%; height:100%; border:0 }
 .video-foot{ display:flex; align-items:center; gap:10px; padding:11px 18px; font-size:13.5px; color:var(--muted); flex-wrap:wrap }
 .video-foot a{ margin-inline-start:auto }
+
+/* بطاقة البحث عن شرح مرئي — بديل ثابت لا يتعطّل عن مقطع مضمَّن */
+.video-search{ padding:16px 18px 18px }
+.video-search > p{ margin:0 0 12px; font-size:14px; color:var(--ink-2); line-height:1.7 }
+.video-search-actions{ display:flex; gap:10px; flex-wrap:wrap }
+.video-search-note{
+  margin:12px 0 0 !important; font-size:12.5px; color:var(--muted); line-height:1.6;
+}
 
 /* ==========================================================================
    المرجع / Reference table

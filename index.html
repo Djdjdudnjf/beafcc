@@ -3,20 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>إتقان HTML — تعلّم لغة HTML من الصفر بالعربية والإنجليزية</title>
-<meta name="description" content="منصة تفاعلية لتعلّم HTML من الصفر: دروس مرتّبة، أمثلة حيّة، محرّر كود مباشر، تحديات عملية، واختبارات — بالعربية والإنجليزية.">
-<meta name="theme-color" content="#4b3ff0">
+<title>إتقان بايثون — تعلّم لغة Python من الصفر بالعربية والإنجليزية</title>
+<meta name="description" content="منصة تفاعلية لتعلّم بايثون من الصفر: دروس مرتّبة، محرّر يشغّل بايثون حقيقية داخل المتصفح، تحديات عملية بتصحيح آلي، واختبارات — بالعربية والإنجليزية.">
+<meta name="theme-color" content="#2f6fed">
 <meta name="color-scheme" content="light dark">
 
 <meta property="og:type" content="website">
-<meta property="og:title" content="إتقان HTML — Etqan HTML">
-<meta property="og:description" content="تعلّم HTML من الصفر: دروس، أمثلة حيّة، محرّر تفاعلي، وتحديات عملية.">
+<meta property="og:title" content="إتقان بايثون — Etqan Python">
+<meta property="og:description" content="تعلّم بايثون من الصفر: دروس، محرّر يشغّل بايثون حقيقية في متصفحك، وتحديات عملية.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="assets/css/style.css">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234b3ff0'/%3E%3Ctext x='32' y='43' font-size='30' font-family='monospace' font-weight='700' fill='%23fff' text-anchor='middle'%3E%26lt;%2F%26gt;%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232f6fed'/%3E%3Ctext x='32' y='44' font-size='30' font-family='monospace' font-weight='700' fill='%23fff' text-anchor='middle'%3E%3E%3E%3E%3C/text%3E%3C/svg%3E">
 
 <!-- PWA Manifest -->
 <link rel="manifest" href="manifest.json">
@@ -24,8 +25,8 @@
 <!-- iOS App Meta Tags -->
 <meta name="apple-mobile-web-app-capable" content="true">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="إتقان HTML">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%234b3ff0'/%3E%3Ctext x='90' y='110' font-size='90' font-family='monospace' font-weight='700' fill='%23fff' text-anchor='middle'%3E%26lt;%2F%26gt;%3C/text%3E%3C/svg%3E">
+<meta name="apple-mobile-web-app-title" content="إتقان بايثون">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%232f6fed'/%3E%3Ctext x='90' y='118' font-size='84' font-family='monospace' font-weight='700' fill='%23fff' text-anchor='middle'%3E%3E%3E%3E%3C/text%3E%3C/svg%3E">
 
 <script>
   /* تطبيق اللغة والثيم قبل أول رسم لتفادي الوميض */
@@ -54,9 +55,9 @@
   </button>
 
   <a class="brand" href="#/">
-    <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
+    <span class="brand-mark" aria-hidden="true">&gt;&gt;&gt;</span>
     <span class="brand-text">
-      <span data-i18n="brandName">إتقان HTML</span>
+      <span data-i18n="brandName">إتقان بايثون</span>
       <small data-i18n="brandTag">تعلّم من الصفر</small>
     </span>
   </a>
@@ -105,8 +106,8 @@
 <footer class="site-foot">
   <div class="in">
     <span class="brand">
-      <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
-      <span data-i18n="brandName">إتقان HTML</span>
+      <span class="brand-mark" aria-hidden="true">&gt;&gt;&gt;</span>
+      <span data-i18n="brandName">إتقان بايثون</span>
     </span>
     <span data-i18n="footNote">منصّة تعليمية مفتوحة — تعمل بالكامل داخل متصفحك.</span>
     <nav>
@@ -124,6 +125,7 @@
 
 <script src="assets/js/i18n.js"></script>
 <script src="assets/js/highlight.js"></script>
+<script src="assets/js/pyrunner.js"></script>
 <script src="assets/js/lessons.js"></script>
 <script src="assets/js/videos.js"></script>
 <script src="assets/js/reference.js"></script>
@@ -134,36 +136,37 @@
 <!-- Service Worker Registration for PWA -->
 <script>
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
+    window.addEventListener('load', function () {
+      /* هل تتحكّم نسخة سابقة بالصفحة؟ إن لا، فهذا أول تثبيت لا تحديث،
+         ولا يصحّ أن نطلب من زائر جديد إعادة التحميل. */
+      var hadController = !!navigator.serviceWorker.controller;
+
       navigator.serviceWorker.register('service-worker.js', { scope: './' })
-        .then(function(registration) {
-          console.log('[PWA] Service Worker registered:', registration);
+        .then(function (registration) {
+          /* فحص التحديث عند العودة للصفحة، وكل نصف ساعة —
+             لا كل دقيقة كي لا نُرهق الشبكة بلا فائدة. */
+          var check = function () { registration.update().catch(function () {}); };
+          setInterval(check, 30 * 60 * 1000);
+          document.addEventListener('visibilitychange', function () {
+            if (!document.hidden) check();
+          });
 
-          // Check for updates periodically
-          setInterval(function() {
-            registration.update();
-          }, 60000); // Check every minute
-
-          // Listen for updates
-          registration.addEventListener('updatefound', function() {
-            var newWorker = registration.installing;
-            newWorker.addEventListener('statechange', function() {
-              if (newWorker.state === 'activated') {
-                var msg = 'تم تحديث المنصة. أعد تحميل الصفحة للحصول على النسخة الجديدة.';
-                if (localStorage.getItem('etqan.lang') === 'en') {
-                  msg = 'Platform updated. Reload the page to get the latest version.';
-                }
-                console.log('[PWA] Update available:', msg);
-                // Optional: show a toast notification
-                var root = document.getElementById('toastRoot');
-                if (root) {
-                  root.innerHTML = '<div class="toast"><span>' + msg + '</span></div>';
-                }
-              }
+          registration.addEventListener('updatefound', function () {
+            var incoming = registration.installing;
+            if (!incoming) return;
+            incoming.addEventListener('statechange', function () {
+              if (incoming.state !== 'installed' || !hadController) return;
+              var en = false;
+              try { en = localStorage.getItem('etqan.lang') === 'en'; } catch (e) {}
+              var msg = en
+                ? 'A new version is ready. Reload to get it.'
+                : 'توجد نسخة جديدة. أعد تحميل الصفحة للحصول عليها.';
+              var root = document.getElementById('toastRoot');
+              if (root) root.innerHTML = '<div class="toast"><span>' + msg + '</span></div>';
             });
           });
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log('[PWA] Service Worker registration failed:', error);
         });
     });

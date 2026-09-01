@@ -7,7 +7,7 @@
 
   var STRINGS = {
     /* الهوية / Brand */
-    brandName:        { ar: 'إتقان HTML',            en: 'Etqan HTML' },
+    brandName:        { ar: 'إتقان بايثون',          en: 'Etqan Python' },
     brandTag:         { ar: 'تعلّم من الصفر',        en: 'Learn from zero' },
     skipToContent:    { ar: 'تخطَّ إلى المحتوى',      en: 'Skip to content' },
 
@@ -32,10 +32,10 @@
     /* الرئيسية / Home */
     heroEyebrow:      { ar: 'منهج متكامل • عربي وإنجليزي', en: 'Complete course • Arabic & English' },
     heroTitleA:       { ar: 'تعلّم ',                en: 'Learn ' },
-    heroTitleEm:      { ar: 'HTML',                  en: 'HTML' },
+    heroTitleEm:      { ar: 'بايثون',                en: 'Python' },
     heroTitleB:       { ar: ' من الصفر حتى الاحتراف', en: ' from zero to professional' },
-    heroLede:         { ar: 'دروس مرتّبة خطوة بخطوة، أمثلة حيّة تتغيّر أمام عينيك، محرّر كود مدمج، وتحدٍّ عملي بعد كل درس يقول لك: يلا اكتب! كل شيء يعمل داخل متصفحك بدون أي تثبيت.',
-                        en: 'Step-by-step lessons, live examples that change before your eyes, a built-in code editor, and a hands-on challenge after every lesson. Everything runs in your browser — nothing to install.' },
+    heroLede:         { ar: 'دروس مرتّبة خطوة بخطوة، محرّر يشغّل بايثون حقيقية داخل متصفحك، وتحدٍّ عملي بعد كل درس يقول لك: يلا اكتب! لا تثبيت ولا حساب ولا خادم.',
+                        en: 'Step-by-step lessons, an editor running real Python inside your browser, and a hands-on challenge after every lesson. No install, no account, no server.' },
     heroStart:        { ar: 'ابدأ الدرس الأول',      en: 'Start the first lesson' },
     heroContinue:     { ar: 'أكمل من حيث توقفت',     en: 'Continue where you left off' },
     heroBrowse:       { ar: 'تصفّح المنهج',          en: 'Browse the curriculum' },
@@ -45,22 +45,22 @@
     statQuestions:    { ar: 'سؤال اختبار',           en: 'quiz questions' },
 
     featuresTitle:    { ar: 'لماذا هذه المنصة؟',     en: 'Why this platform?' },
-    featuresSub:      { ar: 'كل ما تحتاجه لتتعلّم HTML فعلياً، لا أن تقرأ عنها فقط.', en: 'Everything you need to actually learn HTML — not just read about it.' },
-    f1t:              { ar: 'تعلّم بالكتابة',        en: 'Learn by typing' },
-    f1d:              { ar: 'في كل درس محرّر مباشر: اكتب الكود على اليمين وشاهد النتيجة فوراً على اليسار.', en: 'Every lesson has a live editor: write code on one side, see the result instantly on the other.' },
+    featuresSub:      { ar: 'كل ما تحتاجه لتتعلّم بايثون فعلياً، لا أن تقرأ عنها فقط.', en: 'Everything you need to actually learn Python — not just read about it.' },
+    f1t:              { ar: 'بايثون حقيقية في متصفحك', en: 'Real Python in your browser' },
+    f1d:              { ar: 'مفسّر CPython كامل يعمل داخل الصفحة عبر WebAssembly. تكتب وتضغط تشغيل فترى المخرجات الحقيقية.', en: 'A full CPython interpreter runs inside the page via WebAssembly. Write, press Run, and see genuine output.' },
     f2t:              { ar: 'تحدٍّ بعد كل درس',      en: 'A challenge each lesson' },
-    f2d:              { ar: 'مهمة عملية محدّدة، وزر «تحقّق» يفحص كودك بنداً بنداً ويخبرك بما ينقص بالضبط.', en: 'A concrete task with a Check button that inspects your code point by point and tells you exactly what is missing.' },
+    f2d:              { ar: 'مهمة عملية محدّدة، وزر «تحقّق» يشغّل كودك ويفحص نتيجته ومتغيّراته بنداً بنداً.', en: 'A concrete task, and a Check button that runs your code and inspects its output and variables point by point.' },
     f3t:              { ar: 'عربي وإنجليزي',         en: 'Arabic & English' },
     f3d:              { ar: 'بضغطة واحدة يتبدّل الموقع كاملاً — الشرح والأمثلة والاختبارات — مع اتجاه الصفحة.', en: 'One click flips the entire site — explanations, examples and quizzes — along with the page direction.' },
     f4t:              { ar: 'تقدّم محفوظ',           en: 'Saved progress' },
     f4d:              { ar: 'يتذكّر متصفحك ما أنهيته، ويعرض شريط تقدّم يحفّزك حتى آخر درس.', en: 'Your browser remembers what you finished and shows a progress bar that keeps you going.' },
     f5t:              { ar: 'مرجع سريع',             en: 'Quick reference' },
-    f5d:              { ar: 'جدول بكل الوسوم المهمة مع وصفها ومثالها، قابل للبحث والتصفية في أي لحظة.', en: 'A searchable, filterable table of every important tag with its description and example.' },
+    f5d:              { ar: 'جدول بكل ما يهمّك من دوال وكلمات وأخطاء مع وصفها ومثالها، قابل للبحث والتصفية.', en: 'A searchable, filterable table of the functions, keywords and errors that matter, each with an example.' },
     f6t:              { ar: 'مشروع ختامي',           en: 'Final project' },
-    f6d:              { ar: 'تبني صفحتك الشخصية كاملة خطوة بخطوة، وتتحقّق من كل خطوة آلياً.', en: 'Build a complete personal page step by step, with each step verified automatically.' },
+    f6d:              { ar: 'تبني متتبّع مصروفات كاملاً خطوة بخطوة، ويُتحقَّق من كل دالة بتشغيلها فعلياً.', en: 'Build a complete expense tracker step by step, with every function verified by actually running it.' },
 
     modulesTitle:     { ar: 'وحدات المنهج',          en: 'Course modules' },
-    modulesSub:       { ar: 'ثمانية وحدات مرتّبة من أول سطر HTML وحتى نشر موقعك على الإنترنت.', en: 'Eight ordered modules, from your first HTML line to publishing your site online.' },
+    modulesSub:       { ar: 'ثماني وحدات مرتّبة من أول سطر بايثون وحتى الأصناف والاختبار والكود النظيف.', en: 'Eight ordered modules, from your first line of Python to classes, testing and clean code.' },
     lessonsCount:     { ar: 'دروس',                  en: 'lessons' },
 
     /* الدرس / Lesson */
@@ -70,19 +70,48 @@
     levelIntermediate:{ ar: 'متوسّط',                en: 'Intermediate' },
     levelAdvanced:    { ar: 'متقدّم',                en: 'Advanced' },
     exampleTitle:     { ar: 'مثال حيّ — جرّب بنفسك', en: 'Live example — try it yourself' },
-    exampleHint:      { ar: 'عدّل الكود وشاهد النتيجة تتغيّر فوراً.', en: 'Edit the code and watch the result change instantly.' },
+    exampleHint:      { ar: 'عدّل الكود واضغط «تشغيل» لترى المخرجات.', en: 'Edit the code and press Run to see the output.' },
     paneCode:         { ar: 'الكود',                 en: 'Code' },
-    panePreview:      { ar: 'النتيجة',               en: 'Result' },
+    paneOutput:       { ar: 'المخرجات',              en: 'Output' },
     run:              { ar: 'تشغيل',                 en: 'Run' },
+    stop:             { ar: 'إيقاف',                 en: 'Stop' },
     reset:            { ar: 'استعادة',               en: 'Reset' },
     copy:             { ar: 'نسخ',                   en: 'Copy' },
     copied:           { ar: 'تم النسخ ✓',            en: 'Copied ✓' },
     openFull:         { ar: 'فتح بملء الشاشة',       en: 'Open full screen' },
 
+    /* المدخلات / stdin */
+    stdinLabel:       { ar: 'مدخلات البرنامج',       en: 'Program input' },
+    stdinPlaceholder: { ar: 'سطر لكل نداء input()',  en: 'One line per input() call' },
+    stdinHint:        { ar: 'كودك يستخدم ‎input()‎ — اكتب هنا ما «سيكتبه المستخدم»، سطراً لكل نداء.',
+                        en: 'Your code uses input() — type here what "the user" would enter, one line per call.' },
+
+    /* حالات وحدة الإخراج / console states */
+    consoleIdle:      { ar: 'اضغط «تشغيل» لتنفيذ الكود', en: 'Press Run to execute the code' },
+    consoleIdleHint:  { ar: 'أو استخدم Ctrl + Enter',   en: 'or press Ctrl + Enter' },
+    pyLoading:        { ar: 'جارٍ تحميل بايثون…',       en: 'Loading Python…' },
+    pyLoadingHint:    { ar: 'أول تشغيل فقط: يُنزَّل المفسّر مرة واحدة ثم يصير كل شيء فورياً.',
+                        en: 'First run only: the interpreter downloads once, then everything is instant.' },
+    runRunning:       { ar: 'جارٍ التنفيذ…',            en: 'Running…' },
+    runNoOutput:      { ar: 'تمّ التنفيذ بلا مخرجات',   en: 'Ran successfully with no output' },
+    runNoOutputHint:  { ar: 'استخدم ‎print()‎ لعرض قيمة.', en: 'Use print() to display a value.' },
+    runTimeout:       { ar: 'استغرق البرنامج وقتاً طويلاً وأُوقف', en: 'The program took too long and was stopped' },
+    runTimeoutHint:   { ar: 'غالباً حلقة لا تنتهي: تأكّد أن شرط ‎while‎ يتغيّر داخلها.',
+                        en: 'Usually an endless loop: make sure the while condition changes inside it.' },
+    runStopped:       { ar: 'أوقفتَ التنفيذ',           en: 'You stopped the program' },
+    runStoppedHint:   { ar: 'اضغط «تشغيل» للمحاولة من جديد.', en: 'Press Run to try again.' },
+    runLoadFail:      { ar: 'تعذّر تحميل بايثون',       en: 'Could not load Python' },
+    runLoadFailHint:  { ar: 'تحقّق من اتصالك بالإنترنت — يُنزَّل المفسّر مرة واحدة ثم يعمل بلا اتصال.',
+                        en: 'Check your connection — the interpreter downloads once, then works offline.' },
+    runUnsupported:   { ar: 'متصفحك لا يدعم تشغيل بايثون', en: 'Your browser cannot run Python here' },
+    runUnsupportedHint:{ ar: 'يحتاج المحرّر إلى متصفّح حديث يدعم WebAssembly وWeb Workers.',
+                        en: 'The editor needs a modern browser with WebAssembly and Web Worker support.' },
+
     /* التحدي / Challenge */
     challengeKicker:  { ar: 'تطبيق عملي',            en: 'Hands-on practice' },
     challengeGo:      { ar: 'يلا اكتب!',             en: 'Your turn — write it!' },
     check:            { ar: 'تحقّق من إجابتي',       en: 'Check my answer' },
+    checkRunning:     { ar: 'جارٍ تشغيل كودك وفحصه…', en: 'Running and checking your code…' },
     showSolution:     { ar: 'أظهر الحل',             en: 'Show solution' },
     hideSolution:     { ar: 'أخفِ الحل',             en: 'Hide solution' },
     challengePass:    { ar: 'ممتاز! أنجزت التحدي 🎉', en: 'Excellent! Challenge complete 🎉' },
@@ -103,6 +132,12 @@
     videoOpen:        { ar: 'افتح على يوتيوب ↗',     en: 'Open on YouTube ↗' },
     videoPlay:        { ar: 'شغّل الفيديو',          en: 'Play video' },
     videoNote:        { ar: 'يُحمَّل الفيديو من يوتيوب عند الضغط فقط.', en: 'The video loads from YouTube only when you click.' },
+    videoSearchLede:  { ar: 'تريد شرحاً مرئياً لهذا الدرس؟ هذه عبارة بحث مُعدّة لموضوعه بالضبط:',
+                        en: 'Want a video explanation of this lesson? Here is a search prepared for exactly this topic:' },
+    videoSearchAr:    { ar: 'شرح بالعربية',          en: 'Search in Arabic' },
+    videoSearchEn:    { ar: 'شرح بالإنجليزية',       en: 'Search in English' },
+    videoSearchNote:  { ar: 'يفتح نتائج يوتيوب في تبويب جديد — نعرض بحثاً حيّاً بدل مقطع ثابت قد يُحذف.',
+                        en: 'Opens YouTube results in a new tab — a live search rather than a fixed clip that may be taken down.' },
 
     /* التنقل بين الدروس / Pager */
     markDone:         { ar: 'علّم الدرس كمكتمل',     en: 'Mark lesson complete' },
@@ -113,29 +148,29 @@
     progressHint:     { ar: 'يُحفظ تقدّمك في متصفحك تلقائياً.', en: 'Your progress is saved in this browser automatically.' },
 
     /* المرجع / Reference */
-    refTitle:         { ar: 'مرجع وسوم HTML',        en: 'HTML tag reference' },
-    refSub:           { ar: 'كل الوسوم المهمة في مكان واحد — ابحث أو صفِّ حسب التصنيف.', en: 'Every important tag in one place — search or filter by category.' },
-    refSearch:        { ar: 'ابحث عن وسم أو وصف…',   en: 'Search a tag or description…' },
+    refTitle:         { ar: 'مرجع بايثون السريع',    en: 'Python quick reference' },
+    refSub:           { ar: 'الكلمات والدوال والأخطاء المهمة في مكان واحد — ابحث أو صفِّ حسب التصنيف.', en: 'The keywords, functions and errors that matter, in one place — search or filter by category.' },
+    refSearch:        { ar: 'ابحث عن دالة أو وصف…',  en: 'Search a function or description…' },
     refAll:           { ar: 'الكل',                  en: 'All' },
-    colTag:           { ar: 'الوسم',                 en: 'Tag' },
+    colTag:           { ar: 'العنصر',                en: 'Item' },
     colDesc:          { ar: 'الوصف',                 en: 'Description' },
     colExample:       { ar: 'مثال',                  en: 'Example' },
     refEmpty:         { ar: 'لا توجد نتائج مطابقة.', en: 'No matching results.' },
 
     /* المحرّر المستقل / Playground */
     pgTitle:          { ar: 'المحرّر الحر',          en: 'Free playground' },
-    pgSub:            { ar: 'مساحة مفتوحة لتجربة أي كود HTML يخطر ببالك — يُحفظ تلقائياً في متصفحك.', en: 'An open space to try any HTML you like — auto-saved in your browser.' },
+    pgSub:            { ar: 'مساحة مفتوحة لتجربة أي كود بايثون يخطر ببالك — يُحفظ تلقائياً في متصفحك.', en: 'An open space to try any Python you like — auto-saved in your browser.' },
 
     /* المشروع / Project */
-    projTitle:        { ar: 'المشروع الختامي: صفحتك الشخصية', en: 'Final project: your personal page' },
-    projSub:          { ar: 'طبّق كل ما تعلّمته في صفحة واحدة كاملة. أنجز الخطوات بالترتيب واضغط «تحقّق».', en: 'Apply everything you learned in one complete page. Do the steps in order and press Check.' },
+    projTitle:        { ar: 'المشروع الختامي: متتبّع المصروفات', en: 'Final project: the expense tracker' },
+    projSub:          { ar: 'طبّق كل ما تعلّمته في برنامج واحد كامل. أنجز الخطوات بالترتيب واضغط «تحقّق».', en: 'Apply everything you learned in one complete program. Do the steps in order and press Check.' },
     projSteps:        { ar: 'خطوات المشروع',         en: 'Project steps' },
 
     /* عن المنصة / About */
     aboutTitle:       { ar: 'عن المنصة',             en: 'About this platform' },
 
     /* البحث / Search palette */
-    paletteHint:      { ar: 'اكتب للبحث في الدروس والوسوم…', en: 'Type to search lessons and tags…' },
+    paletteHint:      { ar: 'اكتب للبحث في الدروس والمرجع…', en: 'Type to search lessons and the reference…' },
     paletteNav:       { ar: 'للتنقل',                en: 'to navigate' },
     paletteOpen:      { ar: 'للفتح',                 en: 'to open' },
     paletteClose:     { ar: 'للإغلاق',               en: 'to close' },

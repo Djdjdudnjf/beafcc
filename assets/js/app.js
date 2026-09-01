@@ -156,23 +156,52 @@
     return s;
   }
 
+  /* يلوّن كتل الكود المكتوبة داخل نصّ الدرس.
+     نأخذ النص الخام لا الـ HTML كي لا نلوّن ترميزاً ملوّناً مرتين. */
+  function highlightProse(root) {
+    var blocks = root.querySelectorAll('pre > code, pre');
+    for (var i = 0; i < blocks.length; i++) {
+      var el = blocks[i];
+      /* تجاهل <pre> إن كان يحوي <code> لأننا سنعالج الابن */
+      if (el.tagName === 'PRE' && el.querySelector('code')) continue;
+      if (el.dataset.hl) continue;
+      el.innerHTML = HL.code(el.textContent);
+      el.dataset.hl = '1';
+    }
+    /* الأكواد السطرية داخل الفقرات تبقى كما هي — تلوينها يشوّش القراءة */
+  }
+
   function videoCard(lesson) {
     var v = global.VIDEOS.forLesson(lesson.id);
-    var query = pick(lesson.title) + ' HTML';
+    var arTopic = global.VIDEOS.topicFor(lesson.id, 'ar') || (pick(lesson.title) + ' بايثون');
+    var enTopic = global.VIDEOS.topicFor(lesson.id, 'en') || (pick(lesson.title) + ' Python');
+
+    function searchBtn(label, query) {
+      return h('a', {
+        class: 'btn btn-sm btn-soft',
+        href: global.VIDEOS.searchUrl(query),
+        target: '_blank',
+        rel: 'noopener'
+      }, [label]);
+    }
+
     var searchLink = h('a', {
-      href: global.VIDEOS.searchUrl(query),
+      href: global.VIDEOS.searchUrl(global.I18N.lang === 'ar' ? arTopic : enTopic),
       target: '_blank',
       rel: 'noopener'
     }, ['🔎 ' + (global.I18N.lang === 'ar' ? 'ابحث عن شروحات أخرى' : 'Find more explanations')]);
 
+    /* لا مقطع مُرفق: نعرض بحثاً موجّهاً بلغتين — يعمل دائماً ولا يتعطّل */
     if (!v) {
       return h('div', { class: 'video-card card' }, [
         h('div', { class: 'video-head' }, [h('h4', {}, ['🎬 ' + t('videoTitle')])]),
-        h('div', { class: 'video-foot' }, [
-          h('span', {}, [global.I18N.lang === 'ar'
-            ? 'لا يوجد مقطع مرفق لهذا الدرس — ابحث عن شرح بالفيديو:'
-            : 'No clip attached to this lesson — search for a video explanation:']),
-          searchLink
+        h('div', { class: 'video-search' }, [
+          h('p', {}, [t('videoSearchLede')]),
+          h('div', { class: 'video-search-actions' }, [
+            searchBtn('▶ ' + t('videoSearchAr'), arTopic),
+            searchBtn('▶ ' + t('videoSearchEn'), enTopic)
+          ]),
+          h('p', { class: 'video-search-note' }, [t('videoSearchNote')])
         ])
       ]);
     }
@@ -367,6 +396,7 @@
 
     var prose = h('div', { class: 'prose' });
     prose.innerHTML = pick(les.body);
+    highlightProse(prose);
     out.push(prose);
 
     if (les.example) {
@@ -540,18 +570,18 @@
      ========================================================= */
   function viewPlayground() {
     var starter = global.I18N.lang === 'ar'
-      ? '<!doctype html>\n<html lang="ar" dir="rtl">\n<head>\n  <meta charset="utf-8">\n  <title>تجربتي</title>\n  <style>\n    body { font-family: system-ui; padding: 20px; }\n    h1 { color: #4b3ff0; }\n  </style>\n</head>\n<body>\n  <h1>اكتب ما تشاء هنا</h1>\n  <p>جرّب أي وسم تعلّمته وشاهد النتيجة فوراً.</p>\n</body>\n</html>'
-      : '<!doctype html>\n<html lang="en">\n<head>\n  <meta charset="utf-8">\n  <title>My sandbox</title>\n  <style>\n    body { font-family: system-ui; padding: 20px; }\n    h1 { color: #4b3ff0; }\n  </style>\n</head>\n<body>\n  <h1>Write anything here</h1>\n  <p>Try any tag you learned and see the result instantly.</p>\n</body>\n</html>';
+      ? '# مساحتك الحرّة — اكتب أي بايثون واضغط تشغيل\n\nname = "بايثون"\nprint(f"أهلاً بـ {name}!")\n\n# جرّب حلقة\nfor i in range(1, 6):\n    print(f"{i} × {i} = {i * i}")\n\n# جرّب قائمة ودالة\nscores = [72, 95, 61, 88]\nprint("المتوسّط:", sum(scores) / len(scores))\n'
+      : '# Your free sandbox — write any Python and press Run\n\nname = "Python"\nprint(f"Hello, {name}!")\n\n# try a loop\nfor i in range(1, 6):\n    print(f"{i} x {i} = {i * i}")\n\n# try a list and a function\nscores = [72, 95, 61, 88]\nprint("average:", sum(scores) / len(scores))\n';
 
     var demo = global.Playground.createDemo({
       code: starter,
       storeKey: 'etqan.playground',
       title: t('pgTitle'),
-      icon: '⌨️'
+      icon: '🐍'
     });
     demo.el.style.minHeight = '60vh';
-    demo.editor.style.minHeight = '52vh';
-    demo.frame.style.minHeight = '52vh';
+    demo.editor.style.minHeight = '46vh';
+    demo.console.style.minHeight = '46vh';
 
     return [
       h('div', { class: 'section-head', style: 'margin-top:0' }, [
@@ -569,32 +599,36 @@
     var stats = COURSE.stats();
     var prose = h('div', { class: 'prose' });
     prose.innerHTML = global.I18N.lang === 'ar'
-      ? '<p><strong>إتقان HTML</strong> منصّة تعليمية مفتوحة تعمل بالكامل داخل متصفحك: لا حساب، ولا اشتراك، ولا خادم. كل تقدّمك وكل ما تكتبه في المحرّر يُحفظ محلياً في جهازك فقط.</p>' +
+      ? '<p><strong>إتقان بايثون</strong> منصّة تعليمية مفتوحة تعمل بالكامل داخل متصفحك: لا حساب، ولا اشتراك، ولا خادم. كل تقدّمك وكل ما تكتبه في المحرّر يُحفظ محلياً في جهازك فقط.</p>' +
         '<h2>ماذا تحتوي؟</h2>' +
         '<ul><li>' + stats.modules + ' وحدات دراسية و' + stats.lessons + ' درساً مرتّباً من الصفر.</li>' +
-        '<li>' + stats.challenges + ' تحدياً عملياً مع تصحيح آلي بنداً بنداً.</li>' +
+        '<li>' + stats.challenges + ' تحدياً عملياً يُصحَّح بتشغيل كودك فعلياً وفحص نتيجته.</li>' +
         '<li>' + stats.questions + ' سؤال اختبار مع شرح لكل إجابة.</li>' +
-        '<li>مرجع لـ ' + REF.tags.length + ' وسماً، ومحرّر حر، ومشروع ختامي.</li></ul>' +
+        '<li>مرجع لـ ' + REF.tags.length + ' عنصراً، ومحرّر حر، ومشروع ختامي.</li></ul>' +
+        '<h2>بايثون حقيقية داخل متصفحك</h2>' +
+        '<p>المنصة تشغّل <strong>مفسّر بايثون حقيقياً</strong> (CPython مُترجَم إلى WebAssembly عبر Pyodide) داخل صفحتك — لا محاكاة ولا خادم. ولأنه يعمل داخل عامل منفصل (Web Worker)، فحتى الحلقة اللانهائية لا تُجمّد الصفحة، ويمكنك إيقافها بزرّ واحد.</p>' +
         '<h2>كيف تستفيد منها؟</h2>' +
-        '<ol><li>اقرأ الدرس، ثم شاهد الفيديو إن أحببت.</li>' +
-        '<li>عدّل المثال الحيّ ولا تكتفِ بقراءته.</li>' +
+        '<ol><li>اقرأ الدرس، ثم شاهد شرحاً بالفيديو إن أحببت.</li>' +
+        '<li>عدّل المثال الحيّ وشغّله ولا تكتفِ بقراءته.</li>' +
         '<li>أنجز التحدي بنفسك قبل النظر إلى الحل.</li>' +
         '<li>أجب على الاختبار، ثم انتقل للدرس التالي.</li></ol>' +
         '<h2>التقنيات</h2>' +
-        '<p>HTML وCSS وJavaScript خالصة، بلا أي إطار عمل أو مكتبة خارجية. الكود كله مقروء ومفتوح — وهو بحد ذاته مثال لما ستتعلّمه.</p>'
-      : '<p><strong>Etqan HTML</strong> is an open learning platform that runs entirely in your browser: no account, no subscription, no server. All your progress and everything you type in the editor is stored locally on your own device.</p>' +
+        '<p>الواجهة HTML وCSS وJavaScript خالصة بلا أي إطار عمل، والتنفيذ عبر Pyodide. الكود كله مقروء ومفتوح.</p>'
+      : '<p><strong>Etqan Python</strong> is an open learning platform that runs entirely in your browser: no account, no subscription, no server. All your progress and everything you type in the editor is stored locally on your own device.</p>' +
         '<h2>What is inside?</h2>' +
         '<ul><li>' + stats.modules + ' modules and ' + stats.lessons + ' lessons ordered from zero.</li>' +
-        '<li>' + stats.challenges + ' hands-on challenges with point-by-point automatic checking.</li>' +
+        '<li>' + stats.challenges + ' hands-on challenges, graded by actually running your code and inspecting the result.</li>' +
         '<li>' + stats.questions + ' quiz questions, each with an explanation.</li>' +
-        '<li>A reference of ' + REF.tags.length + ' tags, a free playground, and a final project.</li></ul>' +
+        '<li>A reference of ' + REF.tags.length + ' entries, a free playground, and a final project.</li></ul>' +
+        '<h2>Real Python, inside your browser</h2>' +
+        '<p>This platform runs a <strong>real Python interpreter</strong> (CPython compiled to WebAssembly via Pyodide) inside your page — not a simulation, and not a server. Because it runs in a separate Web Worker, even an infinite loop cannot freeze the page, and one button stops it.</p>' +
         '<h2>How to get the most from it</h2>' +
-        '<ol><li>Read the lesson, then watch the video if you like.</li>' +
-        '<li>Edit the live example — do not just read it.</li>' +
+        '<ol><li>Read the lesson, then watch a video explanation if you like.</li>' +
+        '<li>Edit the live example and run it — do not just read it.</li>' +
         '<li>Finish the challenge yourself before peeking at the solution.</li>' +
         '<li>Answer the quiz, then move to the next lesson.</li></ol>' +
         '<h2>The technology</h2>' +
-        '<p>Plain HTML, CSS and JavaScript with no framework or external library. All the code is readable and open — and it is itself an example of what you are learning.</p>';
+        '<p>The interface is plain HTML, CSS and JavaScript with no framework; execution is powered by Pyodide. All the code is readable and open.</p>';
 
     return [
       h('div', { class: 'section-head', style: 'margin-top:0' }, [h('h2', {}, ['ℹ️ ' + t('aboutTitle')])]),

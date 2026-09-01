@@ -1,6 +1,6 @@
 /* =============================================================
-   highlight.js — مُلوِّن كود HTML صغير بلا أي مكتبة خارجية
-   A tiny dependency-free HTML syntax highlighter
+   highlight.js — مُلوِّن كود بايثون صغير بلا أي مكتبة خارجية
+   A tiny dependency-free Python syntax highlighter
    ============================================================= */
 (function (global) {
   'use strict';
@@ -16,86 +16,75 @@
     return '<span class="' + cls + '">' + esc(text) + '</span>';
   }
 
-  /* نهاية الوسم مع احترام علامات الاقتباس */
-  function findTagEnd(src, start) {
-    var quote = null;
-    for (var i = start + 1; i < src.length; i++) {
-      var ch = src[i];
-      if (quote) {
-        if (ch === quote) quote = null;
-      } else if (ch === '"' || ch === "'") {
-        quote = ch;
-      } else if (ch === '>') {
-        return i + 1;
-      }
-    }
-    return src.length;
-  }
+  /* الكلمات المحجوزة / reserved keywords */
+  var KEYWORDS = {};
+  ('False None True and as assert async await break class continue def del elif else ' +
+   'except finally for from global if import in is lambda nonlocal not or pass raise ' +
+   'return try while with yield match case').split(' ').forEach(function (k) { KEYWORDS[k] = 1; });
 
-  /* تلوين وسم واحد: <a href="x"> أو </a> */
-  function markupTag(chunk) {
-    var m = /^<\/?([a-zA-Z][\w:-]*)/.exec(chunk);
-    if (!m) return esc(chunk);
+  /* الثوابت المنطقية تُلوَّن كقيم لا ككلمات / literal constants */
+  var LITERALS = { True: 1, False: 1, None: 1 };
 
-    var head = m[0];                                  // "<div" أو "</div"
-    var punct = head.slice(0, head.length - m[1].length);
-    var out = span('tok-punct', punct) + span('tok-tag', m[1]);
+  /* الدوال المدمجة الشائعة / common builtins */
+  var BUILTINS = {};
+  ('print len range int str float bool list dict set tuple input sum min max abs round ' +
+   'sorted reversed enumerate zip map filter any all type isinstance open format repr ' +
+   'divmod pow chr ord bin hex oct id hash iter next slice frozenset bytes super ' +
+   'getattr setattr hasattr delattr callable vars dir help exit').split(' ')
+    .forEach(function (k) { BUILTINS[k] = 1; });
 
-    var rest = chunk.slice(head.length);
-    var re = /(\s+)|("[^"]*"|'[^']*')|(=)|(\/?>)|([a-zA-Z_:@][-\w:.]*)|([\s\S])/g;
-    var tok, afterEquals = false;
-
-    while ((tok = re.exec(rest)) !== null) {
-      if (tok[1]) { out += esc(tok[1]); continue; }                       // مسافات
-      if (tok[2]) { out += span('tok-str', tok[2]); afterEquals = false; continue; }
-      if (tok[3]) { out += span('tok-punct', tok[3]); afterEquals = true; continue; }
-      if (tok[4]) { out += span('tok-punct', tok[4]); afterEquals = false; continue; }
-      if (tok[5]) {
-        out += span(afterEquals ? 'tok-str' : 'tok-attr', tok[5]);
-        afterEquals = false;
-        continue;
-      }
-      out += esc(tok[6]);
-      afterEquals = false;
-    }
-    return out;
-  }
+  /* رمز واحد لكل نمط، بالترتيب: تعليق، نص ثلاثي، نص عادي، مُزخرِف، رقم، معرّف، مسافة، أي شيء */
+  var RE = new RegExp([
+    '(#[^\\n]*)',                                                        /* 1 تعليق */
+    '([rRbBuUfF]{0,2}(?:"""[\\s\\S]*?"""|\'\'\'[\\s\\S]*?\'\'\'))',      /* 2 نص ثلاثي */
+    '([rRbBuUfF]{0,2}(?:"(?:\\\\.|[^"\\\\\\n])*"|\'(?:\\\\.|[^\'\\\\\\n])*\'))', /* 3 نص */
+    '(@[A-Za-z_]\\w*)',                                                  /* 4 مُزخرِف */
+    '(\\d[\\w.]*)',                                                      /* 5 رقم */
+    '([A-Za-z_]\\w*)',                                                   /* 6 معرّف */
+    '(\\s+)',                                                            /* 7 مسافة */
+    '([\\s\\S])'                                                         /* 8 غير ذلك */
+  ].join('|'), 'g');
 
   function highlight(src) {
     var text = String(src == null ? '' : src);
     var out = '';
-    var i = 0;
+    var tok;
+    var prevWord = '';   /* آخر معرّف/كلمة مهمّة — لمعرفة def/class */
 
-    while (i < text.length) {
-      var lt = text.indexOf('<', i);
-      if (lt < 0) { out += esc(text.slice(i)); break; }
-      if (lt > i) { out += esc(text.slice(i, lt)); i = lt; }
+    RE.lastIndex = 0;
+    while ((tok = RE.exec(text)) !== null) {
+      if (tok[1]) { out += span('tok-com', tok[1]); continue; }
+      if (tok[2]) { out += span('tok-str', tok[2]); continue; }
+      if (tok[3]) { out += span('tok-str', tok[3]); continue; }
+      if (tok[4]) { out += span('tok-dec', tok[4]); continue; }
+      if (tok[5]) { out += span('tok-num', tok[5]); continue; }
 
-      if (text.substr(i, 4) === '<!--') {
-        var endC = text.indexOf('-->', i);
-        endC = endC < 0 ? text.length : endC + 3;
-        out += span('tok-com', text.slice(i, endC));
-        i = endC;
+      if (tok[6]) {
+        var word = tok[6];
+
+        /* اسم بعد def أو class → اسم مُعرَّف */
+        if (prevWord === 'def' || prevWord === 'class') {
+          out += span('tok-fn', word);
+          prevWord = word;
+          continue;
+        }
+        if (LITERALS[word]) { out += span('tok-lit', word); prevWord = word; continue; }
+        if (KEYWORDS[word]) { out += span('tok-kw', word); prevWord = word; continue; }
+
+        /* معرّف متبوع بقوس → استدعاء دالة */
+        var after = text.slice(RE.lastIndex);
+        var isCall = /^\s*\(/.test(after);
+        if (BUILTINS[word]) out += span('tok-builtin', word);
+        else if (isCall) out += span('tok-fn', word);
+        else out += span('tok-var', word);
+        prevWord = word;
         continue;
       }
 
-      if (/^<!doctype/i.test(text.substr(i, 9))) {
-        var endD = text.indexOf('>', i);
-        endD = endD < 0 ? text.length : endD + 1;
-        out += span('tok-doctype', text.slice(i, endD));
-        i = endD;
-        continue;
-      }
+      if (tok[7]) { out += esc(tok[7]); continue; }
 
-      if (/[a-zA-Z\/]/.test(text[i + 1] || '')) {
-        var endT = findTagEnd(text, i);
-        out += markupTag(text.slice(i, endT));
-        i = endT;
-        continue;
-      }
-
-      out += esc('<');
-      i += 1;
+      out += span('tok-punct', tok[8]);
+      prevWord = '';
     }
     return out;
   }
