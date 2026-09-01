@@ -46,23 +46,58 @@
      the start, hence no timestamps — a guessed timestamp could drop the
      learner into the middle of an unrelated topic.
      --------------------------------------------------------------- */
-  var MAP = {
-    'what-is-python': {
-      en: V('rfscVS0vtbw', 'Learn Python — Full Course for Beginners', FCC, 'en')
-    },
-    'first-program': {
-      en: V('kqtD5dpn9C8', 'Python for Beginners — Learn Python in 1 Hour', MOSH, 'en')
-    },
-    'variables': {
-      en: V('_uQrJ0TkZlc', 'Python Tutorial — Python Full Course for Beginners', MOSH, 'en')
-    },
-    'classes': {
-      en: V('ZDa-Z5JzLYM', 'Python OOP Tutorial 1 — Classes and Instances', COREY, 'en')
-    },
-    'comprehensions': {
-      en: V('HGOBQPFzWKo', 'Intermediate Python Programming Course', FCC, 'en')
-    }
+  /* الدورات الخمس المعتمدة. نستخدم مجموعة صغيرة مقصودة:
+     كل معرّف إضافي مخمَّن هو مخاطرة بمقطع «موجود لكن عن موضوع آخر»،
+     وهي الحالة الوحيدة التي لا يستطيع فحص المصغّرة كشفها.
+     خمسة معرّفات يمكنك التحقّق منها في دقيقة عبر video-check.html.
+
+     The five source courses. A deliberately small set: every extra guessed
+     id risks a "real but unrelated" video, the one failure the thumbnail
+     probe cannot detect. Five ids you can verify in a minute via
+     video-check.html. */
+  var COURSES = {
+    fccBeginner:  function () { return V('rfscVS0vtbw', 'Learn Python — Full Course for Beginners', FCC, 'en'); },
+    moshFull:     function () { return V('_uQrJ0TkZlc', 'Python Tutorial — Full Course for Beginners', MOSH, 'en'); },
+    moshHour:     function () { return V('kqtD5dpn9C8', 'Python for Beginners — Learn Python in 1 Hour', MOSH, 'en'); },
+    coreyOOP:     function () { return V('ZDa-Z5JzLYM', 'Python OOP Tutorial 1 — Classes and Instances', COREY, 'en'); },
+    fccIntermediate: function () { return V('HGOBQPFzWKo', 'Intermediate Python Programming Course', FCC, 'en'); }
   };
+
+  /* كل درس يُسنَد إلى الدورة التي تغطّي موضوعه أفضل تغطية.
+     Each lesson maps to whichever course covers its topic best. */
+  var ASSIGN = {
+    /* 1 — البداية */
+    'what-is-python': 'moshHour',   'first-program': 'moshHour',
+    'variables': 'moshHour',        'input-output': 'moshHour',
+    /* 2 — الأنواع */
+    'numbers': 'fccBeginner',       'strings': 'fccBeginner',
+    'fstrings': 'fccBeginner',      'type-conversion': 'fccBeginner',
+    /* 3 — القرارات والتكرار */
+    'if-else': 'fccBeginner',       'comparisons': 'fccBeginner',
+    'for-loops': 'fccBeginner',     'while-loops': 'fccBeginner',
+    /* 4 — المجموعات */
+    'lists': 'moshFull',            'list-methods': 'moshFull',
+    'dicts': 'moshFull',            'tuples-sets': 'moshFull',
+    /* 5 — الدوال */
+    'def-functions': 'moshFull',    'params-return': 'moshFull',
+    'scope': 'moshFull',            'lambda-higher': 'fccIntermediate',
+    /* 6 — المتانة */
+    'errors': 'fccBeginner',        'try-except': 'fccBeginner',
+    'modules': 'fccBeginner',       'files': 'fccIntermediate',
+    /* 7 — الكائنات */
+    'classes': 'coreyOOP',          'inheritance': 'coreyOOP',
+    'dunder': 'coreyOOP',
+    /* 8 — الاحتراف */
+    'comprehensions': 'fccIntermediate', 'clean-code': 'fccIntermediate',
+    'stdlib': 'fccIntermediate',    'testing': 'fccIntermediate',
+    'next-steps': 'fccIntermediate'
+  };
+
+  var MAP = {};
+  Object.keys(ASSIGN).forEach(function (lessonId) {
+    var make = COURSES[ASSIGN[lessonId]];
+    if (make) MAP[lessonId] = { en: make() };
+  });
 
   /* عبارات بحث مُعدّة لكل درس — دقيقة بما يكفي لتعطي نتائج مفيدة مباشرة */
   var TOPICS = {
