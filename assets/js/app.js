@@ -173,6 +173,7 @@
 
   function videoCard(lesson) {
     var v = global.VIDEOS.forLesson(lesson.id);
+    var card = null;
     var arTopic = global.VIDEOS.topicFor(lesson.id, 'ar') || (pick(lesson.title) + ' بايثون');
     var enTopic = global.VIDEOS.topicFor(lesson.id, 'en') || (pick(lesson.title) + ' Python');
 
@@ -191,8 +192,8 @@
       rel: 'noopener'
     }, ['🔎 ' + (global.I18N.lang === 'ar' ? 'ابحث عن شروحات أخرى' : 'Find more explanations')]);
 
-    /* لا مقطع مُرفق: نعرض بحثاً موجّهاً بلغتين — يعمل دائماً ولا يتعطّل */
-    if (!v) {
+    /* بطاقة البحث الموجّه — تعمل دائماً ولا تتعطّل */
+    function buildSearchCard() {
       return h('div', { class: 'video-card card' }, [
         h('div', { class: 'video-head' }, [h('h4', {}, ['🎬 ' + t('videoTitle')])]),
         h('div', { class: 'video-search' }, [
@@ -205,6 +206,26 @@
         ])
       ]);
     }
+
+    if (!v) return buildSearchCard();
+
+    /* المقطع غير مُتحقَّق منه، فنفحص وجوده قبل عرضه:
+       يوتيوب يردّ بصورة رمادية 120×90 للمقاطع المحذوفة أو غير الموجودة.
+       عندها نستبدل البطاقة ببطاقة البحث بدل ترك مقطع معطّل أمام المتعلّم.
+
+       The clip is unverified, so probe it first: YouTube serves a grey
+       120x90 placeholder for deleted or non-existent videos. If we see
+       that, swap in the search card rather than leave a dead embed. */
+    var probe = new Image();
+    probe.onload = function () {
+      if (probe.naturalWidth > 0 && probe.naturalWidth <= 120 && card.parentNode) {
+        card.replaceWith(buildSearchCard());
+      }
+    };
+    probe.onerror = function () {
+      if (card.parentNode) card.replaceWith(buildSearchCard());
+    };
+    probe.src = 'https://i.ytimg.com/vi/' + v.id + '/hqdefault.jpg';
 
     var shell = h('button', { class: 'video-shell', type: 'button', 'aria-label': t('videoPlay') });
     var img = h('img', {
@@ -237,7 +258,7 @@
     var langChip = v.lang === global.I18N.lang ? null :
       h('span', { class: 'chip' }, [v.lang === 'ar' ? 'بالعربية' : 'In English']);
 
-    return h('div', { class: 'video-card card' }, [
+    card = h('div', { class: 'video-card card' }, [
       h('div', { class: 'video-head' }, [
         h('h4', {}, ['🎬 ' + t('videoTitle')]),
         langChip,
@@ -253,6 +274,7 @@
         searchLink
       ])
     ]);
+    return card;
   }
 
   /* =========================================================

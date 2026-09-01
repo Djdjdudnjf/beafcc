@@ -24,14 +24,45 @@
   var ELZERO = { ar: 'Elzero Web School', en: 'Elzero Web School' };
   var FCC = { ar: 'freeCodeCamp.org', en: 'freeCodeCamp.org' };
 
+  var MOSH = { ar: 'Programming with Mosh', en: 'Programming with Mosh' };
+  var COREY = { ar: 'Corey Schafer', en: 'Corey Schafer' };
+  void ELZERO;   /* محجوز لمقاطع عربية حين تتوفّر / reserved for Arabic clips */
+
   function V(id, title, channel, lang, start, end) {
     return { id: id, title: title, channel: channel, lang: lang, start: start || 0, end: end || 0 };
   }
-  /* تُستخدم عند إضافة مقاطع مُتحقَّق منها / used once verified clips are added */
-  void ELZERO; void FCC; void V;
 
-  /* لا مقاطع مُتحقَّق منها بعد / no verified clips yet */
-  var MAP = {};
+  /* ---------------------------------------------------------------
+     مقاطع مُقترحة لم تُتحقَّق آلياً بعد.
+     الواجهة تفحص كل معرّف قبل عرضه: إن كان المقطع محذوفاً أو غير موجود
+     تُستبدل البطاقة ببطاقة البحث تلقائياً، فلا يرى المتعلّم مقطعاً معطّلاً.
+     المقاطع هنا دورات شاملة تُفتح من بدايتها، ولذلك بلا توقيتات:
+     وضع توقيت مخمَّن قد يبدأ الشرح في منتصف موضوع آخر.
+
+     Suggested clips, not yet machine-verified.
+     The UI probes every id before showing it: if the video is deleted or
+     missing, the card is swapped for the search card automatically, so a
+     learner never faces a dead embed. These are full courses opened from
+     the start, hence no timestamps — a guessed timestamp could drop the
+     learner into the middle of an unrelated topic.
+     --------------------------------------------------------------- */
+  var MAP = {
+    'what-is-python': {
+      en: V('rfscVS0vtbw', 'Learn Python — Full Course for Beginners', FCC, 'en')
+    },
+    'first-program': {
+      en: V('kqtD5dpn9C8', 'Python for Beginners — Learn Python in 1 Hour', MOSH, 'en')
+    },
+    'variables': {
+      en: V('_uQrJ0TkZlc', 'Python Tutorial — Python Full Course for Beginners', MOSH, 'en')
+    },
+    'classes': {
+      en: V('ZDa-Z5JzLYM', 'Python OOP Tutorial 1 — Classes and Instances', COREY, 'en')
+    },
+    'comprehensions': {
+      en: V('HGOBQPFzWKo', 'Intermediate Python Programming Course', FCC, 'en')
+    }
+  };
 
   /* عبارات بحث مُعدّة لكل درس — دقيقة بما يكفي لتعطي نتائج مفيدة مباشرة */
   var TOPICS = {
