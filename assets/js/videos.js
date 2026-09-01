@@ -135,14 +135,83 @@
     'next-steps':       { ar: 'pip والبيئات الافتراضية في بايثون',     en: 'Python pip and virtual environments venv' }
   };
 
+  /* ---------------------------------------------------------------
+     تجاوزات المستخدم / user overrides
+
+     ما تضيفه من صفحة video-manager.html يُحفظ هنا ويعلو على الجدول أعلاه،
+     فتظهر مقاطعك فوراً بلا تعديل كود ولا إعادة نشر. وحين تستقرّ عليها
+     تُصدّرها الصفحة نصاً جاهزاً لتثبيته في هذا الملف.
+
+     Whatever you add from video-manager.html is stored here and takes
+     precedence over the table above, so your clips appear immediately with
+     no code change and no redeploy. Once you are happy, that page exports
+     a ready-made snippet to paste into this file permanently.
+     --------------------------------------------------------------- */
+  var OVERRIDE_KEY = 'etqan.videos';
+
+  function loadOverrides() {
+    try { return JSON.parse(localStorage.getItem(OVERRIDE_KEY) || '{}') || {}; }
+    catch (e) { return {}; }
+  }
+  function saveOverrides(data) {
+    try { localStorage.setItem(OVERRIDE_KEY, JSON.stringify(data)); return true; }
+    catch (e) { return false; }
+  }
+
+  /* يستخرج معرّف المقطع ووقت البداية من أي صيغة رابط يوتيوب */
+  function parseYouTube(input) {
+    var text = String(input || '').trim();
+    if (!text) return null;
+
+    var id = null, start = 0;
+    var m;
+
+    if ((m = /[?&]v=([A-Za-z0-9_-]{11})/.exec(text))) id = m[1];
+    else if ((m = /youtu\.be\/([A-Za-z0-9_-]{11})/.exec(text))) id = m[1];
+    else if ((m = /\/(?:embed|shorts|live)\/([A-Za-z0-9_-]{11})/.exec(text))) id = m[1];
+    else if (/^[A-Za-z0-9_-]{11}$/.test(text)) id = text;
+
+    if (!id) return null;
+
+    /* وقت البداية من الرابط: t=90s أو t=1m30s أو start=90 */
+    if ((m = /[?&](?:t|start)=(\d+)h(\d+)m(\d+)s/.exec(text))) {
+      start = (+m[1]) * 3600 + (+m[2]) * 60 + (+m[3]);
+    } else if ((m = /[?&](?:t|start)=(\d+)m(\d+)s/.exec(text))) {
+      start = (+m[1]) * 60 + (+m[2]);
+    } else if ((m = /[?&](?:t|start)=(\d+)s?\b/.exec(text))) {
+      start = +m[1];
+    }
+    return { id: id, start: start };
+  }
+
   global.VIDEOS = {
-    /* الفيديو المُتحقَّق منه للدرس، أو null */
+    /* الفيديو المعروض للدرس: تجاوز المستخدم أولاً ثم الجدول المدمج */
     forLesson: function (lessonId) {
+      var lang = global.I18N.lang;
+      var over = loadOverrides()[lessonId];
+      if (over) {
+        var chosen = over[lang] || over.ar || over.en;
+        if (chosen && chosen.id) {
+          return V(chosen.id, chosen.title || 'مقطع مخصّص',
+                   chosen.channel || { ar: 'مضاف يدوياً', en: 'Added manually' },
+                   chosen.lang || lang, chosen.start, chosen.end);
+        }
+      }
       var entry = MAP[lessonId];
       if (!entry) return null;
-      var lang = global.I18N.lang;
       return entry[lang] || entry.ar || entry.en || null;
     },
+
+    /* المقطع المدمج فقط، بلا تجاوز — تستخدمه صفحة الإدارة للمقارنة */
+    builtInFor: function (lessonId, lang) {
+      var entry = MAP[lessonId];
+      if (!entry) return null;
+      return entry[lang] || entry.ar || entry.en || null;
+    },
+
+    parse: parseYouTube,
+    overrides: loadOverrides,
+    saveOverrides: saveOverrides,
 
     /* عبارة البحث المُعدّة للدرس باللغة المطلوبة */
     topicFor: function (lessonId, lang) {

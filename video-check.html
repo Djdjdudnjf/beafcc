@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>فحص المقاطع — إتقان بايثون</title>
+<title>إدارة مقاطع الدروس — إتقان بايثون</title>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,164 +11,360 @@
 <link rel="stylesheet" href="assets/css/style.css">
 <style>
   body{ background:var(--bg); color:var(--ink); font-family:var(--font-ar); margin:0 }
-  .wrap{ max-width:940px; margin:0 auto; padding:34px 20px 70px }
-  .lede{ color:var(--ink-2); line-height:1.8; margin:0 0 8px }
-  .vid{ display:grid; grid-template-columns:280px 1fr; gap:20px; align-items:start;
-        background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
-        padding:18px; margin:0 0 18px; box-shadow:var(--shadow-sm) }
-  .vid.dead{ border-color:var(--danger); background:var(--danger-soft) }
-  .thumb{ width:280px; aspect-ratio:16/9; border-radius:var(--r); background:#0a0f26;
-          object-fit:cover; display:block; border:1px solid var(--line) }
-  .vid h3{ margin:0 0 6px; font-size:17px; line-height:1.4 }
-  .meta{ font-family:var(--font-mono); font-size:12.5px; color:var(--muted);
-         direction:ltr; text-align:left; unicode-bidi:isolate; margin:0 0 10px }
-  .used{ font-size:13.5px; color:var(--ink-2); line-height:1.9; margin:0 0 12px }
-  .used b{ color:var(--ink) }
-  .status{ display:inline-block; font-size:12.5px; font-weight:700; padding:4px 11px;
-           border-radius:999px; margin-bottom:10px }
-  .status.ok{ background:var(--ok-soft); color:var(--ok) }
-  .status.dead{ background:var(--danger-soft); color:var(--danger) }
-  .status.wait{ background:var(--surface-3); color:var(--muted) }
-  .acts{ display:flex; gap:10px; flex-wrap:wrap }
-  @media (max-width:720px){ .vid{ grid-template-columns:1fr } .thumb{ width:100% } }
+  .wrap{ max-width:1000px; margin:0 auto; padding:30px 20px 120px }
+  .lede{ color:var(--ink-2); line-height:1.85; margin:0 0 10px }
+
+  /* تدقيق المقاطع المدمجة */
+  .audit{ display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; margin:0 0 14px }
+  .aud{ display:flex; gap:12px; background:var(--surface); border:1px solid var(--line);
+        border-radius:var(--r); padding:12px; align-items:flex-start }
+  .aud.dead{ border-color:var(--danger); background:var(--danger-soft) }
+  .aud img{ width:96px; aspect-ratio:16/9; object-fit:cover; border-radius:8px; background:#0a0f26; flex:none }
+  .aud b{ display:block; font-size:13.5px; line-height:1.45; margin-bottom:4px }
+  .aud code{ font-size:11.5px; color:var(--muted); direction:ltr; display:block; margin-bottom:5px }
+
+  /* إدارة الدروس */
+  .mod-title{ margin:30px 0 12px; font-size:16px; font-weight:800; color:var(--brand);
+              padding-inline-start:10px; border-inline-start:4px solid var(--brand) }
+  .row{ background:var(--surface); border:1px solid var(--line); border-radius:var(--r);
+        padding:14px 16px; margin:0 0 10px }
+  .row > h4{ margin:0 0 10px; font-size:15px }
+  .row > h4 span{ font-weight:500; color:var(--muted); font-size:12.5px; margin-inline-start:8px }
+  .fields{ display:grid; grid-template-columns:1fr 1fr; gap:12px }
+  @media (max-width:760px){ .fields{ grid-template-columns:1fr } }
+  .vm-field label{ display:block; font-size:12px; font-weight:700; color:var(--muted); margin-bottom:5px }
+  .vm-field .box{ display:flex; gap:9px; align-items:center }
+  .vm-field input{ flex:1; min-width:0; padding:8px 11px; border:1px solid var(--line-strong);
+                border-radius:var(--r-sm); background:var(--surface-2); color:var(--ink);
+                font-family:var(--font-mono); font-size:12px; direction:ltr; text-align:left }
+  .vm-field input:focus{ outline:2px solid var(--brand); outline-offset:1px }
+  .vm-field input.good{ border-color:var(--ok) }
+  .vm-field input.bad{ border-color:var(--danger) }
+  .pv{ width:76px; aspect-ratio:16/9; border-radius:7px; object-fit:cover;
+       background:var(--surface-3); flex:none; border:1px solid var(--line) }
+  .note{ font-size:11.5px; margin:5px 0 0; min-height:15px; line-height:1.5 }
+  .note.good{ color:var(--ok) } .note.bad{ color:var(--danger) } .note.dim{ color:var(--muted) }
+  .times{ display:flex; gap:8px; margin-top:7px }
+  .times input{ width:88px; flex:none; font-size:11.5px; padding:6px 9px }
+
+  .bar{ position:fixed; inset-inline:0; bottom:0; background:var(--surface);
+        border-top:1px solid var(--line); padding:12px 20px; display:flex; gap:10px;
+        align-items:center; flex-wrap:wrap; box-shadow:0 -6px 24px rgba(16,24,60,.10); z-index:50 }
+  .bar .count{ font-size:13.5px; color:var(--ink-2); margin-inline-end:auto }
+  dialog{ border:0; border-radius:var(--r-lg); padding:0; max-width:760px; width:92vw;
+          background:var(--surface); color:var(--ink); box-shadow:var(--shadow-lg) }
+  dialog::backdrop{ background:rgba(8,12,32,.55) }
+  .dlg{ padding:22px }
+  .dlg textarea{ width:100%; height:340px; font-family:var(--font-mono); font-size:12px;
+                 direction:ltr; text-align:left; padding:13px; border-radius:var(--r-sm);
+                 border:1px solid var(--line-strong); background:var(--code-bg); color:var(--code-ink) }
 </style>
 </head>
 <body>
 <div class="wrap">
 
   <div class="section-head" style="margin-top:0">
-    <h2>🎬 فحص مقاطع الدروس</h2>
+    <h2>🎬 إدارة مقاطع الدروس</h2>
     <p class="lede">
-      هذه كل المقاطع المُسنَدة إلى الدروس. لم يمكن التحقّق منها آلياً أثناء البناء
-      لأن يوتيوب محجوب في بيئة التطوير، فتحقّق منها هنا بنظرة واحدة:
-      <b>هل عنوان المقطع على المصغّرة يطابق ما هو مكتوب تحته؟</b>
+      كل درس له مقطع افتراضي من دورة شاملة. لتضع مقطعاً أدقّ — أو مقطعاً <b>بالعربية</b> —
+      الصق رابط يوتيوب في الحقل المناسب. تُفحص الصلاحية فوراً وتظهر المصغّرة،
+      ويُحفظ التغيير في متصفحك ويعمل مباشرة في المنصّة بلا إعادة نشر.
     </p>
     <p class="lede">
-      الحالة <span class="status dead">مفقود</span> تعني أن المقطع محذوف أو المعرّف خاطئ —
-      وفي هذه الحالة تعرض المنصّة بطاقة بحث تلقائياً بدلاً منه، فلا يرى المتعلّم شيئاً معطّلاً.
+      الرابط يقبل أي صيغة: <code>watch?v=</code> أو <code>youtu.be/</code> أو المعرّف وحده،
+      وإن حوى وقتاً مثل <code>&amp;t=90s</code> يُلتقط تلقائياً كبداية تشغيل.
     </p>
   </div>
 
-  <div id="list"></div>
+  <h3 style="font-size:17px;margin:26px 0 12px">المقاطع الافتراضية المدمجة</h3>
+  <p class="lede" style="font-size:13.5px">
+    تحقّق أن عنوان كل مصغّرة يطابق وصفها. المُعلَّم <b style="color:var(--danger)">مفقود</b>
+    يُستبدل ببطاقة بحث تلقائياً داخل الدروس.
+  </p>
+  <div class="audit" id="audit"></div>
 
-  <div class="callout callout-tip" style="margin-top:26px">
-    <span class="ic">📋</span>
-    <div><b>ماذا تفعل بالنتيجة؟</b>
-      أخبرني بأي مقطع عنوانه لا يطابق الوصف أو حالته «مفقود»، وسأزيله أو أستبدله.
-      الملف الذي يحمل هذه الإسنادات هو <code>assets/js/videos.js</code>.</div>
-  </div>
+  <h3 style="font-size:17px;margin:34px 0 6px">مقاطعك لكل درس</h3>
+  <p class="lede" style="font-size:13.5px">اتركه فارغاً لاستخدام المقطع الافتراضي.</p>
+  <div id="lessons"></div>
 
 </div>
 
+<div class="bar">
+  <span class="count" id="count"></span>
+  <button class="btn btn-sm btn-ghost" id="resetBtn" type="button">مسح كل تخصيصاتي</button>
+  <button class="btn btn-sm btn-primary" id="exportBtn" type="button">⤓ تصدير للتثبيت الدائم</button>
+  <a class="btn btn-sm btn-soft" href="./">← عودة للمنصّة</a>
+</div>
+
+<dialog id="dlg">
+  <div class="dlg">
+    <h3 style="margin:0 0 8px">تثبيت التخصيصات في الكود</h3>
+    <p class="lede" style="font-size:13.5px">
+      تخصيصاتك محفوظة في هذا المتصفح وتعمل الآن. لتصير دائمة لكل الزوّار،
+      انسخ ما يلي والصقه داخل <code>assets/js/videos.js</code> مكان الكائن <code>MAP</code>،
+      أو أرسله لي وأثبّته لك.
+    </p>
+    <textarea id="out" readonly spellcheck="false"></textarea>
+    <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+      <button class="btn btn-sm btn-primary" id="copyBtn" type="button">نسخ</button>
+      <button class="btn btn-sm btn-ghost" id="closeBtn" type="button">إغلاق</button>
+    </div>
+  </div>
+</dialog>
+
 <script>
-  /* ثيم يتبع تفضيل النظام */
   try {
     var pref = localStorage.getItem('etqan.theme');
     if (!pref) pref = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     document.documentElement.dataset.theme = pref;
   } catch (e) {}
-  window.I18N = { lang: 'en', t: function (k) { return k; }, pick: function (v) { return v && (v.ar || v.en) || ''; } };
+  window.I18N = { lang: 'ar', t: function (k) { return k; }, pick: function (v) { return v && (v.ar || v.en) || ''; } };
 </script>
 <script src="assets/js/videos.js"></script>
 <script src="assets/js/lessons.js"></script>
 <script>
 (function () {
-  var list = document.getElementById('list');
+  var V = window.VIDEOS, COURSE = window.COURSE;
+  var THUMB = function (id) { return 'https://i.ytimg.com/vi/' + id + '/hqdefault.jpg'; };
 
-  /* اجمع الدروس تحت كل معرّف مقطع */
-  var byId = {};
-  window.COURSE.lessons.forEach(function (lesson) {
-    var v = window.VIDEOS.forLesson(lesson.id);
-    if (!v) return;
-    if (!byId[v.id]) byId[v.id] = { video: v, lessons: [] };
-    byId[v.id].lessons.push(lesson);
-  });
-
-  var ids = Object.keys(byId);
-  if (!ids.length) {
-    list.innerHTML = '<p class="lede">لا توجد مقاطع مُسنَدة حالياً — كل الدروس تعرض بطاقة بحث.</p>';
-    return;
+  /* يفحص وجود المقطع عبر أبعاد المصغّرة: 120×90 تعني محذوفاً أو غير موجود */
+  function probe(id, cb) {
+    var img = new Image();
+    img.onload = function () { cb(img.naturalWidth > 120 ? 'live' : 'dead'); };
+    img.onerror = function () { cb('error'); };
+    img.src = THUMB(id);
   }
 
-  ids.forEach(function (id) {
-    var entry = byId[id];
-    var v = entry.video;
-
-    var card = document.createElement('div');
-    card.className = 'vid';
-
-    var img = document.createElement('img');
-    img.className = 'thumb';
-    img.alt = 'مصغّرة المقطع ' + id;
-    img.src = 'https://i.ytimg.com/vi/' + id + '/hqdefault.jpg';
-
-    var body = document.createElement('div');
-
-    var status = document.createElement('span');
-    status.className = 'status wait';
-    status.textContent = 'جارٍ الفحص…';
-
-    /* نفس منطق المنصّة: صورة 120×90 تعني مقطعاً محذوفاً أو غير موجود */
-    img.addEventListener('load', function () {
-      if (img.naturalWidth > 0 && img.naturalWidth <= 120) {
-        status.className = 'status dead';
-        status.textContent = '✕ مفقود — المقطع محذوف أو المعرّف خاطئ';
-        card.classList.add('dead');
-      } else {
-        status.className = 'status ok';
-        status.textContent = '✓ المقطع موجود — تحقّق أن عنوانه يطابق الوصف';
-      }
-    });
-    img.addEventListener('error', function () {
-      status.className = 'status dead';
-      status.textContent = '✕ تعذّر تحميل المصغّرة';
-      card.classList.add('dead');
-    });
-
-    var title = document.createElement('h3');
-    title.textContent = v.title;
-
-    var meta = document.createElement('p');
-    meta.className = 'meta';
-    meta.textContent = id + '  ·  ' + (v.channel.en || v.channel.ar);
-
-    var used = document.createElement('p');
-    used.className = 'used';
-    used.innerHTML = '<b>مُستخدَم في ' + entry.lessons.length + ' درساً:</b> ' +
-      entry.lessons.map(function (l) { return l.title.ar; }).join(' · ');
-
-    var acts = document.createElement('div');
-    acts.className = 'acts';
-    var open = document.createElement('a');
-    open.className = 'btn btn-sm btn-primary';
-    open.href = 'https://www.youtube.com/watch?v=' + id;
-    open.target = '_blank';
-    open.rel = 'noopener';
-    open.textContent = '▶ افتح على يوتيوب';
-    var first = document.createElement('a');
-    first.className = 'btn btn-sm btn-ghost';
-    first.href = './#/lesson/' + entry.lessons[0].id;
-    first.textContent = 'افتح أول درس يستخدمه';
-    acts.appendChild(open);
-    acts.appendChild(first);
-
-    body.appendChild(status);
-    body.appendChild(title);
-    body.appendChild(meta);
-    body.appendChild(used);
-    body.appendChild(acts);
-
-    card.appendChild(img);
-    card.appendChild(body);
-    list.appendChild(card);
+  /* ---------- تدقيق المقاطع المدمجة ---------- */
+  var seen = {};
+  COURSE.lessons.forEach(function (l) {
+    var v = V.builtInFor(l.id, 'ar');
+    if (!v) return;
+    if (!seen[v.id]) seen[v.id] = { v: v, n: 0 };
+    seen[v.id].n++;
   });
 
-  var head = document.createElement('p');
-  head.className = 'lede';
-  head.style.marginBottom = '20px';
-  head.innerHTML = '<b>' + ids.length + ' مقاطع</b> تغطّي <b>' +
-    window.COURSE.lessons.length + ' درساً</b>.';
-  list.parentNode.insertBefore(head, list);
+  var audit = document.getElementById('audit');
+  Object.keys(seen).forEach(function (id) {
+    var it = seen[id];
+    var card = document.createElement('div');
+    card.className = 'aud';
+    var img = document.createElement('img');
+    img.src = THUMB(id); img.alt = '';
+    var box = document.createElement('div');
+    var note = document.createElement('span');
+    note.className = 'note dim';
+    note.textContent = 'جارٍ الفحص…';
+    box.innerHTML = '<b>' + it.v.title + '</b><code>' + id + '</code>';
+    box.appendChild(note);
+    var used = document.createElement('div');
+    used.style.cssText = 'font-size:12px;color:var(--muted);margin-top:4px';
+    used.textContent = 'في ' + it.n + ' درساً';
+    box.appendChild(used);
+    card.appendChild(img); card.appendChild(box);
+    audit.appendChild(card);
+
+    probe(id, function (state) {
+      if (state === 'live') { note.className = 'note good'; note.textContent = '✓ موجود'; }
+      else { note.className = 'note bad'; note.textContent = '✕ مفقود — يُستبدل ببحث'; card.classList.add('dead'); }
+    });
+  });
+
+  /* ---------- إدارة الدروس ---------- */
+  var store = V.overrides();
+  var host = document.getElementById('lessons');
+  var countEl = document.getElementById('count');
+
+  function persist() {
+    V.saveOverrides(store);
+    var n = 0;
+    Object.keys(store).forEach(function (k) {
+      if (store[k] && (store[k].ar || store[k].en)) n++;
+    });
+    countEl.textContent = n ? ('لديك ' + n + ' درساً بمقطع مخصّص — يعمل الآن في المنصّة')
+                            : 'لا تخصيصات بعد — كل الدروس تستخدم المقطع الافتراضي';
+  }
+
+  function makeField(lesson, lang, labelText) {
+    var wrap = document.createElement('div');
+    wrap.className = 'vm-field';
+
+    var label = document.createElement('label');
+    label.textContent = labelText;
+
+    var box = document.createElement('div');
+    box.className = 'box';
+
+    var pv = document.createElement('img');
+    pv.className = 'pv'; pv.alt = '';
+
+    var input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'الصق رابط يوتيوب…';
+    input.setAttribute('aria-label', labelText + ' — ' + lesson.title.ar);
+
+    var note = document.createElement('p');
+    note.className = 'note dim';
+
+    var times = document.createElement('div');
+    times.className = 'times';
+    var startIn = document.createElement('input');
+    startIn.type = 'number'; startIn.min = '0'; startIn.placeholder = 'من (ث)';
+    var endIn = document.createElement('input');
+    endIn.type = 'number'; endIn.min = '0'; endIn.placeholder = 'إلى (ث)';
+    times.appendChild(startIn); times.appendChild(endIn);
+
+    var saved = (store[lesson.id] || {})[lang];
+    var lastId = saved ? saved.id : null;
+    if (saved) {
+      input.value = 'https://www.youtube.com/watch?v=' + saved.id;
+      if (saved.start) startIn.value = saved.start;
+      if (saved.end) endIn.value = saved.end;
+      pv.src = THUMB(saved.id);
+      input.className = 'good';
+      note.className = 'note good';
+      note.textContent = '✓ محفوظ';
+    }
+
+    function write(id, start, end) {
+      if (!store[lesson.id]) store[lesson.id] = {};
+      if (!id) { delete store[lesson.id][lang]; }
+      else {
+        store[lesson.id][lang] = {
+          id: id, lang: lang, start: start || 0, end: end || 0,
+          title: lang === 'ar' ? 'شرح بالعربية' : 'Video explanation',
+          channel: { ar: 'مضاف يدوياً', en: 'Added manually' }
+        };
+      }
+      if (store[lesson.id] && !store[lesson.id].ar && !store[lesson.id].en) delete store[lesson.id];
+      persist();
+    }
+
+    var timer = null;
+    function evaluate() {
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        var raw = input.value.trim();
+        if (!raw) {
+          input.className = ''; pv.removeAttribute('src');
+          note.className = 'note dim'; note.textContent = '';
+          write(null); return;
+        }
+        var parsed = V.parse(raw);
+        if (!parsed) {
+          input.className = 'bad'; pv.removeAttribute('src');
+          note.className = 'note bad'; note.textContent = '✕ رابط يوتيوب غير مفهوم';
+          write(null); return;
+        }
+        /* تغيّر المقطع؟ التوقيتات القديمة تخصّ مقطعاً آخر فلا تُورَّث */
+        if (parsed.id !== lastId) {
+          startIn.value = parsed.start ? parsed.start : '';
+          endIn.value = '';
+          lastId = parsed.id;
+        } else if (parsed.start && !startIn.value) {
+          startIn.value = parsed.start;
+        }
+        note.className = 'note dim'; note.textContent = 'جارٍ الفحص…';
+        pv.src = THUMB(parsed.id);
+        probe(parsed.id, function (state) {
+          if (state === 'live') {
+            input.className = 'good';
+            note.className = 'note good';
+            note.textContent = '✓ المقطع موجود — تأكّد أن المصغّرة هي المقصودة';
+            write(parsed.id, +startIn.value || 0, +endIn.value || 0);
+          } else {
+            input.className = 'bad';
+            note.className = 'note bad';
+            note.textContent = '✕ لا يوجد مقطع بهذا المعرّف';
+            write(null);
+          }
+        });
+      }, 420);
+    }
+
+    input.addEventListener('input', evaluate);
+    [startIn, endIn].forEach(function (el) {
+      el.addEventListener('input', function () {
+        var p = V.parse(input.value.trim());
+        if (p) write(p.id, +startIn.value || 0, +endIn.value || 0);
+      });
+    });
+
+    box.appendChild(pv); box.appendChild(input);
+    wrap.appendChild(label); wrap.appendChild(box);
+    wrap.appendChild(note); wrap.appendChild(times);
+    return wrap;
+  }
+
+  COURSE.modules.forEach(function (mod) {
+    var h = document.createElement('div');
+    h.className = 'mod-title';
+    h.textContent = mod.icon + ' ' + mod.title.ar;
+    host.appendChild(h);
+
+    mod.lessons.forEach(function (lesson) {
+      var row = document.createElement('div');
+      row.className = 'row';
+      var bi = V.builtInFor(lesson.id, 'ar');
+      var title = document.createElement('h4');
+      title.textContent = lesson.title.ar;
+      var sub = document.createElement('span');
+      sub.textContent = bi ? ('الافتراضي: ' + bi.title) : 'لا مقطع افتراضي';
+      title.appendChild(sub);
+      row.appendChild(title);
+
+      var fields = document.createElement('div');
+      fields.className = 'fields';
+      fields.appendChild(makeField(lesson, 'ar', '🇸🇦 مقطع بالعربية'));
+      fields.appendChild(makeField(lesson, 'en', '🇬🇧 مقطع بالإنجليزية'));
+      row.appendChild(fields);
+      host.appendChild(row);
+    });
+  });
+
+  persist();
+
+  /* ---------- التصدير ---------- */
+  var dlg = document.getElementById('dlg');
+  document.getElementById('exportBtn').addEventListener('click', function () {
+    var lines = ['  var MAP = {'];
+    var keys = Object.keys(store).filter(function (k) { return store[k].ar || store[k].en; });
+    if (!keys.length) {
+      lines.push('    /* لا تخصيصات — أضف مقاطعك أولاً */');
+    }
+    keys.forEach(function (k, i) {
+      var e = store[k], parts = [];
+      ['ar', 'en'].forEach(function (lg) {
+        var d = e[lg];
+        if (!d) return;
+        parts.push('      ' + lg + ": V('" + d.id + "', '" + String(d.title).replace(/'/g, "\\'") +
+                   "', { ar: 'يوتيوب', en: 'YouTube' }, '" + lg + "', " + (d.start || 0) + ', ' + (d.end || 0) + ')');
+      });
+      lines.push("    '" + k + "': {");
+      lines.push(parts.join(',\n'));
+      lines.push('    }' + (i < keys.length - 1 ? ',' : ''));
+    });
+    lines.push('  };');
+    document.getElementById('out').value = lines.join('\n');
+    dlg.showModal();
+  });
+  document.getElementById('closeBtn').addEventListener('click', function () { dlg.close(); });
+  document.getElementById('copyBtn').addEventListener('click', function () {
+    var ta = document.getElementById('out');
+    ta.select();
+    if (navigator.clipboard) navigator.clipboard.writeText(ta.value);
+    else { try { document.execCommand('copy'); } catch (e) {} }
+    this.textContent = 'تم النسخ ✓';
+    var b = this;
+    setTimeout(function () { b.textContent = 'نسخ'; }, 1500);
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', function () {
+    if (!confirm('حذف كل المقاطع التي أضفتها والعودة للافتراضي؟')) return;
+    store = {};
+    V.saveOverrides(store);
+    location.reload();
+  });
 })();
 </script>
 </body>
