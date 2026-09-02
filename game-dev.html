@@ -85,6 +85,38 @@
   .specs ul{ margin:0; padding-inline-start:22px }
   .specs li{ margin-bottom:7px; font-size:14.5px; color:var(--ink-2); line-height:1.8 }
 
+  /* خطوات البناء التدريجي */
+  .step-box{ border:1px solid var(--line); border-radius:var(--r-lg); background:var(--surface);
+             margin:0 0 20px; overflow:hidden }
+  .step-head{ display:flex; align-items:center; gap:12px; padding:15px 18px;
+              background:var(--surface-3); border-bottom:1px solid var(--line) }
+  .step-head .n{ display:flex; align-items:center; justify-content:center; width:30px; height:30px;
+                 flex:none; border-radius:50%; background:var(--brand); color:#fff;
+                 font-weight:800; font-size:14px }
+  .step-head h4{ margin:0; font-size:17px; line-height:1.4 }
+  .step-body{ padding:18px }
+  .step-body > p{ color:var(--ink-2); line-height:1.9; margin:0 0 14px; font-size:15px }
+  .step-body pre{ margin-bottom:14px }
+  .step-body > *:last-child{ margin-bottom:0 }
+
+  .add{ font-size:12.5px; font-weight:700; color:var(--ok); margin:0 0 7px;
+        display:flex; align-items:center; gap:6px }
+  .run-note{ background:var(--brand-soft); border:1px solid var(--brand-line);
+             border-radius:var(--r-sm); padding:11px 14px; font-size:14px; color:var(--ink-2);
+             line-height:1.75; margin:0 0 14px }
+  .run-note b{ color:var(--brand) }
+
+  .think{ border-inline-start:4px solid var(--warn); background:var(--warn-soft);
+          border-radius:var(--r-sm); padding:13px 16px; margin:0 0 14px }
+  .think b{ display:block; margin-bottom:5px; font-size:14.5px; color:var(--ink) }
+  .think p{ margin:0; font-size:14px; color:var(--ink-2); line-height:1.8 }
+
+  details.sol{ border:1px dashed var(--line-strong); border-radius:var(--r-sm);
+               padding:10px 14px; margin:0 0 14px; background:var(--surface-2) }
+  details.sol summary{ cursor:pointer; font-weight:700; font-size:14px; color:var(--brand) }
+  details.sol[open] summary{ margin-bottom:11px }
+  details.sol pre{ margin:0 }
+
   .foot{ text-align:center; padding:40px 0 0; border-top:1px solid var(--line); margin-top:50px;
          color:var(--muted); font-size:14px }
 </style>
@@ -109,144 +141,249 @@
 
   <!-- ============ القسم الأول ============ -->
   <section class="sec">
-    <h2><span class="num">1</span> لعبتك الأولى بـ pygame</h2>
+    <h2><span class="num">1</span> ابنِ لعبتك الأولى — خطوة خطوة</h2>
     <p>
-      <b>pygame</b> مكتبة بايثون لصناعة الألعاب ثنائية الأبعاد. تفتح نافذة، وترسم فيها أشكالاً وصوراً،
-      وتقرأ لوحة المفاتيح والفأرة. هي أسرع طريق من «أعرف بايثون» إلى «صنعتُ لعبة».
+      لن أعطيك لعبة جاهزة تنسخها. سنبنيها معاً في سبع خطوات، تكتب كل خطوة بيدك وتشغّلها
+      وترى ماذا تغيّر. في نهاية كل خطوة لديك <b>برنامج يعمل</b> — لا نصف برنامج.
     </p>
 
-    <h3>التثبيت</h3>
-    <p class="prose-p">في طرفية VS Code اكتب:</p>
-    <div class="cmd">pip install pygame</div>
-
-    <h3>الفكرة الوحيدة التي عليك فهمها: حلقة اللعبة</h3>
-    <p class="prose-p">
-      كل لعبة في العالم — من تتريس إلى أضخم الألعاب — تكرّر أربع خطوات ستّين مرة في الثانية.
-      هذا كل شيء:
-    </p>
-
-    <div class="loop">
-      <div class="step"><b>1 — الأحداث</b><span>هل أُغلقت النافذة؟ هل ضُغط زر؟</span></div>
-      <div class="step"><b>2 — المدخلات</b><span>أي المفاتيح مضغوطة الآن؟</span></div>
-      <div class="step"><b>3 — التحديث</b><span>حرّك الأشياء، افحص التصادم، احسب النقاط.</span></div>
-      <div class="step"><b>4 — الرسم</b><span>امسح الشاشة وارسم كل شيء من جديد.</span></div>
+    <div class="callout callout-note" style="margin:0 0 24px">
+      <span class="ic">📋</span>
+      <div><b>قبل أن تبدأ</b>
+        ثبّت المكتبة بكتابة <code>pip install pygame</code> في طرفية VS Code، ثم أنشئ ملفاً فارغاً
+        اسمه <code>catch.py</code>. سنكتب فيه من الصفر.</div>
     </div>
 
-    <p class="prose-p">
-      لاحظ الخطوة الرابعة: أنت لا «تحرّك» المربّع على الشاشة، بل تمسح الشاشة كلّها وترسمه في مكانه الجديد.
-      تكرار ذلك بسرعة هو ما يصنع وهم الحركة.
-    </p>
+    <!-- ---------- 1 ---------- -->
+    <div class="step-box">
+      <div class="step-head"><span class="n">1</span><h4>نافذة تبقى مفتوحة</h4></div>
+      <div class="step-body">
+        <p>اكتب هذا كاملاً في <code>catch.py</code>:</p>
+<pre><code>import pygame
 
-    <h3>اللعبة كاملة</h3>
-    <p class="prose-p">
-      أنشئ ملفاً باسم <code>catch.py</code>، والصق هذا فيه. لعبة تلتقط المربّعات الساقطة
-      بالسهمين ← و →، ولك ثلاث محاولات:
-    </p>
-
-<pre><code>import random
-import pygame
-
-# --- التهيئة ---
 pygame.init()
-WIDTH, HEIGHT = 640, 480
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Catch the Falling Blocks")
-clock = pygame.time.Clock()
-font = pygame.font.SysFont(None, 32)
+screen = pygame.display.set_mode((640, 480))
+pygame.display.set_caption("My First Game")
 
-# --- الألوان ---
-BG = (18, 20, 40)
-PLAYER_COLOR = (47, 111, 237)
-BLOCK_COLOR = (255, 171, 112)
-TEXT_COLOR = (230, 235, 255)
-
-# --- سلّة اللاعب ---
-player = pygame.Rect(WIDTH // 2 - 45, HEIGHT - 40, 90, 16)
-PLAYER_SPEED = 7
-
-# --- المربّع الساقط ---
-block = pygame.Rect(random.randint(0, WIDTH - 26), -26, 26, 26)
-block_speed = 4
-
-score = 0
-lives = 3
 running = True
-
 while running:
-    # 1) الأحداث — هل أغلق اللاعب النافذة؟
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
-    # 2) المدخلات — أي سهم مضغوط الآن؟
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
-        player.x -= PLAYER_SPEED
-    if keys[pygame.K_RIGHT]:
-        player.x += PLAYER_SPEED
+pygame.quit()</code></pre>
+        <div class="run-note">
+          <b>شغّله الآن.</b> ستفتح نافذة سوداء بحجم 640×480، وتبقى مفتوحة حتى تضغط ✕.
+        </div>
+        <div class="think">
+          <b>لماذا الحلقة <code>while</code> موجودة؟</b>
+          <p>
+            احذفها وشغّل: ستُفتح النافذة وتُغلق في لحظة. البرنامج ينتهي فيختفي كل شيء.
+            الحلقة هي ما يُبقي اللعبة حيّة. وداخلها نسأل في كل دورة: «هل ضغط اللاعب زر الإغلاق؟»
+            هذه أول خطوة من حلقة اللعبة: <b>الأحداث</b>.
+          </p>
+        </div>
+      </div>
+    </div>
 
-    # أبقِ السلّة داخل الشاشة
-    player.x = max(0, min(player.x, WIDTH - player.width))
+    <!-- ---------- 2 ---------- -->
+    <div class="step-box">
+      <div class="step-head"><span class="n">2</span><h4>ارسم الخلفية</h4></div>
+      <div class="step-body">
+        <p class="add">＋ أضف <code>clock</code> بعد سطر <code>set_caption</code>، والسطور الثلاثة داخل الحلقة:</p>
+<pre><code>clock = pygame.time.Clock()          # ← جديد
 
-    # 3) التحديث — أنزل المربّع
-    block.y += block_speed
-
-    # التقطه؟
-    if player.colliderect(block):
-        score += 1
-        block_speed += 0.2          # أسرع قليلاً في كل مرة
-        block.y = -26
-        block.x = random.randint(0, WIDTH - block.width)
-
-    # فاته؟
-    elif block.top &gt; HEIGHT:
-        lives -= 1
-        block.y = -26
-        block.x = random.randint(0, WIDTH - block.width)
-        if lives &lt;= 0:
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
             running = False
 
-    # 4) الرسم — الخلفية أولاً ثم كل شيء فوقها
-    screen.fill(BG)
-    pygame.draw.rect(screen, PLAYER_COLOR, player, border_radius=6)
-    pygame.draw.rect(screen, BLOCK_COLOR, block, border_radius=4)
+    screen.fill((18, 20, 40))        # ← جديد: املأ الشاشة بلون
+    pygame.display.flip()            # ← جديد: اعرض ما رسمناه
+    clock.tick(60)                   # ← جديد: 60 إطاراً في الثانية</code></pre>
+        <div class="run-note">
+          <b>شغّله.</b> النافذة صارت زرقاء داكنة بدل السوداء.
+        </div>
+        <div class="think">
+          <b>لماذا سطران للرسم؟</b>
+          <p>
+            <code>fill</code> يرسم على لوحة مخفيّة، و<code>flip</code> يعرضها دفعة واحدة.
+            لو عرضنا كل شكل فور رسمه لرأيت وميضاً مزعجاً. احذف <code>flip</code> وشغّل —
+            ستبقى النافذة سوداء رغم أن <code>fill</code> يعمل. هذا يثبّت الفكرة.
+          </p>
+        </div>
+      </div>
+    </div>
 
-    hud = font.render(f"Score: {score}    Lives: {lives}", True, TEXT_COLOR)
-    screen.blit(hud, (14, 12))
+    <!-- ---------- 3 ---------- -->
+    <div class="step-box">
+      <div class="step-head"><span class="n">3</span><h4>ارسم سلّة اللاعب</h4></div>
+      <div class="step-body">
+        <p class="add">＋ عرّف المستطيل قبل الحلقة، وارسمه بعد <code>fill</code>:</p>
+<pre><code>player = pygame.Rect(275, 440, 90, 16)   # ← جديد: س، ص، عرض، ارتفاع
 
-    pygame.display.flip()           # اعرض الإطار المكتمل
-    clock.tick(60)                  # 60 إطاراً في الثانية
+# ... وداخل الحلقة بعد screen.fill مباشرة:
+    pygame.draw.rect(screen, (47, 111, 237), player, border_radius=6)</code></pre>
+        <div class="run-note">
+          <b>شغّله.</b> شريط أزرق في أسفل النافذة.
+        </div>
+        <div class="think">
+          <b>انتبه: المحور ص مقلوب</b>
+          <p>
+            في الرياضيات ص يكبر لأعلى. في الشاشات <b>ص يكبر لأسفل</b>: النقطة (0,0) هي الزاوية
+            العليا اليسرى. ولهذا وضعنا السلّة عند <code>440</code> — قريباً من قاع الشاشة (480).
+            جرّب <code>10</code> بدلاً منها لترى بنفسك.
+          </p>
+        </div>
+      </div>
+    </div>
 
-# --- انتهت اللعبة ---
-screen.fill(BG)
-over = font.render(f"Game over!  Final score: {score}", True, TEXT_COLOR)
-screen.blit(over, (WIDTH // 2 - over.get_width() // 2, HEIGHT // 2 - 16))
-pygame.display.flip()
-pygame.time.wait(2500)
-pygame.quit()</code></pre>
+    <!-- ---------- 4 ---------- -->
+    <div class="step-box">
+      <div class="step-head"><span class="n">4</span><h4>حرّكها بالسهمين</h4></div>
+      <div class="step-body">
+        <p>
+          فكّر قبل أن تقرأ: نريد أن نسأل في كل دورة «هل السهم الأيسر مضغوط الآن؟»
+          ثم نغيّر <code>player.x</code>. حاول كتابتها بنفسك، ثم قارن.
+        </p>
+        <details class="sol">
+          <summary>أظهر الحل</summary>
+<pre><code>SPEED = 7                                 # ← قبل الحلقة
 
-    <p class="prose-p">شغّلها بالنقر بالزر الأيمن ← <b>Run Python File in Terminal</b>. ستحصل على هذا:</p>
+# ... داخل الحلقة، بعد حلقة الأحداث:
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT]:
+        player.x -= SPEED
+    if keys[pygame.K_RIGHT]:
+        player.x += SPEED</code></pre>
+        </details>
+        <div class="run-note">
+          <b>شغّله.</b> السلّة تتحرّك يميناً ويساراً — لكنها تخرج من الشاشة!
+        </div>
+        <div class="think">
+          <b>لماذا <code>get_pressed</code> لا حلقة الأحداث؟</b>
+          <p>
+            حلقة الأحداث تخبرك بلحظة <em>ضغط</em> المفتاح مرة واحدة.
+            و<code>get_pressed</code> تخبرك بما هو <em>مضغوط الآن</em>. للحركة المستمرة تحتاج الثانية،
+            وإلا تحرّكت السلّة خطوة واحدة لكل ضغطة.
+          </p>
+        </div>
+      </div>
+    </div>
 
+    <!-- ---------- 5 ---------- -->
+    <div class="step-box">
+      <div class="step-head"><span class="n">5</span><h4>امنعها من الخروج</h4></div>
+      <div class="step-body">
+        <p class="add">＋ سطر واحد بعد حركة السلّة مباشرة:</p>
+<pre><code>    player.x = max(0, min(player.x, 640 - player.width))</code></pre>
+        <div class="run-note">
+          <b>شغّله.</b> السلّة تقف عند الحافّتين.
+        </div>
+        <div class="think">
+          <b>اقرأه من الداخل للخارج</b>
+          <p>
+            <code>min(player.x, 640 - player.width)</code> يمنعها من تجاوز اليمين،
+            ثم <code>max(0, ...)</code> يمنعها من تجاوز اليسار. حيلة من سطر واحد تُغنيك عن شرطين،
+            وستستخدمها كثيراً في الألعاب.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------- 6 ---------- -->
+    <div class="step-box">
+      <div class="step-head"><span class="n">6</span><h4>مربّع يسقط</h4></div>
+      <div class="step-body">
+        <p class="add">＋ استورد <code>random</code> في أعلى الملف، ثم:</p>
+<pre><code>block = pygame.Rect(random.randint(0, 614), -26, 26, 26)   # ← قبل الحلقة
+block_speed = 4
+
+# ... داخل الحلقة، بعد تقييد السلّة:
+    block.y += block_speed
+    if block.top &gt; 480:                    # خرج من الأسفل؟
+        block.y = -26                       # أعده للأعلى
+        block.x = random.randint(0, 614)    # في مكان عشوائي
+
+# ... ومع بقية الرسم:
+    pygame.draw.rect(screen, (255, 171, 112), block, border_radius=4)</code></pre>
+        <div class="run-note">
+          <b>شغّله.</b> مربّعات برتقالية تسقط بلا توقّف — لكنها تمرّ عبر السلّة.
+        </div>
+        <div class="think">
+          <b>لماذا يبدأ من <code>-26</code>؟</b>
+          <p>
+            فوق حافّة الشاشة بمقدار حجمه، فيدخل المشهد منزلقاً بدل أن يظهر فجأة.
+            تفصيل صغير يصنع فرقاً كبيراً في الإحساس.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------- 7 ---------- -->
+    <div class="step-box">
+      <div class="step-head"><span class="n">7</span><h4>التصادم والنقاط والمحاولات</h4></div>
+      <div class="step-body">
+        <p>
+          الآن الجزء الذي يحوّله من رسوم متحرّكة إلى <b>لعبة</b>: قاعدة، وفوز، وخسارة.
+          <code>colliderect</code> تخبرك إن كان مستطيلان متلامسين.
+        </p>
+        <p class="add">＋ عرّف <code>score</code> و<code>lives</code> قبل الحلقة، وبدّل شرط السقوط بهذا:</p>
+<pre><code>score = 0                                  # ← قبل الحلقة
+lives = 3
+
+# ... بدّل كتلة block.y السابقة بهذه:
+    block.y += block_speed
+
+    if player.colliderect(block):          # التقطه!
+        score += 1
+        block_speed += 0.2                 # أصعب قليلاً
+        block.y = -26
+        block.x = random.randint(0, 614)
+
+    elif block.top &gt; 480:                  # فاته!
+        lives -= 1
+        block.y = -26
+        block.x = random.randint(0, 614)
+        if lives &lt;= 0:
+            running = False                # انتهت اللعبة</code></pre>
+        <p class="add">＋ ولترى النقاط، عرّف الخطّ بعد <code>clock</code> وارسم النصّ قبل <code>flip</code>:</p>
+<pre><code>font = pygame.font.SysFont(None, 32)       # ← بعد clock
+
+# ... قبل pygame.display.flip():
+    hud = font.render(f"Score: {score}    Lives: {lives}", True, (230, 235, 255))
+    screen.blit(hud, (14, 12))</code></pre>
+        <div class="run-note">
+          <b>شغّله.</b> لعبة كاملة: تلتقط فتزيد نقطتك وتزداد السرعة، وتفوّت فتخسر محاولة،
+          وبعد ثلاث إخفاقات تنتهي.
+        </div>
+      </div>
+    </div>
+
+    <p class="prose-p" style="margin-top:26px">هذا ما ستراه:</p>
     <img class="shot" src="assets/img/pygame-shot.png"
          alt="لقطة من اللعبة: مربّع برتقالي يسقط نحو سلّة زرقاء، وفي الأعلى النقاط والمحاولات">
-    <p class="cap">لقطة حقيقية من الكود أعلاه وهو يعمل</p>
+    <p class="cap">لقطة حقيقية من الكود وهو يعمل</p>
 
-    <h3>جرّب أن تغيّر</h3>
+    <h3>الآن اجعلها لعبتك أنت</h3>
     <p class="prose-p">
-      أفضل طريقة للفهم أن تكسر شيئاً وتصلحه. جرّب:
+      انتهى دوري. هذه تعديلات مرتّبة من الأسهل للأصعب — كل واحدة تعلّمك شيئاً جديداً:
     </p>
     <ul>
-      <li><code>PLAYER_SPEED = 7</code> → اجعله <code>15</code> وشاهد الفرق.</li>
-      <li><code>clock.tick(60)</code> → اجعله <code>20</code>، ستفهم فوراً معنى «معدّل الإطارات».</li>
-      <li>احذف سطر <code>screen.fill(BG)</code> — سترى لماذا نمسح الشاشة كل إطار.</li>
-      <li>أضف مربّعاً ثانياً بلون مختلف يخصم نقطة إن التقطته.</li>
+      <li><b>سهل:</b> غيّر <code>clock.tick(60)</code> إلى <code>20</code>. الآن تعرف معنى «معدّل الإطارات».</li>
+      <li><b>سهل:</b> احذف <code>screen.fill(...)</code> وشغّل. ستفهم فوراً لماذا نمسح كل إطار.</li>
+      <li><b>متوسّط:</b> أضف مربّعاً أحمر ثانياً يخصم نقطة إن التقطته.</li>
+      <li><b>متوسّط:</b> اجعل السلّة تضيق كلّما زادت النقاط.</li>
+      <li><b>متقدّم:</b> احفظ أعلى نتيجة في ملف <code>highscore.txt</code> — تعرف الملفات من الوحدة السادسة.</li>
+      <li><b>متقدّم:</b> حوّل المربّع الساقط إلى صنف <code>class Block</code> — عندها يمكنك صنع عشرة منها بسطر.</li>
     </ul>
 
     <div class="callout callout-tip" style="margin:22px 0">
       <span class="ic">💡</span>
       <div><b>هذه ليست لعبة «بسيطة» بالصدفة</b>
-        فيها كل ما في أي لعبة كبيرة: حلقة، إدخال، فيزياء حركة، كشف تصادم، حالة (نقاط ومحاولات)،
-        وواجهة. الألعاب الضخمة تختلف في الحجم والصقل لا في هذه الأركان.</div>
+        فيها كل ما في أي لعبة كبيرة: حلقة، إدخال، حركة، كشف تصادم، حالة (نقاط ومحاولات)، وواجهة.
+        الألعاب الضخمة تختلف في الحجم والصقل لا في هذه الأركان.</div>
     </div>
   </section>
 
