@@ -18,6 +18,7 @@
     navProject:       { ar: 'المشروع',               en: 'Project' },
     navPlayground:    { ar: 'المحرّر',               en: 'Playground' },
     navAbout:         { ar: 'عن المنصة',             en: 'About' },
+    navGameDev:       { ar: 'اصنع لعبة',             en: 'Make a game' },
     searchPlaceholder:{ ar: 'ابحث في الدروس…',       en: 'Search lessons…' },
     footNote:         { ar: 'منصّة تعليمية مفتوحة — تعمل بالكامل داخل متصفحك.', en: 'An open learning platform — runs entirely in your browser.' },
 

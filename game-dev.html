@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>اصنع لعبتك الأولى — إتقان بايثون</title>
+<meta name="description" content="دليل عملي لصناعة أول لعبة ببايثون باستخدام pygame، مع مقارنة محرّكات الألعاب — Godot و Unity و Unreal — وأيّها يناسب جهازك فعلاً.">
+<meta name="theme-color" content="#2f6fed">
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232f6fed'/%3E%3Ctext x='32' y='44' font-size='30' font-family='monospace' font-weight='700' fill='%23fff' text-anchor='middle'%3E%3E%3E%3E%3C/text%3E%3C/svg%3E">
+<style>
+  body{ background:var(--bg); color:var(--ink); font-family:var(--font-ar); margin:0 }
+  .page{ max-width:900px; margin:0 auto; padding:0 20px 90px }
+
+  .top{ display:flex; align-items:center; gap:12px; padding:18px 0; border-bottom:1px solid var(--line);
+        margin-bottom:36px; flex-wrap:wrap }
+  .top .brand-mark{ width:34px; height:34px; font-size:13px }
+  .top a.home{ margin-inline-start:auto; font-size:14px; font-weight:700; color:var(--brand); text-decoration:none }
+
+  .hero{ background:linear-gradient(150deg, #131a3d, #0a0f26); color:#fff;
+         border-radius:var(--r-xl); padding:40px 34px; margin-bottom:44px }
+  .hero .kick{ display:inline-block; font-size:12.5px; font-weight:700; letter-spacing:.06em;
+               background:rgba(255,255,255,.12); padding:6px 14px; border-radius:999px; margin-bottom:16px }
+  .hero h1{ margin:0 0 14px; font-size:37px; line-height:1.25; letter-spacing:-.02em }
+  .hero h1 em{ font-style:normal; color:#8fb6ff }
+  .hero p{ margin:0; font-size:16.5px; line-height:1.85; color:#c6d0f5; max-width:60ch }
+
+  .sec{ margin:0 0 22px }
+  .sec .num{ display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px;
+             border-radius:9px; background:var(--brand); color:#fff; font-weight:800; font-size:15px;
+             margin-inline-end:11px }
+  .sec h2{ display:flex; align-items:center; margin:52px 0 10px; font-size:27px; letter-spacing:-.02em }
+  .sec > p{ color:var(--ink-2); line-height:1.9; margin:0 0 18px; font-size:15.5px }
+
+  h3{ margin:34px 0 12px; font-size:20px }
+  p{ line-height:1.9 }
+  .prose-p{ color:var(--ink-2); line-height:1.9; margin:0 0 16px }
+
+  pre{ margin:0 0 20px; padding:16px 18px; background:var(--code-bg); color:var(--code-ink);
+       border:1px solid var(--code-line); border-radius:var(--r); font-family:var(--font-mono);
+       font-size:13px; line-height:1.75; direction:ltr; text-align:left; overflow-x:auto; tab-size:4 }
+  pre code{ background:none; border:0; padding:0; color:inherit; font-size:inherit; white-space:pre }
+  code{ font-family:var(--font-mono); font-size:.88em; direction:ltr; unicode-bidi:embed;
+        padding:2px 7px; border-radius:7px; background:var(--brand-soft); color:var(--brand);
+        border:1px solid var(--brand-line) }
+
+  .cmd{ background:#0b1024; color:#9ae6b4; border:1px solid var(--code-line); border-radius:var(--r-sm);
+        padding:12px 16px; font-family:var(--font-mono); font-size:13.5px; direction:ltr; text-align:left;
+        margin:0 0 18px }
+
+  .loop{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin:0 0 22px }
+  .loop .step{ background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:15px 16px }
+  .loop .step b{ display:block; font-size:14.5px; margin-bottom:5px; color:var(--brand) }
+  .loop .step span{ font-size:13.5px; color:var(--ink-2); line-height:1.7 }
+
+  .shot{ display:block; width:100%; max-width:520px; margin:0 auto 8px; border-radius:var(--r);
+         border:1px solid var(--line); box-shadow:var(--shadow) }
+  .cap{ text-align:center; font-size:13px; color:var(--muted); margin:0 0 26px }
+
+  table{ width:100%; border-collapse:collapse; margin:0 0 22px; font-size:14.5px; display:block; overflow-x:auto }
+  th,td{ padding:12px 13px; border:1px solid var(--line); text-align:start; vertical-align:top }
+  th{ background:var(--surface-3); font-weight:700; white-space:nowrap }
+  td b{ color:var(--ink) }
+
+  .verdict{ display:inline-block; font-size:12.5px; font-weight:700; padding:3px 10px; border-radius:999px; white-space:nowrap }
+  .v-best{ background:var(--ok-soft); color:var(--ok) }
+  .v-good{ background:var(--brand-soft); color:var(--brand) }
+  .v-warn{ background:var(--warn-soft); color:var(--warn) }
+
+  .rec{ display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:16px; margin:0 0 26px }
+  .card2{ background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg); padding:20px }
+  .card2.pick{ border-color:var(--brand); border-width:2px; background:var(--brand-soft) }
+  .card2 .tag{ font-size:12px; font-weight:800; letter-spacing:.05em; color:var(--brand); margin-bottom:7px }
+  .card2 h4{ margin:0 0 8px; font-size:18px }
+  .card2 p{ margin:0 0 10px; font-size:14px; color:var(--ink-2); line-height:1.8 }
+  .card2 .lang{ font-size:12.5px; color:var(--muted); font-family:var(--font-mono); direction:ltr }
+
+  .specs{ background:var(--surface-2); border:1px solid var(--line); border-radius:var(--r-lg);
+          padding:18px 20px; margin:0 0 26px }
+  .specs h4{ margin:0 0 10px; font-size:15.5px }
+  .specs ul{ margin:0; padding-inline-start:22px }
+  .specs li{ margin-bottom:7px; font-size:14.5px; color:var(--ink-2); line-height:1.8 }
+
+  .foot{ text-align:center; padding:40px 0 0; border-top:1px solid var(--line); margin-top:50px;
+         color:var(--muted); font-size:14px }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="top">
+    <span class="brand-mark" aria-hidden="true">&gt;&gt;&gt;</span>
+    <strong style="font-size:17px">إتقان بايثون</strong>
+    <a class="home" href="./">← عودة للمنصّة</a>
+  </div>
+
+  <div class="hero">
+    <span class="kick">🎮 دليل عملي</span>
+    <h1>اصنع <em>لعبتك الأولى</em> ببايثون</h1>
+    <p>
+      لعبة حقيقية بنافذة وحركة وصوت لوحة مفاتيح — لا نصّاً في الطرفية. ثم نجيب عن السؤال
+      الذي يأتي بعدها مباشرة: أيّ محرّك ألعاب أتعلّم، وهل يتحمّله جهازي؟
+    </p>
+  </div>
+
+  <!-- ============ القسم الأول ============ -->
+  <section class="sec">
+    <h2><span class="num">1</span> لعبتك الأولى بـ pygame</h2>
+    <p>
+      <b>pygame</b> مكتبة بايثون لصناعة الألعاب ثنائية الأبعاد. تفتح نافذة، وترسم فيها أشكالاً وصوراً،
+      وتقرأ لوحة المفاتيح والفأرة. هي أسرع طريق من «أعرف بايثون» إلى «صنعتُ لعبة».
+    </p>
+
+    <h3>التثبيت</h3>
+    <p class="prose-p">في طرفية VS Code اكتب:</p>
+    <div class="cmd">pip install pygame</div>
+
+    <h3>الفكرة الوحيدة التي عليك فهمها: حلقة اللعبة</h3>
+    <p class="prose-p">
+      كل لعبة في العالم — من تتريس إلى أضخم الألعاب — تكرّر أربع خطوات ستّين مرة في الثانية.
+      هذا كل شيء:
+    </p>
+
+    <div class="loop">
+      <div class="step"><b>1 — الأحداث</b><span>هل أُغلقت النافذة؟ هل ضُغط زر؟</span></div>
+      <div class="step"><b>2 — المدخلات</b><span>أي المفاتيح مضغوطة الآن؟</span></div>
+      <div class="step"><b>3 — التحديث</b><span>حرّك الأشياء، افحص التصادم، احسب النقاط.</span></div>
+      <div class="step"><b>4 — الرسم</b><span>امسح الشاشة وارسم كل شيء من جديد.</span></div>
+    </div>
+
+    <p class="prose-p">
+      لاحظ الخطوة الرابعة: أنت لا «تحرّك» المربّع على الشاشة، بل تمسح الشاشة كلّها وترسمه في مكانه الجديد.
+      تكرار ذلك بسرعة هو ما يصنع وهم الحركة.
+    </p>
+
+    <h3>اللعبة كاملة</h3>
+    <p class="prose-p">
+      أنشئ ملفاً باسم <code>catch.py</code>، والصق هذا فيه. لعبة تلتقط المربّعات الساقطة
+      بالسهمين ← و →، ولك ثلاث محاولات:
+    </p>
+
+<pre><code>import random
+import pygame
+
+# --- التهيئة ---
+pygame.init()
+WIDTH, HEIGHT = 640, 480
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Catch the Falling Blocks")
+clock = pygame.time.Clock()
+font = pygame.font.SysFont(None, 32)
+
+# --- الألوان ---
+BG = (18, 20, 40)
+PLAYER_COLOR = (47, 111, 237)
+BLOCK_COLOR = (255, 171, 112)
+TEXT_COLOR = (230, 235, 255)
+
+# --- سلّة اللاعب ---
+player = pygame.Rect(WIDTH // 2 - 45, HEIGHT - 40, 90, 16)
+PLAYER_SPEED = 7
+
+# --- المربّع الساقط ---
+block = pygame.Rect(random.randint(0, WIDTH - 26), -26, 26, 26)
+block_speed = 4
+
+score = 0
+lives = 3
+running = True
+
+while running:
+    # 1) الأحداث — هل أغلق اللاعب النافذة؟
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # 2) المدخلات — أي سهم مضغوط الآن؟
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT]:
+        player.x -= PLAYER_SPEED
+    if keys[pygame.K_RIGHT]:
+        player.x += PLAYER_SPEED
+
+    # أبقِ السلّة داخل الشاشة
+    player.x = max(0, min(player.x, WIDTH - player.width))
+
+    # 3) التحديث — أنزل المربّع
+    block.y += block_speed
+
+    # التقطه؟
+    if player.colliderect(block):
+        score += 1
+        block_speed += 0.2          # أسرع قليلاً في كل مرة
+        block.y = -26
+        block.x = random.randint(0, WIDTH - block.width)
+
+    # فاته؟
+    elif block.top &gt; HEIGHT:
+        lives -= 1
+        block.y = -26
+        block.x = random.randint(0, WIDTH - block.width)
+        if lives &lt;= 0:
+            running = False
+
+    # 4) الرسم — الخلفية أولاً ثم كل شيء فوقها
+    screen.fill(BG)
+    pygame.draw.rect(screen, PLAYER_COLOR, player, border_radius=6)
+    pygame.draw.rect(screen, BLOCK_COLOR, block, border_radius=4)
+
+    hud = font.render(f"Score: {score}    Lives: {lives}", True, TEXT_COLOR)
+    screen.blit(hud, (14, 12))
+
+    pygame.display.flip()           # اعرض الإطار المكتمل
+    clock.tick(60)                  # 60 إطاراً في الثانية
+
+# --- انتهت اللعبة ---
+screen.fill(BG)
+over = font.render(f"Game over!  Final score: {score}", True, TEXT_COLOR)
+screen.blit(over, (WIDTH // 2 - over.get_width() // 2, HEIGHT // 2 - 16))
+pygame.display.flip()
+pygame.time.wait(2500)
+pygame.quit()</code></pre>
+
+    <p class="prose-p">شغّلها بالنقر بالزر الأيمن ← <b>Run Python File in Terminal</b>. ستحصل على هذا:</p>
+
+    <img class="shot" src="assets/img/pygame-shot.png"
+         alt="لقطة من اللعبة: مربّع برتقالي يسقط نحو سلّة زرقاء، وفي الأعلى النقاط والمحاولات">
+    <p class="cap">لقطة حقيقية من الكود أعلاه وهو يعمل</p>
+
+    <h3>جرّب أن تغيّر</h3>
+    <p class="prose-p">
+      أفضل طريقة للفهم أن تكسر شيئاً وتصلحه. جرّب:
+    </p>
+    <ul>
+      <li><code>PLAYER_SPEED = 7</code> → اجعله <code>15</code> وشاهد الفرق.</li>
+      <li><code>clock.tick(60)</code> → اجعله <code>20</code>، ستفهم فوراً معنى «معدّل الإطارات».</li>
+      <li>احذف سطر <code>screen.fill(BG)</code> — سترى لماذا نمسح الشاشة كل إطار.</li>
+      <li>أضف مربّعاً ثانياً بلون مختلف يخصم نقطة إن التقطته.</li>
+    </ul>
+
+    <div class="callout callout-tip" style="margin:22px 0">
+      <span class="ic">💡</span>
+      <div><b>هذه ليست لعبة «بسيطة» بالصدفة</b>
+        فيها كل ما في أي لعبة كبيرة: حلقة، إدخال، فيزياء حركة، كشف تصادم، حالة (نقاط ومحاولات)،
+        وواجهة. الألعاب الضخمة تختلف في الحجم والصقل لا في هذه الأركان.</div>
+    </div>
+  </section>
+
+  <!-- ============ القسم الثاني ============ -->
+  <section class="sec">
+    <h2><span class="num">2</span> محرّكات الألعاب — وماذا يناسب جهازك</h2>
+
+    <div class="specs">
+      <h4>💻 جهازك: MSI · Intel i7 الجيل العاشر · GTX 1650 Ti</h4>
+      <ul>
+        <li>معالج قويّ جداً لتطوير الألعاب — بناء المشاريع والتصريف سيكونان مريحين.</li>
+        <li>كرت الشاشة فئة متوسطة بذاكرة <b>4 غيغابايت</b>، وهذا الرقم هو ما يحدّد سقفك مع المحرّكات الثقيلة.</li>
+        <li>الخلاصة: <b>ممتاز</b> لكل ألعاب ثنائية الأبعاد وأغلب ثلاثية الأبعاد المتوسطة،
+            و<b>ضيّق</b> مع ميزات Unreal 5 الحديثة.</li>
+      </ul>
+    </div>
+
+    <h3>حقيقة يجب أن تعرفها أولاً</h3>
+    <p class="prose-p">
+      <b>Unity و Unreal لا يُبرمَجان ببايثون.</b> كثيرون يكتشفون هذا متأخّرين.
+      Unity يستخدم <code>C#</code>، و Unreal يستخدم <code>C++</code> أو نظام العُقد المرئي Blueprints.
+      بايثون في Unreal موجودة لكن لأتمتة المحرّر لا لبرمجة اللعبة.
+    </p>
+    <p class="prose-p">
+      هذا لا يعني أن وقتك مع بايثون ضاع — بالعكس. المفاهيم التي أتقنتها (المتغيّرات، الشروط، الحلقات،
+      الدوال، الأصناف) هي نفسها في كل لغة. تعلّم <code>C#</code> بعد بايثون يستغرق أسابيع لا سنوات،
+      لأنك تتعلّم <em>تركيباً</em> جديداً لا <em>تفكيراً</em> جديداً.
+    </p>
+
+    <h3>المقارنة</h3>
+    <table>
+      <thead>
+        <tr><th>الأداة</th><th>اللغة</th><th>لماذا</th><th>على جهازك</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>pygame</b></td>
+          <td><code>Python</code></td>
+          <td>مكتبة لا محرّك: تكتب كل شيء بيدك. مثالية للفهم العميق ولألعاب 2D الصغيرة.</td>
+          <td><span class="verdict v-best">يطير</span></td>
+        </tr>
+        <tr>
+          <td><b>Godot 4</b></td>
+          <td><code>GDScript</code></td>
+          <td>محرّك كامل ومجاني وخفيف. لغته GDScript شبيهة ببايثون إلى حدّ مذهل — إزاحة بالمسافات وكل شيء.</td>
+          <td><span class="verdict v-best">يطير</span></td>
+        </tr>
+        <tr>
+          <td><b>Unity</b></td>
+          <td><code>C#</code></td>
+          <td>الأكثر استخداماً بين المستقلّين. مكتبة أصول ضخمة وشروحات لا تنتهي. ينشر لكل المنصّات.</td>
+          <td><span class="verdict v-good">مريح</span></td>
+        </tr>
+        <tr>
+          <td><b>Unreal 5</b></td>
+          <td><code>C++</code> / Blueprints</td>
+          <td>أقوى رسومات في السوق. يُستخدم في الألعاب الضخمة. منحنى تعلّم حادّ وتثبيت بعشرات الغيغابايتات.</td>
+          <td><span class="verdict v-warn">ثقيل</span></td>
+        </tr>
+        <tr>
+          <td><b>Ren'Py</b></td>
+          <td><code>Python</code></td>
+          <td>لألعاب القصص والروايات المصوّرة. مبنيّ على بايثون فعلياً، فتستخدم ما تعرفه مباشرة.</td>
+          <td><span class="verdict v-best">يطير</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>لماذا Unreal «ثقيل» على جهازك تحديداً</h3>
+    <p class="prose-p">
+      ميزتا Unreal 5 الكبيرتان — <b>Nanite</b> للتفاصيل الهندسية و<b>Lumen</b> للإضاءة اللحظية —
+      مصمّمتان لكروت بذاكرة 8 غيغابايت فأكثر. مع 4 غيغابايت سيعمل المحرّر لكن ببطء،
+      وستقضي وقتك في انتظار التصريف بدل صناعة اللعبة. يمكنك تشغيله وتعطيل هاتين الميزتين،
+      لكن حينها تكون تخلّيت عن سبب اختيارك له أصلاً.
+    </p>
+
+    <h3>الخلاصة العملية</h3>
+    <div class="rec">
+      <div class="card2 pick">
+        <div class="tag">ابدأ هنا</div>
+        <h4>🐍 pygame — هذا الأسبوع</h4>
+        <p>أنهِ اللعبة أعلاه، ثم أضف إليها: مؤثّرات صوتية، شاشة بداية، أفضل نتيجة تُحفظ في ملف.</p>
+        <span class="lang">Python — تعرفها بالفعل</span>
+      </div>
+      <div class="card2 pick">
+        <div class="tag">الخطوة التالية</div>
+        <h4>🤖 Godot — بعدها</h4>
+        <p>أقرب محرّك حقيقي إلى بايثون. تنزيل ~100 ميغابايت ويفتح في ثوانٍ. أفضل انتقال ممكن من موقعك الآن.</p>
+        <span class="lang">GDScript — يشبه بايثون جداً</span>
+      </div>
+      <div class="card2">
+        <div class="tag">لاحقاً</div>
+        <h4>🎯 Unity</h4>
+        <p>حين تريد فرص عمل أو أصولاً جاهزة أو نشراً للهواتف. تعلّم <code>C#</code> أولاً.</p>
+        <span class="lang">C#</span>
+      </div>
+    </div>
+
+    <div class="callout callout-warn" style="margin:22px 0">
+      <span class="ic">⚠️</span>
+      <div><b>الخطأ الأشيع</b>
+        القفز مباشرة إلى Unreal لأن ألعابه تبدو مبهرة. المحرّك لا يصنع اللعبة — أنت تصنعها.
+        لعبة صغيرة <em>أنهيتَها</em> بـ pygame تعلّمك أضعاف ما يعلّمك مشروع Unreal ضخم تركتَه بعد أسبوع.</div>
+    </div>
+  </section>
+
+  <div class="foot">
+    <p>جزء من منصّة <b>إتقان بايثون</b> — <a href="./" style="color:var(--brand)">عد إلى الدروس</a></p>
+  </div>
+
+</div>
+
+<script>
+  try {
+    var pref = localStorage.getItem('etqan.theme');
+    if (!pref) pref = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.dataset.theme = pref;
+  } catch (e) {}
+</script>
+<script src="assets/js/highlight.js"></script>
+<script>
+  /* لوّن كتل الكود بنفس مُلوِّن المنصّة */
+  document.querySelectorAll('pre > code').forEach(function (el) {
+    el.innerHTML = window.Highlight.code(el.textContent);
+  });
+</script>
+</body>
+</html>
