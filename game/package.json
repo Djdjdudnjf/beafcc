@@ -1,0 +1,16 @@
+{
+  "name": "andalus-game",
+  "version": "1.0.0",
+  "private": true,
+  "description": "أنْدَلُس — سيفٌ في الغرب: لعبة أكشن تاريخية أندلسية تعمل في المتصفح.",
+  "type": "module",
+  "scripts": {
+    "build": "node tools/build-single.mjs",
+    "icons": "node tools/make-icons.mjs",
+    "test": "node tools/test.mjs",
+    "serve": "node tools/serve.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.49.0"
+  }
+}
