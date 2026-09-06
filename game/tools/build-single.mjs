@@ -32,6 +32,7 @@ const FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com">\n' +
   '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;800;900&display=swap">';
 
 const TITLE = 'أنْدَلُس — سيفٌ في الغرب';
+const ARTIFACT_TITLE = 'أنْدَلُس';
 
 /* ---------- 1) نسخة الصفحة الكاملة (تعمل بفتح الملف مباشرة) ---------- */
 const full = `<!doctype html>
@@ -62,7 +63,8 @@ ${js}
 fs.writeFileSync(path.join(DIST, 'andalus.html'), full);
 
 /* ---------- 2) نسخة Artifact (بلا doctype/html/head/body) ---------- */
-const artifact = `<title>${TITLE}</title>
+const artifact = `<title>${ARTIFACT_TITLE}</title>
+<script>document.documentElement.setAttribute('dir','rtl');document.documentElement.setAttribute('lang','ar');</script>
 ${FONTS}
 <style>
 ${css}

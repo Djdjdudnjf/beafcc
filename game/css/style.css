@@ -44,6 +44,7 @@
 
 html,body{
   margin:0;padding:0;height:100%;width:100%;
+  direction:rtl;
   overflow:hidden;position:fixed;inset:0;
   background:var(--ink);
   color:var(--sand);
