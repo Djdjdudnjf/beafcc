@@ -31,8 +31,8 @@ const FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com">\n' +
   '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
   '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;800;900&display=swap">';
 
-const TITLE = 'أنْدَلُس — سيفٌ في الغرب';
-const ARTIFACT_TITLE = 'أنْدَلُس';
+const TITLE = 'الفُتوح — ٥٧ معركة';
+const ARTIFACT_TITLE = 'الفُتوح';
 
 /* ---------- 1) نسخة الصفحة الكاملة (تعمل بفتح الملف مباشرة) ---------- */
 const full = `<!doctype html>
@@ -43,7 +43,7 @@ const full = `<!doctype html>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="أندلس">
+<meta name="apple-mobile-web-app-title" content="الفتوح">
 <meta name="theme-color" content="#0a0806">
 <title>${TITLE}</title>
 ${FONTS}
@@ -60,7 +60,7 @@ ${js}
 </body>
 </html>
 `;
-fs.writeFileSync(path.join(DIST, 'andalus.html'), full);
+fs.writeFileSync(path.join(DIST, 'futuh.html'), full);
 
 /* ---------- 2) نسخة Artifact (بلا doctype/html/head/body) ---------- */
 const artifact = `<title>${ARTIFACT_TITLE}</title>
@@ -78,5 +78,5 @@ ${js}
 fs.writeFileSync(path.join(DIST, 'artifact.html'), artifact);
 
 const kb = (s) => (Buffer.byteLength(s, 'utf8') / 1024).toFixed(0) + ' KB';
-console.log('✓ dist/andalus.html  ', kb(full));
+console.log('✓ dist/futuh.html    ', kb(full));
 console.log('✓ dist/artifact.html ', kb(artifact));

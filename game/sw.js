@@ -1,5 +1,5 @@
 /* عامل الخدمة — يجعل اللعبة تعمل بلا إنترنت بعد أول فتح */
-var CACHE = 'andalus-v1';
+var CACHE = 'futuh-v1';
 var ASSETS = [
   './',
   './index.html',

@@ -1,8 +1,8 @@
 {
-  "name": "andalus-game",
+  "name": "futuh-game",
   "version": "1.0.0",
   "private": true,
-  "description": "أنْدَلُس — سيفٌ في الغرب: لعبة أكشن تاريخية أندلسية تعمل في المتصفح.",
+  "description": "الفُتوح: ٥٧ معركة حقيقية من تاريخ الفتوحات الإسلامية، تعمل في المتصفح.",
   "type": "module",
   "scripts": {
     "build": "node tools/build-single.mjs",

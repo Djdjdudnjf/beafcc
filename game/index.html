@@ -6,10 +6,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="أندلس">
+<meta name="apple-mobile-web-app-title" content="الفتوح">
 <meta name="theme-color" content="#0a0806">
-<meta name="description" content="أندلس — سيفٌ في الغرب. لعبة أكشن تاريخية عبر ثمانية أقاليم أندلسية.">
-<title>أنْدَلُس — سيفٌ في الغرب</title>
+<meta name="description" content="الفُتوح — ٥٧ معركة حقيقية من تاريخ الفتوحات الإسلامية، تقود فيها جيشك بنفسك.">
+<title>الفُتوح — ٥٧ معركة</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/favicon.png" sizes="64x64">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -33,18 +33,22 @@
         <div class="vitals">
           <div class="portrait" id="hudPortrait"><canvas id="portraitCv" width="96" height="96"></canvas></div>
           <div class="bars">
-            <div class="bar hp"><i id="hpFill"></i><b id="hpShield"></b><span id="hpText">100</span></div>
-            <div class="bar ult"><i id="ultFill"></i><span id="ultText">قاضية</span></div>
+            <div class="bar hp"><i id="hpFill"></i><b id="hpShield"></b><span id="hpText">١٠٠</span></div>
+            <div class="bar ult"><i id="ultFill"></i><span id="ultText">الرّاية</span></div>
           </div>
         </div>
       </div>
       <div class="hud-center">
-        <div class="wave-chip"><b id="waveLabel">الموجة ١</b><small id="regionLabel">جبل طارق</small></div>
-        <div class="enemy-track"><i id="enemyTrackFill"></i></div>
+        <div class="wave-chip"><b id="waveLabel">المعركة</b><small id="regionLabel">—</small></div>
+        <div class="armies">
+          <span class="side ours"><i></i><b id="armyOurs">٠</b></span>
+          <div class="enemy-track"><i id="enemyTrackFill"></i></div>
+          <span class="side theirs"><b id="armyTheirs">٠</b><i></i></span>
+        </div>
       </div>
       <div class="hud-side left">
         <button id="btnPause" class="icon-btn" aria-label="إيقاف مؤقت"><svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg></button>
-        <div class="gold-chip"><span class="coin"></span><span id="goldText">0</span></div>
+        <div class="gold-chip"><span class="coin"></span><span id="goldText">٠</span></div>
       </div>
     </div>
 
@@ -54,7 +58,6 @@
     </div>
 
     <div class="combo" id="comboBox"><b id="comboVal">0</b><span>متتالية</span></div>
-    <div class="perk-strip" id="perkStrip"></div>
     <div class="wave-banner" id="waveBanner"><b></b><small></small></div>
 
     <div class="pads">
@@ -62,9 +65,9 @@
         <svg viewBox="0 0 24 24"><path d="M3 12h11M9.5 7l5 5-5 5M18 5v14"/></svg>
         <span>اندفاع</span><i class="charges" id="dashCharges"></i>
       </button>
-      <button class="pad ult" id="padUlt" aria-label="ضربة قاضية">
-        <svg viewBox="0 0 24 24"><path d="M12 2.5l2.7 6.8L21.5 12l-6.8 2.7L12 21.5l-2.7-6.8L2.5 12l6.8-2.7z"/></svg>
-        <span id="ultName">قاضية</span><i class="cover" id="ultCover"></i>
+      <button class="pad ult" id="padUlt" aria-label="ارفع الراية">
+        <svg viewBox="0 0 24 24"><path d="M6 21V3M6 4h12l-2.5 4L18 12H6"/></svg>
+        <span id="ultName">الرّاية</span><i class="cover" id="ultCover"></i>
       </button>
     </div>
   </div>
@@ -73,46 +76,36 @@
   <section class="screen active" id="screen-title">
     <div class="title-wrap">
       <div class="crest"><canvas id="crestCv" width="220" height="220"></canvas></div>
-      <h1 class="logo">أنْدَلُس</h1>
-      <p class="tag">سَيْفٌ في الغَرْب</p>
+      <h1 class="logo">الفُتُوح</h1>
+      <p class="tag">سَبْعٌ وخَمْسونَ مَعْرَكة</p>
       <div class="menu">
-        <button class="btn primary" data-go="play"><b>ابدأ المسير</b><small id="titleContinue">جبل طارق · الموجة ١</small></button>
-        <button class="btn" data-go="heroes">الأبطال</button>
-        <button class="btn" data-go="regions">الأقاليم</button>
-        <button class="btn" data-go="forge">دار الصَّنْعة</button>
-        <button class="btn" data-go="codex">السِّجل</button>
+        <button class="btn primary" data-go="play"><b>واصِلِ الفَتْح</b><small id="titleContinue">—</small></button>
+        <button class="btn" data-go="stages">المَعارِك</button>
+        <button class="btn" data-go="armory">دارُ السِّلاح</button>
+        <button class="btn" data-go="log">سِجِلُّ المَعارِك</button>
         <button class="btn ghost" data-go="settings">الإعدادات</button>
       </div>
       <div class="title-foot"><span id="titleStats">—</span></div>
     </div>
   </section>
 
-  <!-- ============================ HEROES ============================ -->
-  <section class="screen" id="screen-heroes">
-    <header class="bar-head"><button class="back" data-go="title">رجوع ›</button><h2>اختر بطلك</h2><span class="gold-chip small"><span class="coin"></span><span data-gold>0</span></span></header>
-    <div class="hero-wrap">
-      <div class="hero-grid" id="heroGrid"></div>
-      <div class="hero-detail" id="heroDetail"></div>
-    </div>
+  <!-- ============================ STAGES ============================ -->
+  <section class="screen" id="screen-stages">
+    <header class="bar-head"><button class="back" data-go="title">رجوع ›</button><h2>المَعارِك</h2><span class="gold-chip small"><span class="coin"></span><span data-gold>٠</span></span></header>
+    <div class="stage-scroll" id="stageScroll"></div>
   </section>
 
-  <!-- ============================ REGIONS ============================ -->
-  <section class="screen" id="screen-regions">
-    <header class="bar-head"><button class="back" data-go="title">رجوع ›</button><h2>أقاليم الأندلس</h2><span class="gold-chip small"><span class="coin"></span><span data-gold>0</span></span></header>
-    <div class="region-scroll" id="regionScroll"></div>
+  <!-- ============================ ARMORY ============================ -->
+  <section class="screen" id="screen-armory">
+    <header class="bar-head"><button class="back" data-go="title">رجوع ›</button><h2>دارُ السِّلاح</h2><span class="gold-chip small"><span class="coin"></span><span data-gold>٠</span></span></header>
+    <p class="screen-note" id="armoryNote">تطويراتٌ دائمة تبقى معك في كل معركة.</p>
+    <div class="forge-grid" id="armoryGrid"></div>
   </section>
 
-  <!-- ============================ FORGE ============================ -->
-  <section class="screen" id="screen-forge">
-    <header class="bar-head"><button class="back" data-go="title">رجوع ›</button><h2>دار الصَّنْعة</h2><span class="gold-chip small"><span class="coin"></span><span data-gold>0</span></span></header>
-    <p class="screen-note">تطويرات دائمة تبقى معك في كل جولة.</p>
-    <div class="forge-grid" id="forgeGrid"></div>
-  </section>
-
-  <!-- ============================ CODEX ============================ -->
-  <section class="screen" id="screen-codex">
-    <header class="bar-head"><button class="back" data-go="title">رجوع ›</button><h2>سِجل الأندلس</h2><span class="codex-count" id="codexCount">٠/٠</span></header>
-    <div class="codex-list" id="codexList"></div>
+  <!-- ============================ LOG ============================ -->
+  <section class="screen" id="screen-log">
+    <header class="bar-head"><button class="back" data-go="title">رجوع ›</button><h2>سِجِلُّ المَعارِك</h2><span class="codex-count" id="logCount">٠/٥٧</span></header>
+    <div class="codex-list" id="logList"></div>
   </section>
 
   <!-- ============================ SETTINGS ============================ -->
@@ -122,12 +115,29 @@
   </section>
 
   <!-- ============================ OVERLAYS ============================ -->
+  <div class="overlay" id="ov-brief">
+    <div class="ov-inner narrow">
+      <span class="brief-era" id="briefEra">—</span>
+      <h3 class="ov-title" id="briefName">—</h3>
+      <p class="ov-sub" id="briefWhen">—</p>
+      <div class="brief-box">
+        <div class="brief-row"><span>الخَصْم</span><b id="briefFoe">—</b></div>
+        <div class="brief-row"><span>جَيْشُك</span><b id="briefOurs">—</b></div>
+        <div class="brief-row"><span>جَيْشُهم</span><b id="briefTheirs">—</b></div>
+      </div>
+      <p class="brief-note" id="briefNote">—</p>
+      <div class="menu">
+        <button class="btn primary" id="btnStartBattle">اِبْدأِ المَعْرَكة</button>
+        <button class="btn ghost" id="btnBriefBack">رجوع</button>
+      </div>
+    </div>
+  </div>
+
   <div class="overlay" id="ov-cards">
     <div class="ov-inner">
-      <h3 class="ov-title">اختر غنيمتك</h3>
-      <p class="ov-sub" id="cardsSub">—</p>
+      <h3 class="ov-title">غَنائِمُ النَّصْر</h3>
+      <p class="ov-sub" id="cardsSub">اختر واحدة</p>
       <div class="cards" id="cardRow"></div>
-      <button class="btn tiny ghost" id="btnReroll">تبديل البطاقات · <span id="rerollLeft">١</span></button>
     </div>
   </div>
 
@@ -145,23 +155,24 @@
 
   <div class="overlay" id="ov-defeat">
     <div class="ov-inner narrow">
-      <h3 class="ov-title fail">سقطتَ في الميدان</h3>
+      <h3 class="ov-title fail">اِنكَسَرَ جَيْشُك</h3>
       <div class="run-stats" id="defeatStats"></div>
       <div class="menu">
-        <button class="btn primary" id="btnRetry">كرّة أخرى</button>
-        <button class="btn ghost" id="btnDefeatHome">إلى القاعة</button>
+        <button class="btn primary" id="btnRetry">كَرّةٌ أُخرى</button>
+        <button class="btn" id="btnDefeatArmory">دارُ السِّلاح</button>
+        <button class="btn ghost" id="btnDefeatHome">إلى الخَيْمة</button>
       </div>
     </div>
   </div>
 
   <div class="overlay" id="ov-victory">
     <div class="ov-inner">
-      <h3 class="ov-title win" id="victoryTitle">فَتْح!</h3>
-      <div class="codex-card" id="victoryCodex"></div>
+      <h3 class="ov-title win" id="victoryTitle">نَصْر!</h3>
+      <div class="codex-card" id="victoryNote"></div>
       <div class="run-stats" id="victoryStats"></div>
       <div class="menu row">
-        <button class="btn primary" id="btnNextRegion">الإقليم التالي</button>
-        <button class="btn ghost" id="btnVictoryHome">إلى القاعة</button>
+        <button class="btn primary" id="btnNextStage">المعركةُ التالية</button>
+        <button class="btn ghost" id="btnVictoryHome">إلى الخَيْمة</button>
       </div>
     </div>
   </div>

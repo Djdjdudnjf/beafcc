@@ -584,3 +584,79 @@ body.no-rotate-hint #rotateHint{display:none !important}
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-thumb{background:rgba(233,205,150,.22);border-radius:99px}
 ::-webkit-scrollbar-track{background:transparent}
+
+/* ===================== الفُتوح: عدّاد الجيشين ===================== */
+.armies{display:flex;align-items:center;gap:8px}
+.armies .side{display:flex;align-items:center;gap:5px;font-weight:800;font-size:12px;
+  background:rgba(9,6,4,.66);border:1px solid var(--line);border-radius:999px;padding:3px 10px;backdrop-filter:blur(6px)}
+.armies .side i{width:8px;height:8px;border-radius:2px;display:block}
+.armies .side.ours{color:#8fe0b8}
+.armies .side.ours i{background:#4fd39b;box-shadow:0 0 8px rgba(79,211,155,.6)}
+.armies .side.theirs{color:#f0a08c}
+.armies .side.theirs i{background:#e0573f;box-shadow:0 0 8px rgba(224,87,63,.6)}
+
+/* ===================== شاشة المعارك ===================== */
+.stage-scroll{
+  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;padding-bottom:16px;
+}
+.ch-head{
+  display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  margin:14px 2px 8px;padding-bottom:6px;border-bottom:1px solid var(--line);
+}
+.ch-head:first-child{margin-top:0}
+.ch-head h3{margin:0;font-family:var(--display);font-size:19px;color:var(--gold-hi);font-weight:700}
+.ch-head small{display:block;font-size:10.5px;color:var(--muted);margin-top:2px}
+.ch-count{font-size:12px;font-weight:800;color:var(--muted);white-space:nowrap}
+
+.stage-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.stage-card{
+  position:relative;border:1px solid var(--line);border-radius:var(--r-md);
+  padding:10px 12px 11px;cursor:pointer;overflow:hidden;min-height:76px;
+  display:flex;flex-direction:column;justify-content:flex-end;gap:2px;
+  transition:transform .12s,border-color .2s,box-shadow .2s;
+}
+.stage-card:active{transform:scale(.97)}
+.stage-card b{font-family:var(--display);font-size:16px;color:#fdf3dd;font-weight:700;line-height:1.2}
+.stage-card small{font-size:10px;color:rgba(240,228,200,.62)}
+.stage-card .sn{
+  position:absolute;top:7px;inset-inline-end:10px;font-family:var(--display);
+  font-size:20px;font-weight:700;color:rgba(255,240,210,.28);
+}
+.stage-card .tick{position:absolute;top:8px;inset-inline-start:10px;font-size:13px;color:#7fe0a8;font-weight:900}
+.stage-card .lockic{position:absolute;top:8px;inset-inline-start:10px;font-size:12px;opacity:.8}
+.stage-card.done{border-color:rgba(79,211,155,.45)}
+.stage-card.locked{filter:grayscale(.8) brightness(.55);cursor:default}
+
+/* ===================== بطاقة التعريف بالمعركة ===================== */
+.brief-era{font-size:10.5px;letter-spacing:.16em;color:var(--gold-lo);font-weight:800}
+.brief-box{
+  width:100%;display:flex;flex-direction:column;gap:5px;
+  border:1px solid var(--line);border-radius:var(--r-md);padding:10px 13px;background:rgba(0,0,0,.28);
+}
+.brief-row{display:flex;align-items:center;justify-content:space-between;font-size:12.5px}
+.brief-row span{color:var(--muted)}
+.brief-row b{color:var(--sand);font-weight:800}
+.brief-note{
+  margin:0;font-family:var(--display);font-size:13.5px;line-height:1.95;color:#d9cdb4;text-align:start;
+  border-inline-start:2px solid var(--line-2);padding-inline-start:12px;
+}
+
+/* ===================== غنائم النصر ===================== */
+.card .rwv{
+  font-family:var(--display);font-size:26px;font-weight:700;
+  color:var(--rc,var(--gold-hi));text-shadow:0 2px 14px rgba(0,0,0,.6);
+}
+.card.r-legend{border-color:var(--rc,rgba(246,212,137,.8));box-shadow:0 6px 34px rgba(0,0,0,.4)}
+.card.r-legend .ci{background:color-mix(in srgb,var(--rc,#d8a445) 18%,transparent)}
+.card.r-legend .ci svg{stroke:var(--rc,var(--gold-hi))}
+.card.r-legend::before{display:none}
+
+/* ===================== وسم النتيجة التاريخية ===================== */
+.oc{
+  font-style:normal;font-size:10px;font-weight:800;letter-spacing:.06em;
+  padding:2px 8px;border-radius:999px;vertical-align:middle;margin-inline-start:6px;
+  font-family:var(--ui);
+}
+.oc-good{background:rgba(79,211,155,.16);color:#8fe0b8;border:1px solid rgba(79,211,155,.35)}
+.oc-mid{background:rgba(216,164,69,.16);color:var(--gold-hi);border:1px solid rgba(216,164,69,.35)}
+.oc-bad{background:rgba(224,87,63,.16);color:#f0a08c;border:1px solid rgba(224,87,63,.35)}

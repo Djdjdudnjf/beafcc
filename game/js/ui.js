@@ -1,10 +1,10 @@
 /* ============================================================
-   ui.js — الشاشات، الـHUD، البطاقات، القوائم
+   ui.js — الشاشات، الـHUD، غنائم النصر، القوائم
    ============================================================ */
 (function (root) {
   'use strict';
   var MAL = root.MAL || (root.MAL = {});
-  var U = MAL.U, D = MAL.Data, S = MAL.Save, A = MAL.Audio, R = MAL.R, FX = MAL.FX;
+  var U = MAL.U, D = MAL.Data, S = MAL.Save, A = MAL.Audio, R = MAL.R;
 
   function $(id) { return document.getElementById(id); }
   function el(tag, cls, html) {
@@ -20,19 +20,10 @@
     }).join('') + '</svg>';
   }
 
-  var RAR = {
-    common: { n: 'شائعة', w: 62 },
-    rare: { n: 'نادرة', w: 26 },
-    epic: { n: 'ملحمية', w: 9.5 },
-    legend: { n: 'أسطورية', w: 2.5 }
-  };
-
   var UI = {
     game: null,
     screen: 'title',
-    selectedHero: 'faris',
-    cardChoices: [],
-    rerolls: 1,
+    briefIndex: 0,
     _hud: {},
     _toastT: null,
 
@@ -40,28 +31,35 @@
     init: function (game) {
       this.game = game;
       var self = this;
-      this.selectedHero = S.data.lastHero || 'faris';
-      if (!S.heroUnlocked(this.selectedHero)) this.selectedHero = 'faris';
 
-      // أزرار التنقل
       document.addEventListener('click', function (e) {
         var t = e.target.closest ? e.target.closest('[data-go]') : null;
         if (!t) return;
         var to = t.getAttribute('data-go');
         A.play(to === 'title' ? 'uiBack' : 'ui');
-        if (to === 'play') self.play();
+        if (to === 'play') self.playNext();
         else self.go(to);
       });
 
       $('btnPause').addEventListener('click', function () { self.pause(); });
       $('btnResume').addEventListener('click', function () { A.play('ui'); self.resume(); });
       $('btnPauseSettings').addEventListener('click', function () {
-        A.play('ui'); self.overlay('ov-pause', false); self.go('settings'); self._fromPause = true;
+        A.play('ui'); self.overlay('ov-pause', false); self._fromPause = true; self.go('settings');
       });
       $('btnQuit').addEventListener('click', function () { A.play('uiBack'); self.quit(); });
+
+      $('btnStartBattle').addEventListener('click', function () {
+        A.play('ui'); self.overlay('ov-brief', false); self.startBattle(self.briefIndex);
+      });
+      $('btnBriefBack').addEventListener('click', function () {
+        A.play('uiBack'); self.overlay('ov-brief', false);
+      });
+
       $('btnRetry').addEventListener('click', function () {
-        A.play('ui'); self.overlay('ov-defeat', false);
-        self.startGame(self.game.regionIdx, self.game.hero.id, self.game.endless);
+        A.play('ui'); self.overlay('ov-defeat', false); self.startBattle(self.game.stageIndex);
+      });
+      $('btnDefeatArmory').addEventListener('click', function () {
+        A.play('ui'); self.overlay('ov-defeat', false); self.quitToMenu(); self.go('armory');
       });
       $('btnDefeatHome').addEventListener('click', function () {
         A.play('uiBack'); self.overlay('ov-defeat', false); self.quit();
@@ -69,14 +67,12 @@
       $('btnVictoryHome').addEventListener('click', function () {
         A.play('uiBack'); self.overlay('ov-victory', false); self.quit();
       });
-      $('btnNextRegion').addEventListener('click', function () {
+      $('btnNextStage').addEventListener('click', function () {
         A.play('ui'); self.overlay('ov-victory', false);
-        var g = self.game;
-        var next = g.endless ? g.regionIdx : Math.min(D.regions.length - 1, g.regionIdx + 1);
-        if (!g.endless && next === g.regionIdx) { self.quit(); return; }
-        self.startGame(next, g.hero.id, g.endless);
+        var next = self.game.stageIndex + 1;
+        if (next >= D.total) { self.quit(); return; }
+        self.brief(next);
       });
-      $('btnReroll').addEventListener('click', function () { self.reroll(); });
 
       this.buildSettings();
       this.refreshTitle();
@@ -84,22 +80,20 @@
 
     /* ==================================================== */
     go: function (name) {
-      var screens = ['title', 'heroes', 'regions', 'forge', 'codex', 'settings'];
+      var screens = ['title', 'stages', 'armory', 'log', 'settings'];
       for (var i = 0; i < screens.length; i++) {
         var s = $('screen-' + screens[i]);
         if (s) s.classList.toggle('active', screens[i] === name);
       }
       this.screen = name;
-      if (name === 'heroes') this.buildHeroes();
-      if (name === 'regions') this.buildRegions();
-      if (name === 'forge') this.buildForge();
-      if (name === 'codex') this.buildCodex();
+      if (name === 'stages') this.buildStages();
+      if (name === 'armory') this.buildArmory();
+      if (name === 'log') this.buildLog();
       if (name === 'settings') this.buildSettings();
       if (name === 'title') {
         this.refreshTitle();
         if (this._fromPause) {
           this._fromPause = false;
-          $('screen-settings').classList.remove('active');
           $('screen-title').classList.remove('active');
           this.overlay('ov-pause', true);
         }
@@ -108,7 +102,7 @@
     },
 
     hideScreens: function () {
-      var screens = ['title', 'heroes', 'regions', 'forge', 'codex', 'settings'];
+      var screens = ['title', 'stages', 'armory', 'log', 'settings'];
       for (var i = 0; i < screens.length; i++) {
         var s = $('screen-' + screens[i]);
         if (s) s.classList.remove('active');
@@ -121,52 +115,61 @@
     },
 
     refreshTitle: function () {
-      var idx = S.nextRegionIndex(D.regions);
-      var r = D.regions[idx];
-      var hero = D.heroById(this.selectedHero);
-      $('titleContinue').textContent = r.name + ' · ' + hero.name;
-      var st = S.data.stats;
+      var idx = S.nextStage(D.total);
+      var st = D.stageAt(idx);
+      $('titleContinue').textContent = U.ar(idx + 1) + '. ' + st.n + ' · ' + st.hy;
+      var s = S.data.stats;
       $('titleStats').innerHTML =
-        'الأقاليم المفتوحة ' + U.frac(S.data.regionsUnlocked, D.regions.length) +
-        ' · القتلى ' + U.arGroup(st.kills || 0) +
+        'المعارك ' + U.frac(S.clearedCount(), D.total) +
+        ' · جيشك ' + U.ar(this.game.armySize()) +
+        ' · السيف +' + U.ar(S.campaign('sword')) + '٪' +
         ' · الذهب ' + U.arGroup(S.data.gold);
       this.refreshGold();
     },
 
     /* ==================================================== */
-    play: function () {
-      var idx = S.nextRegionIndex(D.regions);
-      this.startGame(idx, this.selectedHero, false);
+    playNext: function () { this.brief(S.nextStage(D.total)); },
+
+    /** بطاقةُ تعريفٍ بالمعركة قبل خوضها */
+    brief: function (idx) {
+      this.briefIndex = idx;
+      var setup = D.stageSetup(idx), s = setup.stage;
+      $('briefEra').textContent = U.ar(idx + 1) + ' / ' + U.ar(D.total) + ' · ' + setup.chapter.name;
+      $('briefName').textContent = s.n;
+      $('briefWhen').textContent = s.hy + ' — ' + s.ad + ' · ' + s.place;
+      $('briefFoe').textContent = setup.faction.name;
+      $('briefOurs').textContent = U.ar(this.game.armySize()) + ' مقاتلاً';
+      $('briefTheirs').textContent = U.ar(setup.foes) + ' مقاتلاً';
+      $('briefNote').textContent = s.note;
+      this.overlay('ov-brief', true);
     },
 
-    startGame: function (regionIdx, heroId, endless) {
+    startBattle: function (idx) {
       A.init(); A.resume();
-      S.data.lastHero = heroId; S.data.lastRegion = regionIdx; S.save();
       this.hideScreens();
-      this.overlay('ov-cards', false);
-      this.overlay('ov-pause', false);
-      this.overlay('ov-defeat', false);
-      this.overlay('ov-victory', false);
+      ['ov-brief', 'ov-cards', 'ov-pause', 'ov-defeat', 'ov-victory'].forEach(function (o) {
+        $(o).classList.remove('on');
+      });
       $('hud').classList.remove('hidden');
       $('bossBar').classList.add('hidden');
       $('hud').classList.remove('boss-on');
-      this.rerolls = 1;
       this._hud = {};
-      this.game.startRun(regionIdx, heroId, endless);
-      var hero = D.heroById(heroId);
-      $('ultName').textContent = hero.ult.name;
-      R.portrait($('portraitCv'), hero, 0);
-      this.buildPerks();
+      this.game.startBattle(idx);
+      R.portrait($('portraitCv'), D.hero, 0);
       this.updateHUD(this.game);
     },
 
-    quit: function () {
-      this.game.endRun();
+    quitToMenu: function () {
+      this.game.endBattle();
       $('hud').classList.add('hidden');
       $('bossBar').classList.add('hidden');
-      this.overlay('ov-pause', false);
-      this.overlay('ov-defeat', false);
-      this.overlay('ov-victory', false);
+    },
+
+    quit: function () {
+      this.quitToMenu();
+      ['ov-brief', 'ov-cards', 'ov-pause', 'ov-defeat', 'ov-victory'].forEach(function (o) {
+        $(o).classList.remove('on');
+      });
       this.go('title');
     },
 
@@ -212,9 +215,9 @@
       b.classList.add('show');
     },
 
-    showBoss: function (boss) {
-      $('bossName').textContent = boss.name;
-      $('bossTitle').textContent = boss.title;
+    showCommander: function (cmd) {
+      $('bossName').textContent = cmd.name;
+      $('bossTitle').textContent = cmd.faction;
       $('bossFill').style.width = '100%';
       $('bossFillLag').style.width = '100%';
       $('bossBar').classList.remove('hidden');
@@ -232,8 +235,6 @@
         $('hpFill').style.width = hpPct + '%';
         $('hpText').textContent = U.frac(Math.ceil(p.hp), Math.round(p.maxHp));
       }
-      var shPct = p.shieldMax > 0 ? U.clamp(p.shield / p.maxHp, 0, 1) * 100 : 0;
-      if (c.sh !== shPct) { c.sh = shPct; $('hpShield').style.width = shPct + '%'; }
 
       var ultPct = U.clamp(p.ult / p.ultMax, 0, 1) * 100;
       if (c.ult !== ultPct) {
@@ -247,24 +248,22 @@
 
       if (c.gold !== g.gold) { c.gold = g.gold; $('goldText').textContent = U.arGroup(g.gold); }
 
-      var wl = g.waveState === 'boss' ? 'الزعيم' : ('الموجة ' + (g.endless ? U.ar(g.wave) : U.frac(g.wave, g.totalWaves)));
-      if (c.wave !== wl) {
-        c.wave = wl;
-        $('waveLabel').textContent = wl;
-        $('regionLabel').textContent = g.region.name;
+      var name = g.setup ? g.setup.stage.n : '—';
+      if (c.name !== name) {
+        c.name = name;
+        $('waveLabel').textContent = name;
+        $('regionLabel').textContent = g.setup.stage.hy + ' · ' + g.setup.stage.place;
       }
 
-      var remain = g.spawnQueue.length + g.enemies.length;
-      var total = c.waveTotal || 1;
-      if (g.waveState === 'fight' && (c.waveNo !== g.wave)) {
-        c.waveNo = g.wave;
-        c.waveTotal = Math.max(1, g.spawnQueue.length + g.enemies.length);
-        total = c.waveTotal;
+      var ours = g.liveCount(MAL.FRIEND), theirs = g.liveCount(MAL.FOE) + g.foeQueue.length;
+      if (c.ours !== ours) { c.ours = ours; $('armyOurs').textContent = U.ar(ours); }
+      if (c.theirs !== theirs) {
+        c.theirs = theirs;
+        $('armyTheirs').textContent = U.ar(theirs);
+        var pct = U.clamp(theirs / Math.max(1, g.foeTotal), 0, 1) * 100;
+        $('enemyTrackFill').style.width = pct + '%';
       }
-      var pct = g.waveState === 'boss' ? 0 : U.clamp(remain / total, 0, 1) * 100;
-      if (c.track !== pct) { c.track = pct; $('enemyTrackFill').style.width = pct + '%'; }
 
-      // شحنات الاندفاع
       if (c.dash !== p.dashCharges || c.dashMax !== p.dashMax) {
         c.dash = p.dashCharges; c.dashMax = p.dashMax;
         var html = '';
@@ -273,7 +272,6 @@
         $('padDash').classList.toggle('cold', p.dashCharges === 0);
       }
 
-      // المتتالية
       var cb = $('comboBox');
       if (p.combo >= 3) {
         cb.classList.add('on');
@@ -281,288 +279,165 @@
         if (c.combo !== p.combo) { c.combo = p.combo; $('comboVal').textContent = U.ar(p.combo); }
       } else cb.classList.remove('on');
 
-      // شريط الزعيم
-      if (g.boss && !g.boss.remove) {
-        var bp = U.clamp(g.boss.hp / g.boss.maxHp, 0, 1) * 100;
+      if (g.commander && !g.commander.remove) {
+        var bp = U.clamp(g.commander.hp / g.commander.maxHp, 0, 1) * 100;
         if (c.boss !== bp) {
           c.boss = bp;
           $('bossFill').style.width = bp + '%';
           $('bossFillLag').style.width = bp + '%';
         }
+        c.bossShown = true;
       } else if (c.bossShown) {
         c.bossShown = false;
         $('bossBar').classList.add('hidden');
         $('hud').classList.remove('boss-on');
       }
-      if (g.boss && !g.boss.remove) c.bossShown = true;
-    },
-
-    buildPerks: function () {
-      var p = this.game.player, strip = $('perkStrip');
-      strip.innerHTML = '';
-      for (var id in p.upgrades) {
-        var up = D.upgradeById(id);
-        if (!up) continue;
-        var pip = el('div', 'perk-pip', icon(up.i) + (p.upgrades[id] > 1 ? '<u>' + U.ar(p.upgrades[id]) + '</u>' : ''));
-        pip.title = up.n;
-        strip.appendChild(pip);
-      }
     },
 
     /* ====================================================
-       بطاقات الغنيمة
+       غنائم النصر — ذهب / قوة السيف / عدد الجيش
        ==================================================== */
-    rollCards: function (n) {
-      var p = this.game.player, wave = this.game.wave;
-      var pool = D.upgrades.filter(function (u) {
-        return (p.upgrades[u.id] || 0) < u.max;
-      });
-      var out = [];
-      var bonus = Math.min(2.4, 1 + wave * 0.09);
-      for (var i = 0; i < n && pool.length; i++) {
-        var pickIdx = -1;
-        var choice = U.weightedPick(pool, function (u) {
-          var w = RAR[u.r].w;
-          if (u.r === 'epic') w *= bonus;
-          if (u.r === 'legend') w *= bonus * 1.2;
-          return w;
-        });
-        pickIdx = pool.indexOf(choice);
-        if (pickIdx >= 0) pool.splice(pickIdx, 1);
-        out.push(choice);
-      }
-      return out;
+    rewardValues: function (idx) {
+      return {
+        gold: 70 + idx * 16,
+        sword: 7 + Math.floor(idx / 12),
+        army: 2 + Math.floor(idx / 14)
+      };
     },
 
-    showCards: function (g) {
+    showRewards: function (g) {
       var self = this;
-      g.state = 'cards';
-      MAL.Input.enabled = false;
-      MAL.Input.clear();
+      var idx = g.stageIndex;
+      var vals = this.rewardValues(idx);
+      $('cardsSub').textContent = 'نُصِرتَ في ' + g.setup.stage.n + ' — اختر غنيمتك';
+      var row = $('cardRow');
+      row.innerHTML = '';
+      D.rewards.forEach(function (rw) {
+        var v = vals[rw.id];
+        var card = el('div', 'card r-legend');
+        card.style.setProperty('--rc', rw.color);
+        card.innerHTML =
+          '<div class="ci">' + icon(rw.i) + '</div>' +
+          '<b>' + rw.n + '</b>' +
+          '<p>' + rw.d(v) + '</p>' +
+          '<span class="rwv">+' + (rw.id === 'sword' ? U.ar(v) + '٪' : U.arGroup(v)) + '</span>';
+        card.addEventListener('click', function () { self.takeReward(rw.id, v, g); });
+        row.appendChild(card);
+      });
       A.play('card');
-      $('cardsSub').textContent = 'الموجة ' + U.ar(g.wave) + ' انتهت — اختر واحدة';
-      this.cardChoices = this.rollCards(3);
-      this.renderCards();
-      $('rerollLeft').textContent = U.ar(this.rerolls);
-      $('btnReroll').style.display = this.rerolls > 0 ? 'flex' : 'none';
       this.overlay('ov-cards', true);
     },
 
-    renderCards: function () {
-      var row = $('cardRow'), self = this;
-      row.innerHTML = '';
-      if (!this.cardChoices.length) {
-        var none = el('div', 'card r-common', '<div class="ci">' + icon('coin') + '</div><b>ذهبٌ إضافي</b><p>لا مزيد من الترقيات — خذ ١٠٠ ذهب.</p>');
-        none.addEventListener('click', function () { self.game.gold += 100; self.pickCard(null); });
-        row.appendChild(none);
-        return;
+    takeReward: function (id, v, g) {
+      if (id === 'gold') { S.addGold(v + g.gold); this.toast('غنمتَ ' + U.arGroup(v + g.gold) + ' ديناراً'); }
+      else {
+        S.addGold(g.gold);
+        if (id === 'sword') { S.addCampaign('sword', v); this.toast('قوةُ سيفك +' + U.ar(v) + '٪'); }
+        else { S.addCampaign('army', v); this.toast('انضمّ إليك ' + U.ar(v) + ' من الجند'); }
       }
-      this.cardChoices.forEach(function (up, i) {
-        var p = self.game.player;
-        var have = p.upgrades[up.id] || 0;
-        var card = el('div', 'card r-' + up.r);
-        card.innerHTML =
-          (have ? '<span class="stack">×' + U.ar(have) + '</span>' : '') +
-          '<div class="ci">' + icon(up.i) + '</div>' +
-          '<span class="rar">' + RAR[up.r].n + '</span>' +
-          '<b>' + up.n + '</b>' +
-          '<p>' + up.d + '</p>';
-        card.addEventListener('click', function () { self.pickCard(up); });
-        row.appendChild(card);
-      });
-    },
-
-    reroll: function () {
-      if (this.rerolls <= 0) { A.play('deny'); return; }
-      this.rerolls--;
       A.play('card');
-      this.cardChoices = this.rollCards(3);
-      this.renderCards();
-      $('rerollLeft').textContent = U.ar(this.rerolls);
-      if (this.rerolls <= 0) $('btnReroll').style.display = 'none';
-    },
-
-    pickCard: function (up) {
-      var g = this.game;
-      if (up) {
-        g.player.addUpgrade(up);
-        A.play('card');
-        this.toast(up.n + ' — ' + up.d);
-      }
-      this.buildPerks();
       this.overlay('ov-cards', false);
-      g.state = 'playing';
-      MAL.Input.enabled = true;
-      g.waveState = 'idle';
-      g.nextWave();
+      this.showVictoryScreen(g);
     },
 
     /* ====================================================
-       نهايات الجولة
+       نهايات المعركة
        ==================================================== */
     runStats: function (g) {
       var p = g.player;
       return '' +
-        '<div class="rs"><b>' + U.ar(g.wave) + '</b><span>الموجة</span></div>' +
         '<div class="rs"><b>' + U.arGroup(p.stats.kills) + '</b><span>القتلى</span></div>' +
-        '<div class="rs"><b>' + U.arGroup(g.gold) + '</b><span>الذهب</span></div>' +
-        '<div class="rs"><b>' + U.arGroup(Math.round(p.stats.dmgDealt)) + '</b><span>الضرر</span></div>' +
+        '<div class="rs"><b>' + U.ar(g.liveCount(MAL.FRIEND)) + '</b><span>من جيشك</span></div>' +
+        '<div class="rs"><b>' + U.arGroup(g.gold) + '</b><span>الغنيمة</span></div>' +
         '<div class="rs"><b>' + U.arTime(g.runTime) + '</b><span>الزمن</span></div>';
     },
 
-    showDefeat: function (g, reward) {
-      $('defeatStats').innerHTML = this.runStats(g) +
-        '<div class="rs"><b>+' + U.arGroup(reward) + '</b><span>ذهب مكتسب</span></div>';
-      this.overlay('ov-defeat', true);
-      this.checkUnlocks();
-      this.refreshTitle();
+    showVictory: function (g, first) {
+      this.showRewards(g);
     },
 
-    showVictory: function (g, reward) {
-      var cx = g.region.codex;
-      var isNew = S.seeCodex(cx.id);
-      $('victoryTitle').textContent = g.endless ? 'صمَدْت!' : 'فَتَحْتَ ' + g.region.name;
-      $('victoryCodex').innerHTML =
-        '<span class="ck">' + cx.k + (isNew ? ' · جديد' : '') + '</span>' +
-        '<h4>' + cx.title + '</h4><p>' + cx.text + '</p>';
-      $('victoryStats').innerHTML = this.runStats(g) +
-        '<div class="rs"><b>+' + U.arGroup(reward) + '</b><span>ذهب مكتسب</span></div>';
-      var last = g.regionIdx >= D.regions.length - 1;
-      $('btnNextRegion').style.display = (last && !g.endless) ? 'none' : '';
+    showVictoryScreen: function (g) {
+      var s = g.setup.stage;
+      var last = g.stageIndex >= D.total - 1;
+      $('victoryTitle').textContent = last ? 'تَمَّ الفَتْح!' : ('فُتِحَت ' + s.n);
+      $('victoryNote').innerHTML =
+        '<span class="ck">' + s.hy + ' — ' + s.ad + ' · ' + s.place + '</span>' +
+        '<h4>' + s.n + ' <em class="oc oc-' + this.outcomeClass(s.outcome) + '">' + s.outcome + ' تاريخياً</em></h4>' +
+        '<p>' + s.note + '</p>';
+      $('victoryStats').innerHTML = this.runStats(g);
+      $('btnNextStage').style.display = last ? 'none' : '';
       this.overlay('ov-victory', true);
-      this.checkUnlocks();
       this.refreshTitle();
     },
 
-    checkUnlocks: function () {
-      var st = S.data.stats, msgs = [];
-      function unlock(id, cond) {
-        if (cond && !S.hasCodex(id)) { S.seeCodex(id); msgs.push(id); }
-      }
-      unlock('cx_zahrawi', (st.bosses || 0) >= 1);
-      unlock('cx_firnas', (st.kills || 0) >= 500);
-      var cleared = 0;
-      for (var i = 0; i < D.regions.length; i++) if (S.isCleared(D.regions[i].id)) cleared++;
-      unlock('cx_ziryab', cleared >= 3);
-      unlock('cx_hazm', (st.perfectWaves || 0) >= 10);
-      unlock('cx_mayrit', cleared >= D.regions.length);
-      if (msgs.length) this.toast('فُتحت صفحة جديدة في السجل التاريخي');
+    outcomeClass: function (o) {
+      if (o === 'هزيمة') return 'bad';
+      if (o === 'صلح' || o === 'انسحاب') return 'mid';
+      return 'good';
+    },
+
+    showDefeat: function (g, keep) {
+      $('defeatStats').innerHTML = this.runStats(g) +
+        '<div class="rs"><b>+' + U.arGroup(keep) + '</b><span>ذهب</span></div>';
+      this.overlay('ov-defeat', true);
+      S.bumpStat('deaths', 1);
+      S.save();
+      this.refreshTitle();
     },
 
     /* ====================================================
-       شاشة الأبطال
+       شاشة المعارك (٥٧ مرحلة في ٩ فصول)
        ==================================================== */
-    buildHeroes: function () {
-      var grid = $('heroGrid'), self = this;
-      grid.innerHTML = '';
-      D.heroes.forEach(function (h) {
-        var unlocked = S.heroUnlocked(h.id);
-        var card = el('div', 'hero-card' + (h.id === self.selectedHero ? ' sel' : '') + (unlocked ? '' : ' locked'));
-        var cv = el('canvas'); cv.width = 104; cv.height = 104;
-        card.appendChild(cv);
-        var txt = el('div', 'hc-txt', '<b>' + h.name + '</b><small>' + h.title + '</small>');
-        card.appendChild(txt);
-        if (!unlocked) card.appendChild(el('span', 'lock', U.arGroup(h.cost) + ' ذهب'));
-        R.portrait(cv, h, 0);
-        card.addEventListener('click', function () {
-          A.play('ui');
-          if (!unlocked) {
-            if (S.spendGold(h.cost)) {
-              S.unlockHero(h.id);
-              self.selectedHero = h.id;
-              self.toast('انضمّ إليك ' + h.name + '!');
-              A.play('card');
-            } else { A.play('deny'); self.toast('تحتاج ' + U.arGroup(h.cost - S.data.gold) + ' ذهباً إضافياً'); }
-          } else {
-            self.selectedHero = h.id;
-            S.data.lastHero = h.id; S.save();
-          }
-          self.buildHeroes();
-          self.refreshGold();
-        });
-        grid.appendChild(card);
-      });
-      this.buildHeroDetail();
-    },
-
-    buildHeroDetail: function () {
-      var h = D.heroById(this.selectedHero), box = $('heroDetail');
-      var statsHtml = '';
-      for (var k in h.stats) {
-        statsHtml += '<div class="stat-row"><span>' + k + '</span><div class="stat-bar"><i style="width:' +
-          (h.stats[k] / 5 * 100) + '%"></i></div></div>';
-      }
-      box.innerHTML =
-        '<div class="hd-head"><canvas width="156" height="156"></canvas><div>' +
-        '<h3>' + h.name + '</h3><p>' + h.desc + '</p></div></div>' +
-        statsHtml +
-        '<div class="ability"><b>الضربة القاضية · ' + h.ult.name + '</b><p>' + h.ult.desc + '</p></div>' +
-        '<div class="ability"><b>السلاح</b><p>' +
-        (h.weapon === 'bow' ? 'قوسٌ عربي — يرمي من بعيد، ومداه ' + U.ar(h.range) + ' خطوة.' :
-         h.weapon === 'shield' ? 'درقةٌ ودبّوس — تصدّ ' + U.ar(h.block * 100) + '٪ من الضرر القادم من أمامك.' :
-         h.weapon === 'daggers' ? 'خنجران — أسرع ضربة في الأندلس، وفرصة حرجة ' + U.ar(h.crit * 100) + '٪.' :
-         'سيفٌ أندلسي — كل ثالث ضربة قاصمةٌ تدفع الصفوف.') + '</p></div>';
-      R.portrait(box.querySelector('canvas'), h, 0);
-    },
-
-    /* ====================================================
-       شاشة الأقاليم
-       ==================================================== */
-    buildRegions: function () {
-      var wrap = $('regionScroll'), self = this;
+    buildStages: function () {
+      var wrap = $('stageScroll'), self = this;
       wrap.innerHTML = '';
-      D.regions.forEach(function (r, i) {
-        var unlocked = S.regionUnlocked(i);
-        var cleared = S.isCleared(r.id);
-        var card = el('div', 'region-card' + (unlocked ? '' : ' locked') + (cleared ? ' done' : ''));
-        var cv = el('canvas'); cv.width = 320; cv.height = 200;
-        card.appendChild(cv);
-        card.appendChild(el('div', 'rc-sh'));
-        card.appendChild(el('div', 'idx', U.ar(i + 1)));
-        var body = el('div', 'rc-body',
-          '<h3>' + r.name + '</h3><p>' + r.sub + '</p>' +
-          (S.getBest(r.id) ? '<div class="best">أفضل موجة: ' + U.ar(S.getBest(r.id)) + (cleared ? ' · فُتح' : '') + '</div>' : ''));
-        card.appendChild(body);
-        if (!unlocked) card.appendChild(el('div', 'lock-tag', '🔒 أكمل الإقليم السابق'));
-        R.regionThumb(cv, r, 0);
-        card.addEventListener('click', function () {
-          if (!unlocked) { A.play('deny'); self.toast('عليك فتح ' + D.regions[i - 1].name + ' أولاً'); return; }
-          A.play('ui');
-          self.startGame(i, self.selectedHero, false);
-        });
-        wrap.appendChild(card);
-      });
+      D.chapters.forEach(function (ch, ci) {
+        var idxs = D.chapterStages(ci);
+        var doneN = 0;
+        idxs.forEach(function (i) { if (S.stageCleared(i)) doneN++; });
 
-      // وضع الأبدية
-      var anyCleared = S.isCleared(D.regions[0].id);
-      var e = el('div', 'region-card' + (anyCleared ? '' : ' locked'));
-      var cv2 = el('canvas'); cv2.width = 320; cv2.height = 200;
-      e.appendChild(cv2);
-      e.appendChild(el('div', 'rc-sh'));
-      e.appendChild(el('div', 'idx', '∞'));
-      e.appendChild(el('div', 'rc-body',
-        '<h3>حِصارٌ لا ينتهي</h3><p>موجاتٌ بلا نهاية · زعيمٌ كل ٦ موجات</p>' +
-        (S.data.stats.bestEndless ? '<div class="best">أفضل رقم: ' + U.ar(S.data.stats.bestEndless) + '</div>' : '')));
-      if (!anyCleared) e.appendChild(el('div', 'lock-tag', '🔒 أكمل جبل طارق أولاً'));
-      R.regionThumb(cv2, D.regions[D.regions.length - 1], 0);
-      e.addEventListener('click', function () {
-        if (!anyCleared) { A.play('deny'); return; }
-        A.play('ui');
-        var best = 0;
-        for (var i = 0; i < D.regions.length; i++) if (S.regionUnlocked(i)) best = i;
-        self.startGame(best, self.selectedHero, true);
+        var head = el('div', 'ch-head',
+          '<div><h3>' + ch.name + '</h3><small>' + ch.sub + '</small></div>' +
+          '<span class="ch-count">' + U.frac(doneN, idxs.length) + '</span>');
+        wrap.appendChild(head);
+
+        var grid = el('div', 'stage-grid');
+        idxs.forEach(function (i) {
+          var s = D.stageAt(i);
+          var t = D.terrain[s.terr];
+          var unlocked = S.stageUnlocked(i), cleared = S.stageCleared(i);
+          var card = el('div', 'stage-card' + (unlocked ? '' : ' locked') + (cleared ? ' done' : ''));
+          card.style.background =
+            'linear-gradient(160deg,' + U.rgba(t.accent, .14) + ',' + U.rgba(t.g2, .5) + '), ' +
+            'linear-gradient(180deg,' + U.shade(t.g1, -.4) + ',' + U.shade(t.g2, -.55) + ')';
+          card.innerHTML =
+            '<span class="sn">' + U.ar(i + 1) + '</span>' +
+            '<b>' + s.n + '</b>' +
+            '<small>' + s.hy + ' · ' + s.place + '</small>' +
+            (cleared ? '<span class="tick">✓</span>' : '') +
+            (unlocked ? '' : '<span class="lockic">🔒</span>');
+          card.addEventListener('click', function () {
+            if (!unlocked) { A.play('deny'); self.toast('أكمل المعركة السابقة أولاً'); return; }
+            A.play('ui');
+            self.brief(i);
+          });
+          grid.appendChild(card);
+        });
+        wrap.appendChild(grid);
       });
-      wrap.appendChild(e);
     },
 
     /* ====================================================
-       دار الصنعة
+       دار السلاح
        ==================================================== */
-    buildForge: function () {
-      var grid = $('forgeGrid'), self = this;
+    buildArmory: function () {
+      var grid = $('armoryGrid'), self = this;
+      $('armoryNote').textContent =
+        'تطويراتٌ دائمة تبقى معك. جيشك الآن ' + U.ar(this.game.armySize()) +
+        ' مقاتلاً، وقوةُ سيفك +' + U.ar(S.campaign('sword')) + '٪.';
       grid.innerHTML = '';
-      D.forge.forEach(function (f) {
-        var lv = S.forgeLevel(f.id);
+      D.armory.forEach(function (f) {
+        var lv = S.armory(f.id);
         var maxed = lv >= f.max;
         var cost = maxed ? 0 : f.cost(lv);
         var card = el('div', 'forge-card');
@@ -570,19 +445,17 @@
         for (var i = 0; i < f.max; i++) pips += '<i class="' + (i < lv ? 'on' : '') + '"></i>';
         card.innerHTML =
           '<div class="fh"><div class="fi">' + icon(f.i) + '</div><div><b>' + f.n + '</b></div></div>' +
-          '<p>' + f.d + '</p>' +
-          '<div class="pips">' + pips + '</div>';
+          '<p>' + f.d + '</p><div class="pips">' + pips + '</div>';
         var btn = el('button', 'forge-buy' + (maxed ? ' max' : (S.data.gold < cost ? ' poor' : '')),
           maxed ? 'مكتمل ✓' : ('<span class="coin"></span> ' + U.arGroup(cost)));
         btn.addEventListener('click', function () {
           if (maxed) { A.play('deny'); return; }
           if (S.spendGold(cost)) {
-            S.setForge(f.id, lv + 1);
+            S.setArmory(f.id, lv + 1);
             A.play('card');
             self.toast(f.n + ' → ' + U.ar(lv + 1));
-            self.buildForge();
-            self.refreshGold();
-          } else { A.play('deny'); self.toast('تحتاج ' + U.arGroup(cost - S.data.gold) + ' ذهباً إضافياً'); }
+            self.buildArmory(); self.refreshGold(); self.refreshTitle();
+          } else { A.play('deny'); self.toast('تحتاج ' + U.arGroup(cost - S.data.gold) + ' ديناراً'); }
         });
         card.appendChild(btn);
         grid.appendChild(card);
@@ -590,22 +463,23 @@
     },
 
     /* ====================================================
-       السجل
+       سجل المعارك
        ==================================================== */
-    buildCodex: function () {
-      var list = $('codexList');
-      var all = D.allCodex();
-      var seen = 0;
+    buildLog: function () {
+      var list = $('logList');
       list.innerHTML = '';
-      all.forEach(function (cx) {
-        var has = S.hasCodex(cx.id);
+      var seen = 0;
+      for (var i = 0; i < D.total; i++) {
+        var s = D.stageAt(i);
+        var has = S.stageCleared(i);
         if (has) seen++;
         var card = el('div', 'codex-card' + (has ? '' : ' sealed'),
-          '<span class="ck">' + cx.k + '</span><h4>' + (has ? cx.title : '؟؟؟') + '</h4>' +
-          '<p>' + (has ? cx.text : (cx.how || 'أكمل هذا الإقليم لتفتح صفحته.')) + '</p>');
+          '<span class="ck">' + U.ar(i + 1) + ' · ' + s.hy + ' — ' + s.ad + ' · ' + s.place + '</span>' +
+          '<h4>' + s.n + (has ? ' <em class="oc oc-' + this.outcomeClass(s.outcome) + '">' + s.outcome + '</em>' : '') + '</h4>' +
+          '<p>' + (has ? s.note : 'اخُضْ هذه المعركة لتُفتح صفحتُها.') + '</p>');
         list.appendChild(card);
-      });
-      $('codexCount').textContent = U.frac(seen, all.length);
+      }
+      $('logCount').textContent = U.frac(seen, D.total);
     },
 
     /* ====================================================
@@ -630,42 +504,35 @@
         body.appendChild(row);
       }
 
-      switchRow('المؤثرات الصوتية', 'أصوات السيوف والضربات', 'sfx', function (v) { A.setSfx(v); });
-      switchRow('الموسيقى', 'موسيقى أندلسية مولَّدة لحظياً', 'music', function (v) { A.setMusic(v); });
+      switchRow('المؤثرات الصوتية', 'أصوات السيوف والمعركة', 'sfx', function (v) { A.setSfx(v); });
+      switchRow('الموسيقى', 'موسيقى مولَّدة على المقامات العربية', 'music', function (v) { A.setMusic(v); });
       switchRow('الاهتزاز', 'اهتزاز خفيف عند الإصابة', 'haptics');
       switchRow('وضع الأعسر', 'تبديل جهتَي التحكم', 'lefty', function (v) {
         MAL.Input.setLefty(v);
         document.body.classList.toggle('lefty', !!v);
       });
-      switchRow('التصويب التلقائي', 'يهاجم أقرب عدوٍّ تلقائياً', 'autoAim');
+      switchRow('التصويب التلقائي', 'يضرب أقرب عدوٍّ تلقائياً', 'autoAim');
 
-      // جودة الرسم
       var qRow = el('div', 'set-row', '<div class="st"><b>جودة الرسم</b><small>خفّضها لو تأخرت اللعبة</small></div>');
       var seg = el('div', 'seg');
       [['auto', 'تلقائي'], ['high', 'عالية'], ['low', 'خفيفة']].forEach(function (o) {
         var b = el('button', S.setting('quality') === o[0] ? 'on' : '', o[1]);
         b.addEventListener('click', function () {
-          S.setting('quality', o[0]);
-          A.play('ui');
-          self.buildSettings();
-          MAL.applyQuality();
+          S.setting('quality', o[0]); A.play('ui');
+          self.buildSettings(); MAL.applyQuality();
         });
         seg.appendChild(b);
       });
       qRow.appendChild(seg);
       body.appendChild(qRow);
 
-      // إعادة ضبط
-      var rRow = el('div', 'set-row', '<div class="st"><b>محو التقدّم</b><small>يمحو الذهب والأقاليم والسجل — لا رجعة</small></div>');
+      var rRow = el('div', 'set-row', '<div class="st"><b>محو التقدّم</b><small>يمحو الذهب والمعارك والتطويرات — لا رجعة</small></div>');
       var rb = el('button', 'back', 'محو');
       rb.addEventListener('click', function () {
         if (rb.dataset.armed) {
-          S.reset();
-          A.play('deny');
+          S.reset(); A.play('deny');
           self.toast('مُحي كل التقدّم');
-          self.selectedHero = 'faris';
-          self.buildSettings();
-          self.refreshTitle();
+          self.buildSettings(); self.refreshTitle();
         } else {
           rb.dataset.armed = '1';
           rb.textContent = 'متأكد؟ اضغط ثانية';
@@ -676,10 +543,9 @@
       rRow.appendChild(rb);
       body.appendChild(rRow);
 
-      var info = el('div', 'set-row',
-        '<div class="st"><b>أنْدَلُس — سيفٌ في الغرب</b>' +
-        '<small>تحكّم: إصبعٌ يسار للحركة، إصبعٌ يمين للتصويب · على الحاسوب: WASD + الفأرة، مسافة للاندفاع، Shift للقاضية</small></div>');
-      body.appendChild(info);
+      body.appendChild(el('div', 'set-row',
+        '<div class="st"><b>الفُتوح</b><small>التحكم: إصبعٌ يسار للحركة، إصبعٌ يمين للتصويب · ' +
+        'على الحاسوب: WASD والفأرة، مسافة للاندفاع، Shift للراية</small></div>'));
     }
   };
 
