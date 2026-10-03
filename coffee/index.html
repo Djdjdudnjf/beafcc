@@ -1,0 +1,838 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#120e0b">
+<title>حاسبة V60</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Reem+Kufi:wght@500;700&display=swap">
+<style>
+  /* Layout: one narrow column of controls, then the hot and iced recipes side by side (stacked on phones). Copper = hot, ice blue = iced. */
+  :root{
+    --bg:#120e0b;
+    --surface:#1b1511;
+    --surface-2:#251d17;
+    --line:rgba(242,232,221,.10);
+    --line-strong:rgba(242,232,221,.20);
+    --text:#f2e8dd;
+    --muted:#a69584;
+    --hot:#e3a05f;
+    --hot-ink:#1c1108;
+    --hot-soft:rgba(227,160,95,.14);
+    --cold:#8fc9d8;
+    --cold-ink:#0a171b;
+    --cold-soft:rgba(143,201,216,.14);
+    --display:"Reem Kufi", "IBM Plex Sans Arabic", system-ui, sans-serif;
+    --body:"IBM Plex Sans Arabic", system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
+    --mono:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    --r:16px;
+    color-scheme:dark;
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font:400 16px/1.6 var(--body);
+    -webkit-font-smoothing:antialiased;
+  }
+  button,input{font:inherit;color:inherit}
+  button{cursor:pointer}
+  :focus-visible{outline:2px solid var(--hot);outline-offset:2px}
+  .num{direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums}
+
+  .wrap{
+    max-width:980px;
+    margin:0 auto;
+    padding-inline:16px;
+    padding-block:28px 48px;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+  }
+
+  /* ---------- header ---------- */
+  .top{display:flex;flex-direction:column;gap:4px}
+  .eyebrow{margin:0;color:var(--muted);font-size:13px;letter-spacing:.04em}
+  h1{
+    margin:0;
+    font:700 clamp(30px,8vw,42px)/1.15 var(--display);
+    text-wrap:balance;
+  }
+  h1 .num{color:var(--hot)}
+  .lede{margin:0;color:var(--muted);max-width:52ch}
+
+  /* ---------- controls ---------- */
+  .controls{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--r);
+    padding:18px;
+    display:grid;
+    gap:20px;
+  }
+  @media (min-width:720px){
+    .controls{grid-template-columns:1fr 1fr;column-gap:28px}
+    .save-row{grid-column:1 / -1}
+  }
+  .field{display:flex;flex-direction:column;gap:10px;min-width:0}
+  .label{font-weight:600;font-size:14px;color:var(--muted)}
+
+  .stepper{display:flex;align-items:stretch;gap:8px}
+  .step-btn{
+    flex:0 0 52px;
+    border:1px solid var(--line-strong);
+    background:var(--surface-2);
+    border-radius:12px;
+    font-size:24px;
+    line-height:1;
+  }
+  .step-btn:active{transform:scale(.96)}
+  .dose-box{
+    flex:1;
+    min-width:0;
+    display:flex;
+    align-items:baseline;
+    justify-content:center;
+    gap:8px;
+    background:var(--bg);
+    border:1px solid var(--line-strong);
+    border-radius:12px;
+    padding:6px 12px;
+  }
+  .dose-box:focus-within{border-color:var(--hot)}
+  #dose{
+    width:100%;
+    max-width:140px;
+    background:transparent;
+    border:0;
+    outline:0;
+    text-align:center;
+    font:600 40px/1.1 var(--mono);
+    direction:ltr;
+    font-variant-numeric:tabular-nums;
+    -moz-appearance:textfield;
+    appearance:textfield;
+  }
+  #dose::-webkit-outer-spin-button,#dose::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .dose-unit{color:var(--muted);font-size:15px}
+
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{
+    border:1px solid var(--line-strong);
+    background:transparent;
+    border-radius:999px;
+    padding:4px 12px;
+    font-size:14px;
+    color:var(--muted);
+  }
+  .chip[aria-pressed="true"]{background:var(--hot);border-color:var(--hot);color:var(--hot-ink);font-weight:600}
+
+  .ratio-head{display:flex;justify-content:space-between;align-items:baseline}
+  .ratio-out{font:600 28px/1 var(--mono);color:var(--hot)}
+  #ratio{
+    --p:50%;
+    -webkit-appearance:none;
+    appearance:none;
+    width:100%;
+    height:28px;
+    background:transparent;
+    margin:0;
+  }
+  #ratio::-webkit-slider-runnable-track{
+    height:6px;border-radius:6px;
+    background:linear-gradient(to left,var(--hot) var(--p),var(--surface-2) var(--p));
+  }
+  #ratio::-moz-range-track{height:6px;border-radius:6px;background:var(--surface-2)}
+  #ratio::-moz-range-progress{height:6px;border-radius:6px;background:var(--hot)}
+  #ratio::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:24px;height:24px;margin-top:-9px;border-radius:50%;
+    background:var(--text);border:4px solid var(--hot);
+  }
+  #ratio::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--text);border:4px solid var(--hot)}
+  .ticks{
+    display:flex;justify-content:space-between;
+    padding-inline:2px;
+    font:500 12px/1 var(--mono);color:var(--muted);
+  }
+  .hint{margin:0;font-size:14px;color:var(--muted)}
+
+  .save-row{
+    display:flex;flex-wrap:wrap;align-items:center;gap:12px;
+    border-top:1px solid var(--line);
+    padding-top:16px;
+  }
+  .btn-save{
+    border:1px solid var(--hot);
+    background:var(--hot-soft);
+    color:var(--hot);
+    border-radius:12px;
+    padding:10px 18px;
+    font-weight:600;
+  }
+  .btn-save.done{background:var(--hot);color:var(--hot-ink)}
+  .save-status{font-size:14px;color:var(--muted)}
+
+  /* ---------- recipe cards ---------- */
+  .recipes{display:grid;gap:20px;grid-template-columns:minmax(0,1fr)}
+  @media (min-width:820px){.recipes{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+  .card{
+    --accent:var(--hot);--accent-ink:var(--hot-ink);--accent-soft:var(--hot-soft);
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--r);
+    padding:18px;
+    display:flex;flex-direction:column;gap:18px;
+    min-width:0;
+    transition:border-color .3s, box-shadow .3s;
+  }
+  .card.cold{--accent:var(--cold);--accent-ink:var(--cold-ink);--accent-soft:var(--cold-soft)}
+  .card.flash{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+
+  .card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  .kicker{margin:0;font-size:13px;color:var(--accent);font-weight:600;letter-spacing:.03em}
+  .card h2{margin:0;font:700 26px/1.2 var(--display)}
+  .badge{
+    border:1px solid var(--accent);color:var(--accent);
+    border-radius:999px;padding:2px 12px;
+    font:600 15px/1.6 var(--mono);
+  }
+
+  .facts{margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .fact{background:var(--surface-2);border-radius:12px;padding:10px 12px;min-width:0}
+  .fact dt{font-size:13px;color:var(--muted)}
+  .fact dd{margin:0;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+  .fact .v{font:600 26px/1.2 var(--mono)}
+  .fact .u{font-size:13px;color:var(--muted)}
+  .fact.key .v{color:var(--accent)}
+
+  .split{display:flex;flex-direction:column;gap:8px}
+  .split-bar{display:flex;height:30px;border-radius:8px;overflow:hidden;font:600 13px/30px var(--mono)}
+  .split-bar span{display:block;text-align:center;white-space:nowrap;overflow:hidden;transition:flex-basis .25s}
+  .split-hot{background:var(--hot);color:var(--hot-ink)}
+  .split-ice{background:var(--cold);color:var(--cold-ink)}
+  .split-row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+  .split .chip[aria-pressed="true"]{background:var(--cold);border-color:var(--cold);color:var(--cold-ink)}
+
+  .note{
+    margin:0;font-size:14px;
+    background:var(--accent-soft);
+    border-radius:10px;padding:10px 12px;
+  }
+
+  /* timer */
+  .timer{
+    border:1px solid var(--line-strong);
+    border-radius:14px;
+    padding:14px;
+    display:flex;flex-direction:column;gap:10px;
+    background:var(--bg);
+  }
+  .t-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  .t-clock{font:600 46px/1 var(--mono);direction:ltr;font-variant-numeric:tabular-nums}
+  .t-of{color:var(--muted);font-size:14px}
+  .t-bar{position:relative;height:8px;border-radius:8px;background:var(--surface-2);overflow:visible}
+  .t-fill{position:absolute;inset-block:0;right:0;width:0;border-radius:8px;background:var(--accent)}
+  .t-mark{position:absolute;top:-3px;width:2px;height:14px;background:var(--text);opacity:.45;transform:translateX(50%)}
+  .t-now{margin:0;font-weight:600;font-size:17px;min-height:1.6em}
+  .t-next{margin:0;color:var(--muted);font-size:14px;min-height:1.6em}
+  .t-btns{display:flex;gap:8px}
+  .btn-primary{
+    flex:1;
+    border:0;border-radius:12px;padding:12px;
+    background:var(--accent);color:var(--accent-ink);
+    font-weight:700;font-size:17px;
+  }
+  .btn-ghost{
+    border:1px solid var(--line-strong);background:transparent;
+    border-radius:12px;padding:12px 18px;color:var(--muted);
+  }
+
+  /* pours */
+  .sec-title{margin:0;font:700 18px/1.3 var(--display)}
+  .pours{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+  .pour{
+    display:grid;
+    grid-template-columns:52px minmax(0,1fr) auto;
+    gap:12px;
+    align-items:center;
+    padding:12px 8px;
+    border-top:1px solid var(--line);
+    border-radius:10px;
+    transition:background .25s, opacity .25s;
+  }
+  .pour:first-child{border-top:0}
+  .p-time{font:600 15px/1 var(--mono);color:var(--muted);direction:ltr;text-align:right}
+  .p-what{display:flex;flex-direction:column;min-width:0}
+  .p-what b{font-weight:600}
+  .p-what small{color:var(--muted);font-size:13px;line-height:1.5}
+  .p-scale{text-align:left;display:flex;flex-direction:column;align-items:flex-end}
+  .p-scale .w{font:600 22px/1.1 var(--mono)}
+  .p-scale .w small{font:500 12px var(--body);color:var(--muted);margin-inline-start:2px}
+  .p-scale .add{font:500 12px/1.4 var(--mono);color:var(--muted)}
+  .pour.active{background:var(--accent-soft);border-color:transparent}
+  .pour.active .p-time,.pour.active .p-scale .w{color:var(--accent)}
+  .pour.active + .pour{border-color:transparent}
+  .pour.done{opacity:.45}
+  .pour.end .p-scale .w{font-size:15px;color:var(--muted)}
+
+  .scale-head{
+    display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:12px;
+    padding:0 8px 4px;font-size:12px;color:var(--muted);letter-spacing:.03em;
+  }
+  .scale-head span:last-child{text-align:left}
+
+  .grind{
+    display:flex;flex-direction:column;gap:4px;
+    border-top:1px solid var(--line);padding-top:14px;
+  }
+  .grind-name{font:700 20px/1.3 var(--display);color:var(--accent)}
+  .grind p{margin:0;font-size:14px;color:var(--muted)}
+
+  .foot{color:var(--muted);font-size:13px;display:flex;flex-direction:column;gap:2px}
+  .foot p{margin:0}
+
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important}
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <p class="eyebrow">حاسبة قهوة مقطّرة</p>
+    <h1>حاسبة <span class="num">V60</span></h1>
+    <p class="lede">اكتب كم قرام بن طحنت، وتطلع لك وصفة الحار ووصفة البارد على ثلج، مع مؤقت ينبهك وقت كل صبّة.</p>
+  </header>
+
+  <section class="controls" aria-label="الإعدادات">
+    <div class="field">
+      <label class="label" for="dose">وزن البن المطحون</label>
+      <div class="stepper">
+        <button type="button" class="step-btn" id="dosePlus" aria-label="زِد قرام">+</button>
+        <div class="dose-box">
+          <input id="dose" type="number" inputmode="decimal" min="5" max="60" step="0.5" value="15">
+          <span class="dose-unit">قرام</span>
+        </div>
+        <button type="button" class="step-btn" id="doseMinus" aria-label="نقّص قرام">−</button>
+      </div>
+      <div class="chips" id="doseChips" aria-label="كميات سريعة"></div>
+    </div>
+
+    <div class="field">
+      <div class="ratio-head">
+        <label class="label" for="ratio">النسبة (بن : ماي)</label>
+        <output class="ratio-out num" id="ratioOut" for="ratio">1:15</output>
+      </div>
+      <input id="ratio" type="range" min="13" max="17" step="0.5" value="15">
+      <div class="ticks" aria-hidden="true"><span>1:13</span><span>1:14</span><span>1:15</span><span>1:16</span><span>1:17</span></div>
+      <p class="hint" id="ratioHint"></p>
+    </div>
+
+    <div class="save-row">
+      <button type="button" class="btn-save" id="save">احفظ الكمية</button>
+      <span class="save-status" id="saveStatus"></span>
+    </div>
+  </section>
+
+  <div class="recipes">
+    <article class="card hot" id="card-hot" data-kind="hot">
+      <header class="card-head">
+        <div>
+          <p class="kicker">وصفة حار</p>
+          <h2><span class="num">V60</span> حار</h2>
+        </div>
+        <span class="badge num" data-f="ratio">1:15</span>
+      </header>
+      <dl class="facts">
+        <div class="fact key"><dt>الماء الكلي</dt><dd><span class="v num" data-f="water">225</span><span class="u">مل</span></dd></div>
+        <div class="fact"><dt>حرارة الماء</dt><dd><span class="v num" data-f="temp">93</span><span class="u">°م</span></dd></div>
+        <div class="fact"><dt>وقت التخمير الكلي</dt><dd><span class="v num" data-f="time">3:00</span><span class="u">دقيقة</span></dd></div>
+        <div class="fact"><dt>في الكوب تقريباً</dt><dd><span class="v num" data-f="cup">195</span><span class="u">مل</span></dd></div>
+      </dl>
+      <div class="timer" data-timer></div>
+      <h3 class="sec-title">الصبّات</h3>
+      <div>
+        <div class="scale-head" aria-hidden="true"><span>الوقت</span><span>الخطوة</span><span>على الميزان</span></div>
+        <ol class="pours" data-f="pours"></ol>
+      </div>
+      <div class="grind">
+        <span class="label">درجة الطحن</span>
+        <span class="grind-name" data-f="grind">متوسط ناعم</span>
+        <p data-f="grindFeel"></p>
+        <p data-f="grindTip"></p>
+      </div>
+    </article>
+
+    <article class="card cold" id="card-cold" data-kind="cold">
+      <header class="card-head">
+        <div>
+          <p class="kicker">وصفة بارد</p>
+          <h2><span class="num">V60</span> على ثلج</h2>
+        </div>
+        <span class="badge num" data-f="ratio">1:15</span>
+      </header>
+      <dl class="facts">
+        <div class="fact key"><dt>ماء حار</dt><dd><span class="v num" data-f="hotWater">135</span><span class="u">قرام</span></dd></div>
+        <div class="fact key"><dt>ثلج في السيرفر</dt><dd><span class="v num" data-f="ice">90</span><span class="u">قرام</span></dd></div>
+        <div class="fact"><dt>حرارة الماء</dt><dd><span class="v num" data-f="temp">95</span><span class="u">°م</span></dd></div>
+        <div class="fact"><dt>وقت التخمير الكلي</dt><dd><span class="v num" data-f="time">2:15</span><span class="u">دقيقة</span></dd></div>
+      </dl>
+      <div class="split">
+        <div class="split-bar" aria-hidden="true">
+          <span class="split-hot" data-f="splitHot">ماء 60%</span>
+          <span class="split-ice" data-f="splitIce">ثلج 40%</span>
+        </div>
+        <div class="split-row">
+          <span class="hint">تقسيم الماء (حار / ثلج)</span>
+          <div class="chips" id="splitChips"></div>
+        </div>
+      </div>
+      <p class="note" data-f="iceNote"></p>
+      <div class="timer" data-timer></div>
+      <h3 class="sec-title">الصبّات</h3>
+      <div>
+        <div class="scale-head" aria-hidden="true"><span>الوقت</span><span>الخطوة</span><span>على الميزان</span></div>
+        <ol class="pours" data-f="pours"></ol>
+      </div>
+      <div class="grind">
+        <span class="label">درجة الطحن</span>
+        <span class="grind-name" data-f="grind">ناعم إلى متوسط</span>
+        <p data-f="grindFeel"></p>
+        <p data-f="grindTip"></p>
+      </div>
+    </article>
+  </div>
+
+  <footer class="foot">
+    <p>1 مل ماء ≈ 1 قرام. حط الفلتر والبن على الميزان وصفّره قبل البلوم؛ الأرقام تحت «على الميزان» تراكمية.</p>
+    <p>في البارد الثلج ما ينحسب على الميزان: حطه في السيرفر، وصفّر الميزان والدريبر فوقه.</p>
+  </footer>
+</main>
+
+<script>
+(() => {
+  const STORE_KEY = 'v60-calc';
+  const DOSE_MIN = 5, DOSE_MAX = 60;
+  const ORD = ['الأولى', 'الثانية', 'الثالثة', 'الرابعة'];
+
+  const state = { dose: 15, ratio: 15, split: 0.6 };
+
+  // ---------- helpers ----------
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const round5 = s => Math.round(s / 5) * 5;
+  const mmss = s => {
+    s = Math.max(0, Math.floor(s));
+    return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+  };
+  const fmtNum = n => (Math.round(n * 10) / 10).toString();
+  const ratioStr = r => '1:' + fmtNum(r);
+
+  function store(action, value) {
+    try {
+      if (action === 'get') return JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+      localStorage.setItem(STORE_KEY, JSON.stringify(value));
+      return true;
+    } catch (e) { return action === 'get' ? null : false; }
+  }
+
+  // ---------- recipes ----------
+  function hotRecipe(d, r) {
+    const water = Math.round(d * r);
+    const bloom = Math.round(d * 2);
+    const rest = water - bloom;
+    const big = d > 22;
+    const bloomEnd = 45;
+    const gap = big ? 35 : 30;
+    const n = 3;
+    const steps = [{
+      t: 0, kind: 'bloom', target: bloom, add: bloom,
+      title: 'البلوم',
+      sub: 'صب ضعف وزن البن بالتساوي، حرّك الدريبر شوي وخلّه ينفّس ' + bloomEnd + ' ث'
+    }];
+    let prev = bloom;
+    for (let i = 1; i <= n; i++) {
+      const target = i === n ? water : bloom + Math.round(rest * i / n);
+      steps.push({
+        t: bloomEnd + (i - 1) * gap, kind: 'pour', target, add: target - prev,
+        title: 'الصبّة ' + ORD[i - 1],
+        sub: i === n ? 'آخر صبة، بعدها لفّ الدريبر لفّة خفيفة عشان يستوي السطح'
+                     : 'صب بدوائر من الوسط للأطراف خلال 10–15 ث'
+      });
+      prev = target;
+    }
+    const pourEnd = bloomEnd + (n - 1) * gap + 15;
+    const total = round5(Math.max(pourEnd + 60, 150 + (d - 12) * 5));
+    steps.push({ t: total, kind: 'end', title: 'نهاية التصفية', sub: 'شيل الدريبر وحرّك القهوة قبل تصبها' });
+
+    const fine = d <= 20;
+    return {
+      water, temp: 93, total, steps,
+      cup: Math.round(water - d * 2),
+      grind: fine ? 'متوسط ناعم' : 'متوسط',
+      grindFeel: fine ? 'قريب من ملح الطعام، تقريباً 600–700 ميكرون.'
+                      : 'أخشن شوي من ملح الطعام، تقريباً 700–800 ميكرون (الكمية الكبيرة تحتاج تصفية أسرع).',
+      grindTip: 'إذا التصفية طوّلت عن ' + mmss(total) + ' خشّن درجة، وإذا خلصت بدري نعّم درجة.'
+    };
+  }
+
+  function coldRecipe(d, r, split) {
+    const water = Math.round(d * r);
+    const hot = Math.round(water * split);
+    const ice = water - hot;
+    const bloom = Math.round(d * 2);
+    const rest = hot - bloom;
+    const big = d > 22;
+    const bloomEnd = 40;
+    const gap = big ? 35 : 30;
+    const mid = bloom + Math.round(rest / 2);
+    const steps = [
+      { t: 0, kind: 'bloom', target: bloom, add: bloom, title: 'البلوم',
+        sub: 'صب ضعف وزن البن، حرّك الدريبر شوي وخلّه ينفّس ' + bloomEnd + ' ث' },
+      { t: bloomEnd, kind: 'pour', target: mid, add: mid - bloom, title: 'الصبّة الأولى',
+        sub: 'صب بدوائر هادية خلال 10–15 ث' },
+      { t: bloomEnd + gap, kind: 'pour', target: hot, add: hot - mid, title: 'الصبّة الثانية',
+        sub: 'آخر صبة، لفّ الدريبر لفّة خفيفة' }
+    ];
+    const pourEnd = bloomEnd + gap + 15;
+    const total = round5(Math.max(pourEnd + 45, 120 + (d - 12) * 4));
+    steps.push({ t: total, kind: 'end', title: 'نهاية التصفية', sub: 'شيل الدريبر وحرّك السيرفر لين يذوب الثلج' });
+
+    const fine = d <= 20;
+    return {
+      water, hot, ice, temp: 95, total, steps,
+      cup: Math.round(water - d * 2),
+      grind: fine ? 'ناعم إلى متوسط' : 'متوسط ناعم',
+      grindFeel: fine ? 'أنعم من ملح الطعام بشوي، تقريباً 500–600 ميكرون.'
+                      : 'قريب من ملح الطعام، تقريباً 600–700 ميكرون.',
+      grindTip: 'أنعم من الحار بدرجة أو درجتين، عشان الماي الحار أقل ويحتاج يستخلص أكثر.'
+    };
+  }
+
+  const recipes = {};
+  function compute() {
+    recipes.hot = hotRecipe(state.dose, state.ratio);
+    recipes.cold = coldRecipe(state.dose, state.ratio, state.split);
+  }
+
+  // ---------- rendering ----------
+  function setF(card, key, val) { $$('[data-f="' + key + '"]', card).forEach(el => { el.textContent = val; }); }
+
+  function renderPours(card, rec) {
+    const list = $('[data-f="pours"]', card);
+    list.innerHTML = rec.steps.map((s, i) => {
+      const scale = s.kind === 'end'
+        ? '<span class="w">—</span>'
+        : '<span class="w"><span class="num">' + s.target + '</span><small>ق</small></span><span class="add num">+' + s.add + '</span>';
+      return '<li class="pour ' + (s.kind === 'end' ? 'end' : '') + '" data-i="' + i + '">' +
+        '<span class="p-time num">' + mmss(s.t) + '</span>' +
+        '<span class="p-what"><b>' + s.title + '</b><small>' + s.sub + '</small></span>' +
+        '<span class="p-scale">' + scale + '</span></li>';
+    }).join('');
+  }
+
+  const RATIO_HINTS = [
+    [13.5, 'قوية وثقيلة القوام'],
+    [14.5, 'أقوى شوي من المعتاد'],
+    [15.5, 'متوازنة، نقطة بداية ممتازة'],
+    [16.5, 'أخف وأوضح بالنكهات'],
+    [99, 'خفيفة وصافية']
+  ];
+
+  function render() {
+    compute();
+    const rs = ratioStr(state.ratio);
+    $('#ratioOut').textContent = rs;
+    $('#ratioHint').textContent = RATIO_HINTS.find(([max]) => state.ratio <= max)[1];
+    const ratioEl = $('#ratio');
+    ratioEl.style.setProperty('--p', ((state.ratio - 13) / 4 * 100) + '%');
+
+    $$('#doseChips .chip').forEach(c => c.setAttribute('aria-pressed', String(+c.dataset.v === state.dose)));
+    $$('#splitChips .chip').forEach(c => c.setAttribute('aria-pressed', String(+c.dataset.v === state.split)));
+
+    const hot = recipes.hot, hc = $('#card-hot');
+    setF(hc, 'ratio', rs);
+    setF(hc, 'water', hot.water);
+    setF(hc, 'temp', hot.temp);
+    setF(hc, 'time', mmss(hot.total));
+    setF(hc, 'cup', hot.cup);
+    setF(hc, 'grind', hot.grind);
+    setF(hc, 'grindFeel', hot.grindFeel);
+    setF(hc, 'grindTip', hot.grindTip);
+    renderPours(hc, hot);
+
+    const cold = recipes.cold, cc = $('#card-cold');
+    setF(cc, 'ratio', rs);
+    setF(cc, 'hotWater', cold.hot);
+    setF(cc, 'ice', cold.ice);
+    setF(cc, 'temp', cold.temp);
+    setF(cc, 'time', mmss(cold.total));
+    setF(cc, 'grind', cold.grind);
+    setF(cc, 'grindFeel', cold.grindFeel);
+    setF(cc, 'grindTip', cold.grindTip);
+    const hp = Math.round(state.split * 100);
+    const sh = $('[data-f="splitHot"]', cc), si = $('[data-f="splitIce"]', cc);
+    sh.style.flexBasis = hp + '%'; si.style.flexBasis = (100 - hp) + '%';
+    sh.textContent = 'ماء ' + hp + '%'; si.textContent = 'ثلج ' + (100 - hp) + '%';
+    setF(cc, 'iceNote', 'قبل تبدأ: حط ' + cold.ice + ' قرام ثلج في السيرفر. المجموع ' + cold.water +
+      ' (' + cold.hot + ' ماء + ' + cold.ice + ' ثلج) ويطلع لك تقريباً ' + cold.cup + ' مل قهوة باردة.');
+    renderPours(cc, cold);
+
+    timers.forEach(t => t.refresh());
+  }
+
+  // ---------- sound / alerts ----------
+  let audio = null;
+  function unlockAudio() {
+    try {
+      if (!audio) audio = new (window.AudioContext || window.webkitAudioContext)();
+      if (audio.state === 'suspended') audio.resume();
+    } catch (e) { audio = null; }
+  }
+  function beep(freqs, dur = 0.16, gapS = 0.08, vol = 0.25) {
+    if (!audio) return;
+    let at = audio.currentTime + 0.02;
+    freqs.forEach(f => {
+      const o = audio.createOscillator(), g = audio.createGain();
+      o.type = 'sine'; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, at);
+      g.gain.exponentialRampToValueAtTime(vol, at + 0.015);
+      g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+      o.connect(g).connect(audio.destination);
+      o.start(at); o.stop(at + dur + 0.02);
+      at += dur + gapS;
+    });
+  }
+  function vibrate(p) { try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} }
+
+  let wakeLock = null;
+  async function keepAwake(on) {
+    try {
+      if (on && !wakeLock && navigator.wakeLock) {
+        wakeLock = await navigator.wakeLock.request('screen');
+        wakeLock.addEventListener('release', () => { wakeLock = null; });
+      } else if (!on && wakeLock) { await wakeLock.release(); wakeLock = null; }
+    } catch (e) { wakeLock = null; }
+  }
+
+  // ---------- timers ----------
+  function makeTimer(kind) {
+    const card = $('#card-' + kind);
+    const box = $('[data-timer]', card);
+    const label = kind === 'hot' ? 'الحار' : 'البارد';
+    box.setAttribute('role', 'group');
+    box.setAttribute('aria-label', 'مؤقت الوصفة ' + (kind === 'hot' ? 'الحارة' : 'الباردة'));
+    box.innerHTML =
+      '<div class="t-top"><span class="t-clock">0:00</span><span class="t-of">من <span class="num t-total"></span></span></div>' +
+      '<div class="t-bar"><span class="t-fill"></span></div>' +
+      '<p class="t-now" aria-live="assertive"></p>' +
+      '<p class="t-next"></p>' +
+      '<div class="t-btns"><button type="button" class="btn-primary t-start">ابدأ المؤقت</button>' +
+      '<button type="button" class="btn-ghost t-reset">إعادة</button></div>';
+    const el = {
+      clock: $('.t-clock', box), total: $('.t-total', box), bar: $('.t-bar', box), fill: $('.t-fill', box),
+      now: $('.t-now', box), next: $('.t-next', box), start: $('.t-start', box), reset: $('.t-reset', box)
+    };
+
+    let running = false, startedAt = 0, acc = 0, iv = null;
+    let fired = new Set(), warned = new Set();
+
+    const elapsed = () => running ? acc + (performance.now() - startedAt) / 1000 : acc;
+    const stepText = s => s.kind === 'end' ? s.title : s.title + ': صب لين يوصل الميزان ' + s.target + ' ق';
+
+    function flash() {
+      card.classList.add('flash');
+      setTimeout(() => card.classList.remove('flash'), 1400);
+    }
+
+    function fire(s) {
+      el.now.textContent = s.kind === 'end'
+        ? 'خلص الوقت المتوقع. شيل الدريبر أول ما يوقف التقطير.'
+        : 'الحين ' + stepText(s);
+      flash();
+      if (s.kind === 'end') { beep([880, 660, 520], 0.22); vibrate([300, 120, 300, 120, 300]); }
+      else { beep([880, 1175]); vibrate([250, 100, 250]); }
+    }
+
+    function tick() {
+      const e = elapsed();
+      const steps = recipes[kind].steps;
+      steps.forEach((s, i) => {
+        if (s.t > 0 && e >= s.t - 5 && e < s.t && !warned.has(i)) {
+          warned.add(i);
+          beep([660], 0.09, 0, 0.12);
+        }
+        if (e >= s.t && !fired.has(i)) { fired.add(i); warned.add(i); fire(s); }
+      });
+      draw(e);
+    }
+
+    function draw(e) {
+      const rec = recipes[kind];
+      const steps = rec.steps;
+      el.clock.textContent = mmss(e);
+      el.total.textContent = mmss(rec.total);
+      el.fill.style.width = clamp(e / rec.total * 100, 0, 100) + '%';
+
+      let cur = -1;
+      steps.forEach((s, i) => { if (e >= s.t && (running || acc > 0)) cur = i; });
+      $$('.pour', card).forEach((li, i) => {
+        li.classList.toggle('active', i === cur);
+        li.classList.toggle('done', cur > -1 && i < cur);
+      });
+
+      const nxt = steps.find(s => s.t > e);
+      if (!running && acc === 0) {
+        el.now.textContent = 'اضغط «ابدأ» مع أول صبّة للبلوم.';
+        el.next.textContent = 'ينبهك بصوت واهتزاز وقت كل صبّة، وبصفرة خفيفة قبلها بـ 5 ثواني.';
+      } else if (nxt) {
+        el.next.textContent = 'التالي بعد ' + mmss(nxt.t - e) + ' · ' + stepText(nxt);
+      } else {
+        el.next.textContent = 'المؤقت يكمل يعد لين توقفه.';
+      }
+    }
+
+    function setBtn() {
+      el.start.textContent = running ? 'إيقاف مؤقت' : (acc > 0 ? 'كمّل' : 'ابدأ المؤقت');
+    }
+
+    function start() {
+      unlockAudio();
+      running = true;
+      startedAt = performance.now();
+      clearInterval(iv);
+      iv = setInterval(tick, 200);
+      keepAwake(true);
+      setBtn();
+      tick();
+    }
+    function pause() {
+      acc = elapsed();
+      running = false;
+      clearInterval(iv);
+      if (!timers.some(t => t.isRunning())) keepAwake(false);
+      el.now.textContent = 'موقّف عند ' + mmss(acc) + '.';
+      setBtn();
+    }
+    function reset() {
+      running = false; acc = 0;
+      clearInterval(iv);
+      fired = new Set(); warned = new Set();
+      if (!timers.some(t => t.isRunning())) keepAwake(false);
+      setBtn();
+      draw(0);
+    }
+
+    el.start.addEventListener('click', () => running ? pause() : start());
+    el.reset.addEventListener('click', reset);
+
+    // marks for each step on the progress bar
+    function marks() {
+      $$('.t-mark', el.bar).forEach(m => m.remove());
+      const rec = recipes[kind];
+      rec.steps.forEach(s => {
+        if (s.t <= 0 || s.t >= rec.total) return;
+        const m = document.createElement('span');
+        m.className = 't-mark';
+        m.style.right = (s.t / rec.total * 100) + '%';
+        el.bar.appendChild(m);
+      });
+    }
+
+    return {
+      isRunning: () => running,
+      refresh() { marks(); draw(elapsed()); },
+      label
+    };
+  }
+
+  const timers = [];
+  timers.push(makeTimer('hot'), makeTimer('cold'));
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && timers.some(t => t.isRunning())) keepAwake(true);
+  });
+
+  // ---------- controls ----------
+  const doseEl = $('#dose');
+  const ratioEl = $('#ratio');
+
+  function setDose(v, fromInput) {
+    if (!isFinite(v) || v <= 0) return;
+    state.dose = clamp(Math.round(v * 10) / 10, DOSE_MIN, DOSE_MAX);
+    if (!fromInput) doseEl.value = fmtNum(state.dose);
+    render();
+  }
+
+  doseEl.addEventListener('input', () => {
+    const v = parseFloat(doseEl.value.replace(',', '.'));
+    if (v >= DOSE_MIN && v <= DOSE_MAX) setDose(v, true);
+  });
+  doseEl.addEventListener('change', () => {
+    const v = parseFloat(doseEl.value.replace(',', '.'));
+    if (isFinite(v)) setDose(v); else doseEl.value = fmtNum(state.dose);
+  });
+  $('#dosePlus').addEventListener('click', () => setDose(Math.floor(state.dose) + 1));
+  $('#doseMinus').addEventListener('click', () => setDose(Math.ceil(state.dose) - 1));
+
+  const chipBox = $('#doseChips');
+  [12, 15, 18, 20, 25, 30].forEach(v => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip'; b.dataset.v = v;
+    b.textContent = v + ' ق';
+    b.addEventListener('click', () => setDose(v));
+    chipBox.appendChild(b);
+  });
+
+  ratioEl.addEventListener('input', () => { state.ratio = parseFloat(ratioEl.value); render(); });
+
+  const splitBox = $('#splitChips');
+  [[0.55, '55/45'], [0.6, '60/40'], [0.65, '65/35']].forEach(([v, t]) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip num'; b.dataset.v = v;
+    b.textContent = t;
+    b.addEventListener('click', () => { state.split = v; render(); });
+    splitBox.appendChild(b);
+  });
+
+  // ---------- save ----------
+  const saveBtn = $('#save'), saveStatus = $('#saveStatus');
+  function showSaved(s) {
+    saveStatus.textContent = s
+      ? 'المحفوظ: ' + fmtNum(s.dose) + ' قرام بنسبة ' + ratioStr(s.ratio)
+      : 'ما فيه كمية محفوظة. احفظ عشان تفتح الصفحة عليها المرة الجاية.';
+  }
+  saveBtn.addEventListener('click', () => {
+    const data = { dose: state.dose, ratio: state.ratio };
+    if (store('set', data)) {
+      showSaved(data);
+      saveBtn.textContent = 'انحفظ ✓';
+      saveBtn.classList.add('done');
+      setTimeout(() => { saveBtn.textContent = 'احفظ الكمية'; saveBtn.classList.remove('done'); }, 1600);
+    } else {
+      saveStatus.textContent = 'المتصفح منع الحفظ هنا (وضع التصفح الخاص مثلاً).';
+    }
+  });
+
+  // ---------- init ----------
+  const saved = store('get');
+  if (saved && isFinite(saved.dose)) {
+    state.dose = clamp(saved.dose, DOSE_MIN, DOSE_MAX);
+    if (isFinite(saved.ratio)) state.ratio = clamp(saved.ratio, 13, 17);
+  }
+  doseEl.value = fmtNum(state.dose);
+  ratioEl.value = state.ratio;
+  showSaved(saved && isFinite(saved.dose) ? { dose: state.dose, ratio: state.ratio } : null);
+  render();
+})();
+</script>
+</body>
+</html>
