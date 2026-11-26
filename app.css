@@ -1044,3 +1044,22 @@ button.mo-hint{background:none;border:0;padding:0;font:inherit;font-size:12px;fo
 .free-b{margin:0 auto 10px;padding:8px 12px;border-radius:12px;background:rgba(160,107,255,.1);color:var(--neon);text-align:center;font-weight:600;font-size:15px;max-width:420px}
 .free-note{margin:8px 0 0;color:var(--neon);font-weight:600;font-size:14.5px}
 [data-free][hidden]{display:none!important}
+
+/* === v55: حركة نقاط الخط الزمني في الصورة التوضيحية === */
+@keyframes mkpG{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(138,92,255,0)}50%{transform:scale(1.55);box-shadow:0 0 9px 2px rgba(138,92,255,.55)}}
+@keyframes mkpB{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,93,108,0)}50%{transform:scale(1.55);box-shadow:0 0 9px 2px rgba(255,93,108,.55)}}
+.scr-tl .mk{animation:mkpG 1.6s ease-in-out infinite}
+.scr-tl .mk.bad{animation-name:mkpB}
+.scr-tl .mk:nth-child(1){animation-delay:0s}
+.scr-tl .mk:nth-child(2){animation-delay:.4s}
+.scr-tl .mk:nth-child(3){animation-delay:.8s}
+.scr-tl .mk:nth-child(4){animation-delay:1.2s}
+
+/* === لمسة فخامة: لمعة متحركة على الأزرار الأساسية (عدا زر النبض) === */
+.btn.primary:not(.pulse){position:relative;overflow:hidden}
+.btn.primary:not(.pulse)::before{content:"";position:absolute;top:0;left:-60%;width:38%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.33),transparent);transform:skewX(-18deg);animation:btnSheen 5s ease-in-out infinite;pointer-events:none}
+@keyframes btnSheen{0%{left:-60%}24%{left:135%}100%{left:135%}}
+
+/* === الاسم: تدرّج متحرك خفيف يعطي إحساسًا أرقى === */
+.bn{background-size:220% 100%;animation:bnShift 7s ease-in-out infinite}
+@keyframes bnShift{0%,100%{background-position:0 0}50%{background-position:100% 0}}

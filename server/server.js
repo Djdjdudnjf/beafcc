@@ -82,27 +82,27 @@ ${META_FC27}
  "grade": 7.5,                               // رقم من 0 إلى 10
  "headline": "جملة واحدة تلخّص أهم نقطة",
  "score": "نتيجة المباراة إن ظهرت وإلا عبارة توضح عدم وضوحها",
- "style": "وصف أسلوب لعب اللاعب كما يبدو من اللقطات",
- "strengths": ["3 نقاط قوة واضحة"],
- "recurring_mistakes": ["3 أخطاء متكررة مرتبطة بما رأيت"],
- "key_moments": [{"t":"04:28","kind":"bad","what":"وصف الموقف","lesson":"الدرس منه"}],
+ "style": "فقرة (٢-٣ جُمل) تصف أسلوب لعب اللاعب الهجومي والدفاعي كما يبدو من اللقطات",
+ "strengths": ["الإيجابيات: ٤ إلى ٥ نقاط قوة، كل وحدة جملة واضحة تشرح النقطة ولماذا هي قوة"],
+ "recurring_mistakes": ["السلبيات: ٤ إلى ٥ أخطاء، كل خطأ مع شرح قصير لأثره على المباراة"],
+ "key_moments": [{"t":"04:28","kind":"bad","what":"وصف الموقف بتفصيل","lesson":"الدرس العملي منه"}],
  "ratings": [
-   {"area":"الدفاع","score":6.5,"note":"سبب"},
-   {"area":"الهجوم واستغلال الفرص","score":8,"note":"سبب"},
-   {"area":"التمرير وبناء اللعب","score":7,"note":"سبب"},
-   {"area":"التمركز","score":7,"note":"سبب"},
-   {"area":"القرارات","score":7,"note":"سبب"}
+   {"area":"الدفاع","score":6.5,"note":"سبب مفصّل (جملة أو جملتان)"},
+   {"area":"الهجوم واستغلال الفرص","score":8,"note":"سبب مفصّل"},
+   {"area":"التمرير وبناء اللعب","score":7,"note":"سبب مفصّل"},
+   {"area":"التمركز","score":7,"note":"سبب مفصّل"},
+   {"area":"القرارات","score":7,"note":"سبب مفصّل"}
  ],
- "assignment": {"title":"مهمة واحدة لمباراتك القادمة","how":"كيف تنفّذها بالتحديد"},
- "pre_match": {"formation":"تشكيلة مقترحة من الميتا","defensive_style":"...","width_depth":"...","build_up":"...","notes":"..."},
- "player_instructions": [{"pos":"الارتكاز","ins":"Stay Back While Attacking + Cover Center"}],
- "in_game": ["تعليمات أثناء المباراة مبنية على الميتا"],
+ "assignment": {"title":"أهم مهمة واحدة لمباراتك القادمة","how":"كيف تنفّذها بالتحديد، خطوة بخطوة (٢-٣ جُمل عملية)"},
+ "pre_match": {"formation":"تشكيلة مقترحة من الميتا مع سبب","defensive_style":"...","width_depth":"...","build_up":"...","notes":"نصيحة إضافية"},
+ "player_instructions": [{"pos":"الارتكاز","ins":"Stay Back While Attacking + Cover Center"},{"pos":"الظهيران","ins":"..."},{"pos":"المهاجمان","ins":"..."}],
+ "in_game": ["نصائح وتعليمات أثناء المباراة مبنية على الميتا — ٤ إلى ٦ نصائح عملية ومحددة"],
  "game_plans": {"behind":"خطة عند التأخر","ahead":"خطة عند التقدّم","when":"متى تبدّل"},
- "practice": ["تمارين قصيرة مرتبطة بأخطائه"],
- "drills": [{"name":"اسم التمرين","minutes":15,"how":"طريقته","fixes":"الخطأ الذي يعالجه"}],
+ "practice": ["خطة تطوّرك: ٣ إلى ٤ تمارين/عادات قصيرة ترفع مستواك، مرتبطة بأخطائك"],
+ "drills": [{"name":"اسم التمرين","minutes":15,"how":"طريقته بالتفصيل","fixes":"الخطأ الذي يعالجه"},{"name":"تمرين ٢","minutes":10,"how":"...","fixes":"..."},{"name":"تمرين ٣","minutes":10,"how":"...","fixes":"..."}],
  "play_read": {"current_formation":"4-4-2","build_up":"...","attack":"...","press":"...","forward":"...","loses_ball":"...","danger":"..."}
 }
-اكتب كل النصوص بالعربي الطبيعي الواضح. أعِد JSON فقط.`;
+تعليمات العمق (مهمة): اجعل التقرير غنيًا ومفيدًا فعلًا — إيجابيات واضحة، وسلبيات صريحة، وخطة تطوّر عملية، ونصائح قابلة للتطبيق مباشرة في اللعبة. كل جملة تضيف قيمة، بلا حشو ولا تكرار. اكتب بالعربي الطبيعي الواضح كأنك مدرّب يكلّم لاعبه. أعِد JSON صالحًا فقط.`;
 }
 
 var SYS_JSON = "أعِد كائن JSON واحدًا صالحًا فقط ولا شيء غيره: لا تكتب أي نص قبله أو بعده، ولا علامات markdown ولا ``` . ابدأ ردّك بـ { واختمه بـ }. كل القيم النصية بالعربي.";
@@ -206,18 +206,18 @@ async function chat(body) {
 استند لميتا EA FC 27 الحقيقي عند الحاجة:
 ${META_FC27}
 سؤال اللاعب: ${body.question || ""}
-أجب بالعربي باختصار ووضوح وبنصيحة عملية قابلة للتطبيق.`;
+أجب كمدرّب شخصي يكلّم لاعبه: بالعربي الطبيعي، إجابة وافية (٣ إلى ٦ جُمل) ومباشرة. اشرح السبب، وأعطِ خطوة عملية واضحة قابلة للتطبيق فورًا في اللعبة (أزرار/إعدادات/تكتيك إن لزم)، واربط جوابك بتقرير اللاعب وبميتا FC 27. لا تكرار ولا حشو — كل جملة تفيده.`;
   let answer;
   if (PROVIDER === "openai") {
     const r = await fetch(OPENAI_BASE+"/v1/chat/completions", {
       method: "POST", headers: { "content-type": "application/json", "authorization": "Bearer " + OPENAI_KEY },
-      body: JSON.stringify({ model: OPENAI_MODEL, messages: [{ role: "user", content: prompt }], max_tokens: 700, temperature: 0.6 })
+      body: JSON.stringify({ model: OPENAI_MODEL, messages: [{ role: "user", content: prompt }], max_tokens: 1200 })
     });
     const d = await r.json(); if (!r.ok) throw new Error("openai"); answer = d.choices[0].message.content;
   } else {
     const r = await fetch(ANTHROPIC_BASE+"/v1/messages", {
       method: "POST", headers: { "content-type": "application/json", "x-api-key": ANTHROPIC_KEY, "anthropic-version": "2023-06-01" },
-      body: JSON.stringify({ model: ANTHROPIC_MODEL, max_tokens: 900, messages: [{ role: "user", content: prompt }] })
+      body: JSON.stringify({ model: ANTHROPIC_MODEL, max_tokens: 1200, messages: [{ role: "user", content: prompt }] })
     });
     const d = await r.json(); if (!r.ok) throw new Error("anthropic"); answer = (d.content || []).map(b => b.text || "").join("");
   }
