@@ -22,7 +22,7 @@ const OPENAI_KEY = process.env.OPENAI_API_KEY || "";
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY || "";
 const PROVIDER = OPENAI_KEY ? "openai" : (ANTHROPIC_KEY ? "anthropic" : "");
 const OPENAI_MODEL = process.env.OPENAI_MODEL || "gpt-4o";
-const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL || "claude-3-5-sonnet-20241022";
+const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL || "claude-sonnet-5-5";
 const OPENAI_BASE = (process.env.OPENAI_BASE || "https://api.openai.com").replace(/\/$/, "");
 const ANTHROPIC_BASE = (process.env.ANTHROPIC_BASE || "https://api.anthropic.com").replace(/\/$/, "");
 
@@ -122,7 +122,7 @@ async function callAnthropic(frames, prompt) {
   const r = await fetch(ANTHROPIC_BASE+"/v1/messages", {
     method: "POST",
     headers: { "content-type": "application/json", "x-api-key": ANTHROPIC_KEY, "anthropic-version": "2023-06-01" },
-    body: JSON.stringify({ model: ANTHROPIC_MODEL, max_tokens: 3000, temperature: 0.5, messages: [{ role: "user", content }] })
+    body: JSON.stringify({ model: ANTHROPIC_MODEL, max_tokens: 4000, messages: [{ role: "user", content }] })
   });
   const j = await r.json();
   if (!r.ok) throw new Error("anthropic: " + (j.error && j.error.message || r.status));
@@ -171,7 +171,7 @@ ${META_FC27}
   } else {
     const r = await fetch(ANTHROPIC_BASE+"/v1/messages", {
       method: "POST", headers: { "content-type": "application/json", "x-api-key": ANTHROPIC_KEY, "anthropic-version": "2023-06-01" },
-      body: JSON.stringify({ model: ANTHROPIC_MODEL, max_tokens: 700, temperature: 0.6, messages: [{ role: "user", content: prompt }] })
+      body: JSON.stringify({ model: ANTHROPIC_MODEL, max_tokens: 900, messages: [{ role: "user", content: prompt }] })
     });
     const d = await r.json(); if (!r.ok) throw new Error("anthropic"); answer = (d.content || []).map(b => b.text || "").join("");
   }

@@ -13,17 +13,17 @@
 ### وش تحتاج
 - **Node.js 18 أو أحدث** (تتأكد: `node -v`).
 - **مفتاح ذكاء اصطناعي واحد** من أحد الاثنين:
-  - OpenAI: من <https://platform.openai.com/api-keys> (الأبسط، يدعم الرؤية).
-  - أو Anthropic: من <https://console.anthropic.com/>.
+  - **Anthropic (Claude):** المفتاح من <https://console.anthropic.com/> ← Settings ← API Keys.
+  - أو OpenAI: من <https://platform.openai.com/api-keys>.
 - التكلفة: بضعة سنتات لكل تحليل تقريبًا (حسب عدد اللقطات والمزود).
 
 ### التشغيل
 ```bash
-# OpenAI
-OPENAI_API_KEY=sk-xxxx node server/server.js
-
-# أو Anthropic
+# Anthropic (Claude)
 ANTHROPIC_API_KEY=sk-ant-xxxx node server/server.js
+
+# أو OpenAI
+OPENAI_API_KEY=sk-xxxx node server/server.js
 ```
 بعدها افتح: **http://localhost:8787**
 
@@ -40,7 +40,7 @@ ANTHROPIC_API_KEY=sk-ant-xxxx node server/server.js
 | `PORT` | `8787` | منفذ السيرفر |
 | `MAX_FRAMES` | `14` | كم لقطة نرسل للذكاء (أكثر = أدق وأغلى) |
 | `OPENAI_MODEL` | `gpt-4o` | موديل OpenAI (رؤية) |
-| `ANTHROPIC_MODEL` | `claude-3-5-sonnet-20241022` | موديل Anthropic |
+| `ANTHROPIC_MODEL` | `claude-sonnet-5-5` | موديل Claude: `claude-haiku-5-5` أرخص، `claude-opus-5-5` أقوى |
 | `OPENAI_BASE` | `https://api.openai.com` | لنقاط متوافقة مع OpenAI (OpenRouter، موديل محلي…) |
 
 ### صدق وواضح عن الحدود
