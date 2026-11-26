@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<script>/* v36: storage carried over from the old address (fc_* keys, gzip in the fragment); keys already here are kept */(function(){var m=location.hash.match(/^#r2wmig=([\w-]+)(?:~(.*))?$/);if(!m)return;var h=m[2]?decodeURIComponent(m[2]):"";try{history.replaceState(null,"",location.pathname+location.search+h)}catch(e){}
+if(!window.DecompressionStream)return;try{var s=atob(m[1].replace(/-/g,"+").replace(/_/g,"/")),a=new Uint8Array(s.length);for(var i=0;i<s.length;i++)a[i]=s.charCodeAt(i);
+new Response(new Blob([a]).stream().pipeThrough(new DecompressionStream("gzip"))).text().then(function(t){var d=JSON.parse(t),n=0;Object.keys(d).forEach(function(k){var o=localStorage.getItem(k);if(/^fc_/.test(k)&&(o==null||o.length<3)&&typeof d[k]==="string"){try{localStorage.setItem(k,d[k]);n++}catch(e){}}});if(n&&!sessionStorage.getItem("r2wmig")){sessionStorage.setItem("r2wmig","1");location.reload()}}).catch(function(){})}catch(e){}})();</script>
+
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Replay to Win | ارفع مباراتك، واعرف كيف تتحسن</title>
+<meta name="description" content="ارفع مباراتك كاملة واحصل على تقرير بالعربي: تقييم من ١٠، لحظات حاسمة بالوقت، أخطاؤك ونقاط قوتك، تمارين، ومهمة واحدة لمباراتك القادمة. اشترك شهريًا أو ادفع لكل مباراة.">
+<meta name="theme-color" content="#0a0e14">
+<link rel="canonical" href="https://r2w.yamsoft.dev/">
+<meta name="robots" content="index,follow">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Replay to Win","alternateName":"R2W","url":"https://r2w.yamsoft.dev/","inLanguage":"ar","applicationCategory":"GameApplication","operatingSystem":"Web, iOS, Android","description":"ارفع مباراتك واحصل على تقرير كامل بالعربي: تقييم، لحظات حاسمة، أخطاء ونقاط قوة، تمارين، ومهمة واحدة لمباراتك القادمة.","offers":[{"@type":"Offer","name":"٣ مباريات","price":"29","priceCurrency":"SAR"},{"@type":"Offer","name":"شهري","price":"69","priceCurrency":"SAR"},{"@type":"Offer","name":"سنوي","price":"399","priceCurrency":"SAR"}]}</script>
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://r2w.yamsoft.dev/">
+<meta property="og:site_name" content="Replay to Win">
+<meta property="og:title" content="Replay to Win ⚽ ارفع مباراتك. ارجع أقوى.">
+<meta property="og:description" content="تقرير كامل بالعربي لمباراتك: تقييم، لحظات حاسمة، أخطاء ونقاط قوة، تمارين، ومهمة واحدة. بالعربي بالكامل.">
+<meta property="og:image" content="https://r2w.yamsoft.dev/og.jpg?v=17">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:locale" content="ar_SA">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Replay to Win ⚽ ارفع مباراتك. ارجع أقوى.">
+<meta name="application-name" content="Replay to Win">
+<meta name="twitter:image" content="https://r2w.yamsoft.dev/og.jpg?v=17">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.png?v=17" sizes="48x48"><link rel="icon" href="icon-192.png?v=17" sizes="192x192">
+<link rel="apple-touch-icon" href="icon-180.png?v=17">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="R2W">
+<link rel="stylesheet" href="app.css?v=50">
+</head>
+<body>
+<div id="splash" aria-hidden="true"><div class="sp-in"><img src="logo.svg?v=17" alt=""><b class="bn" dir="ltr">Replay to Win</b><span class="sp-bar"><i></i></span></div></div>
+<div class="pagebg" aria-hidden="true"><video class="hv-v" muted loop playsinline preload="none" poster="hero-v.jpg?v=16"></video><i class="pg-dim"></i></div>
+<div class="bgfx" aria-hidden="true"><i class="g1"></i><i class="g2"></i><i class="g3"></i><i class="grid"></i><canvas id="fx"></canvas></div>
+<header class="top">
+  <button class="brand" data-go="home" aria-label="الرئيسية"><img src="logo.svg?v=17" alt=""><span class="bn bn-full" dir="ltr">Replay to Win</span><span class="bn bn-s" data-short dir="ltr">R2W</span></button>
+  <nav class="nav">
+    <button class="pill ghost" id="jr-btn" hidden>📈 رحلتي</button>
+    <button class="pill ghost" id="acct-btn" data-acct><span id="acct-t">دخول</span> <i class="hc" id="hist-n" hidden></i></button>
+    <button class="pill cta" id="top-cta" data-start="match">ابدأ الآن</button>
+  </nav>
+</header>
+<div id="ready-bar" class="ready-bar" role="status" hidden><span class="rb-ic" aria-hidden="true"></span><span class="rb-tx"><b id="rb-t">تحليلك جاهز ✓</b><small id="rb-s"></small></span><button type="button" class="btn primary sm" id="rb-go">افتح التقرير</button><button type="button" class="rb-x" id="rb-x" aria-label="إخفاء">✕</button></div>
+
+<div id="renew-bar" class="ready-bar renew" role="status" hidden><span class="rb-tx"><b id="rn-t">اشتراكك ينتهي قريبًا</b><small id="rn-s"></small></span><button type="button" class="btn primary sm" id="rn-go">جدّد</button><button type="button" class="rb-x" id="rn-x" aria-label="إخفاء">✕</button></div>
+
+<main>
+<!-- HOME / LANDING -->
+<section id="home" class="screen active">
+  <div class="hv">
+    <div class="hv-shade" aria-hidden="true"></div>
+  <div class="hero">
+    <span class="tag glow">⚽ مدرّبك الشخصي في ألعاب كرة القدم</span>
+    <h1 class="big"><span>ارفع مباراتك.</span><span>اعرف لماذا خسرت.</span><em class="shine">ارجع أقوى.</em></h1>
+    <p class="lead">نشاهد مباراتك كاملة، ونحدد اللحظات التي غيّرت النتيجة، ثم نعطيك مهمة واحدة واضحة تصلحها قبل مباراتك القادمة.</p>
+    <button class="btn primary xl pulse" data-start="match">حلّل مباراتك<span data-free hidden> مجانًا</span></button>
+    <p class="free-note" data-free hidden>أول تحليل مجاني، بدون حساب</p>
+    <button class="btn ghost" data-sample>شاهد تقريرًا كاملًا</button>
+    <p class="micro">تقرير كامل • بالعربي بالكامل • <span data-px="3 مباريات بـ@pack3 ريال">3 مباريات بـ29 ريال</span></p>
+  </div>
+    <span class="hv-down" aria-hidden="true">⌄</span>
+  </div>
+
+  <div class="scr reveal" aria-hidden="true">
+    <div class="scr-in">
+      <video class="lazyv" data-src="m/demo_screen.mp4?v=31" poster="demo_screen.jpg?v=16" muted loop playsinline preload="none"></video>
+      <svg class="scr-ov" viewBox="0 0 640 400" preserveAspectRatio="none">
+        <path class="br" d="M18 60V18h42M622 60V18h-42M18 340v42h42M622 340v42h-42"/>
+        <circle class="rg" cx="300" cy="190" r="34"/>
+        <path class="ar" d="M300 190 C 360 150, 430 120, 500 110"/>
+        <path class="ah" d="M488 100 L502 110 L486 118"/>
+      </svg>
+      <span class="scr-live"><i></i> نحلل اللقطة</span>
+      <div class="scr-cap"><b class="scr-t" dir="ltr">١٤:٠٢</b><span class="scr-txt">مساحة مفتوحة خلف الدفاع</span></div>
+      <div class="scr-tl"><i class="mk good" style="right:14%"></i><i class="mk bad" style="right:38%"></i><i class="mk good" style="right:61%"></i><i class="mk bad" style="right:83%"></i><span class="scr-ph"></span></div>
+    </div>
+  </div>
+
+  <div class="stats reveal">
+    <div><b data-count="1230">١٢٣٠</b><small>لقطة نشاهدها في مباراة ٢٠ دقيقة</small></div>
+    <div><b>٥–١٢</b><small>دقيقة عادةً حتى يجهز تقريرك</small></div>
+    <div><b data-count="1">١</b><small>مهمة واضحة لمباراتك القادمة</small></div>
+  </div>
+
+  <button class="mini-rep reveal" data-sample aria-label="افتح مثال التقرير">
+    <div class="mr-top"><span class="mr-lab">تقرير مباراة • مثال</span><span class="mr-score" dir="ltr">٥ &lrm;-&lrm; ٤</span></div>
+    <div class="mr-body">
+      <div class="ring" style="--v:75"><b>٧٫٥</b><small>/١٠</small></div>
+      <div class="mr-txt"><small>مهمتك القادمة</small><b>لا تسحب قلب الدفاع من مكانه</b>
+        <div class="mr-bars"><i style="--w:65%" title="الدفاع"></i><i style="--w:90%"></i><i style="--w:75%"></i><i style="--w:65%"></i><i style="--w:70%"></i></div></div>
+    </div>
+    <div class="mr-moments"><span class="mm bad" dir="ltr">٠٤:٢٨</span><span class="mm good" dir="ltr">٠٥:٠٠</span><span class="mm good" dir="ltr">١٥:١٩</span><span class="mm bad" dir="ltr">١٩:٥٣</span><span class="mr-open">افتح التقرير ‹</span></div>
+  </button>
+
+  <p class="games-line reveal">⚽ متاح الآن لألعاب FC • ألعاب أخرى قريبًا</p>
+
+  <h2 class="sec-t" id="how">كيف يعمل؟ <small>أربع خطوات</small></h2>
+  <ol class="steps4 reveal">
+    <li><i>١</i><div><b>سجّل مباراتك</b><span>بزر Create في البلايستيشن، أو تسجيل الشاشة من إكس بوكس أو الكمبيوتر. تسجيل من جهاز اللعب نفسه، لا تصوير التلفاز بالجوال.</span>
+      <div class="mock rec"><span class="dotr"></span> جارٍ الحفظ… <b dir="ltr">20:30</b></div></div></li>
+    <li><i>٢</i><div><b>ارفعها هنا</b><span>اختر الملف واكتب لون قميص فريقك، ونرفع الفيديو كاملًا.</span>
+      <div class="mock up"><span>match.mp4</span><span class="pb"><i style="width:72%"></i></span><small>٧٢٪</small></div></div></li>
+    <li><i>٣</i><div><b>اقرأ تقريرك</b><span>تقييم من ١٠، لحظات حاسمة بالوقت، أخطاء ونقاط قوة، وتقييم لكل جانب من لعبك.</span>
+      <div class="mock rp"><span class="ring s" style="--v:65"><b>٦٫٥</b></span><span class="lines"><i></i><i></i><i></i></span></div></div></li>
+    <li><i>٤</i><div><b>نفّذ مهمتك</b><span>شيء واحد تصلحه في مباراتك القادمة، وتمارين قصيرة بمدة محددة، ثم ارفع المباراة التالية لترى الفرق.</span>
+      <div class="mock ms">🎯 مهمتك: <b>أمّن خط الدفاع قبل الهجوم</b></div></div></li>
+  </ol>
+
+  <h2 class="sec-t reveal">شاهده وهو يعمل <small>من التقرير إلى اللقطات</small></h2>
+  <div class="phones reveal">
+    <figure><div class="ph"><video class="lazyv" data-src="m/demo_report.mp4?v=18" poster="demo_report.jpg?v=18" muted loop playsinline preload="none"></video></div><figcaption>اقرأ تقريرك</figcaption></figure>
+    <figure><div class="ph"><video class="lazyv" data-src="m/demo_clips.mp4?v=18" poster="demo_clips.jpg?v=18" muted loop playsinline preload="none"></video></div><figcaption>شاهد لقطاتك</figcaption></figure>
+  </div>
+
+  <h2 class="sec-t">ماذا تختار؟</h2>
+  <button class="card big primary-card" data-start="match">
+    <span class="ic">🎮</span>
+    <span><b>تحليل مباراة كاملة</b><small>تقرير كامل: التقييم، اللحظات الحاسمة، الأخطاء، التكتيك والتمارين</small></span>
+    <span class="arrow">‹</span>
+  </button>
+
+  <h2 class="sec-t">كل ما في التقرير</h2>
+  <div class="feats">
+    <div class="ft"><b>🏅 تقييم من ١٠</b><span>رقم واحد تتابع به تطورك من مباراة لأخرى.</span></div>
+    <div class="ft"><b>⏱️ لحظات بالوقت</b><span>أهم اللحظات والأهداف بوقتها في الفيديو، مع الدرس منها.</span></div>
+    <div class="ft"><b>📊 ٥ جوانب</b><span>الدفاع، الهجوم، التمرير، التمركز، والقرارات.</span></div>
+    <div class="ft"><b>🎯 مهمة واحدة</b><span>أهم شيء تصلحه قبل مباراتك القادمة.</span></div>
+    <div class="ft"><b>📋 التكتيك</b><span>التشكيلة، تعليمات اللاعبين، وخطط الأسهم.</span></div>
+    <div class="ft"><b>🏋️ تمارين بالمدة</b><span>تمارين قصيرة مرتبطة بأخطائك أنت.</span></div>
+    <div class="ft"><b>💬 اسأل المدرّب</b><span>اسأل عن تقريرك وخذ إجابة مفصلة.</span></div>
+    <div class="ft"><b>📈 رحلة التحسن</b><span>هدفان لمباراتك القادمة، ونقارن أرقامك بمباراتك السابقة.</span></div>
+    <div class="ft"><b>🗂️ سجلّ مبارياتك</b><span>كل تقاريرك محفوظة في حسابك.</span></div>
+  </div>
+
+  <div class="stats">
+    <div><b>كاملة</b><small>نشاهد المباراة كلها</small></div>
+    <div><b>٥</b><small>جوانب تقييم</small></div>
+    <div><b data-px="@pack3">29</b><small>ريال لـ3 مباريات</small></div>
+  </div>
+
+  <div class="sample-cta">
+    <b>شاهد تقريرًا حقيقيًا كاملًا</b>
+    <span>مباراة ٢٠ دقيقة انتهت ٥-٤ بعد الأشواط الإضافية. اقرأ التقرير كله قبل أن ترفع مباراتك.</span>
+    <button class="btn ghost" data-sample>افتح التقرير</button>
+  </div>
+
+  <h2 class="sec-t" id="price-t">الأسعار</h2>
+  <p class="lead sm">ابدأ بـ٣ مباريات، أو اشترك وكمّل رحلة تحسّنك.</p>
+  <div class="plans3" id="plans-land"></div>
+  <div class="cmp-wrap"><table class="cmp" id="cmp"></table></div>
+  <p class="paymsg" id="paymsg-land" hidden></p>
+  <p class="fine">الأسعار بالريال السعودي. الدفع عبر مدى، Apple Pay، فيزا وماستركارد. <a href="refund.html">سياسة الاسترجاع</a></p>
+
+  <h2 class="sec-t" id="faq">أسئلة شائعة</h2>
+  <div class="faq">
+    <details class="faq-rec"><summary>كيف أسجّل مباراتي من البلايستيشن؟</summary><!-- v29: the answer is built by app.js from the upload step itself (#upload .srcpick, ul[data-for=match], #guide-link, #guide-clips), so the two never differ. --><div class="fr" id="faq-rec"></div></details>
+    <details><summary>هل تُشاهَد المباراة كاملة؟</summary><p>نعم. في تحليل المباراة يُرفع الفيديو كاملًا ونشاهده من أوله إلى آخره، ثم يُحذف بعد انتهاء التحليل. في طريقة الرابط يبقى الفيديو في قناتك على يوتيوب ولا نحفظه عندنا، ويمكنك حذفه بعد وصول التقرير.</p></details>
+    <details><summary>كم طول المباراة الذي تقبلونه؟</summary><p>المباراة الكاملة من ٢ إلى ٢٥ دقيقة (طول الفيديو، لا وقت المباراة داخل اللعبة). الفيديو الأقصر من دقيقتين لا يُقبل كمباراة كاملة.</p></details>
+    <details><summary>كم يستغرق التحليل؟</summary><p>عادةً من ٥ إلى ١٢ دقيقة حسب طول المباراة. بعد اكتمال الرفع يمكنك إغلاق الصفحة، وسيكون التقرير في «سجلّي».</p></details>
+    <details><summary>ما هو الاستخدام العادل للمشتركين؟</summary><p>الاشتراك الشهري والسنوي يشمل حتى ٣٠ تحليل مباراة خلال آخر ٣٠ يومًا. التحليل الذي لا يكتمل لا يُحسب. ويعود لك كل تحليل بعد ٣٠ يومًا من استخدامه، وتشاهد استخدامك في «حسابي». إذا وصلت الحد يمكنك شراء باقة ٣ مباريات.</p></details>
+    <details><summary>هل هناك حدود أخرى ضمن الاستخدام العادل؟</summary><p>نعم، لحماية الخدمة للجميع: لكل تقرير ٨ أسئلة للمدرّب، وهناك حدود يومية للسلامة على أسئلة المدرّب وعدد الرفعات وعلى مجموع التحليلات في الموقع. الاستخدام المعتاد لا يصل إليها، وتتجدد الحدود اليومية الساعة ٣ فجرًا بتوقيت السعودية. التحليل الذي لا يكتمل لا يُحسب، والمقطع الذي ليس من FC يعود رصيده إليك.</p></details>
+    <details><summary>لماذا أكتب لون قميص فريقي؟</summary><p>حتى لا نخلط بين فريقك وفريق الخصم. اكتب اللون أو الاسم المختصر الظاهر في لوحة النتيجة.</p></details>
+    <details><summary>أين تُحفظ تقاريري؟</summary><p>في حسابك، وتجدها في «سجلّي» من أي جهاز تدخل منه، ونحفظ نسخة منها على جهازك أيضًا. والتحليل الذي لم يكتمل بعد يظهر هناك بحالته حتى يجهز.</p></details>
+    <details><summary>نسيت كلمة المرور، ماذا أفعل؟</summary><p>راسلنا من <a href="contact.html">صفحة التواصل</a> بالبريد المسجّل في حسابك، وسنرسل لك رابطًا لتعيين كلمة مرور جديدة.</p></details>
+    <details><summary>ما الألعاب المدعومة؟</summary><p>ألعاب كرة القدم من سلسلة FC الآن، وبقية الألعاب قريبًا.</p></details>
+    <details><summary>هل التحليل دقيق ١٠٠٪؟</summary><p>نحرص على الدقة، لكننا لا نرى أزرارك أو إعداداتك، وقد نخطئ أحيانًا في التفاصيل. استخدم التقرير دليلًا للتحسن، وأرسل لنا رأيك بعد كل تقرير.</p></details>
+  </div>
+
+  <div class="final">
+    <img src="logo.svg?v=17" alt="" width="56" height="56">
+    <b>مباراتك القادمة تبدأ من هنا</b>
+    <button class="btn primary xl" data-start="match">حلّل مباراتك الآن</button>
+  </div>
+  <footer class="foot"><span class="bn" dir="ltr">Replay to Win</span> • <a href="#price-t">الأسعار</a> • <a href="#faq">أسئلة شائعة</a> • <button class="lnk" data-go="history">سجلّي</button><br><a href="terms.html">الشروط والأحكام</a> • <a href="privacy.html">سياسة الخصوصية</a> • <a href="refund.html">سياسة الاسترجاع</a> • <a href="contact.html">تواصل معنا</a><br><small>غير تابع لأي شركة ألعاب. أسماء الألعاب لأصحابها.</small></footer>
+</section>
+
+<section id="upload" class="screen">
+  <button type="button" class="backbar" data-back>→ رجوع</button>
+  <ol class="wiz" aria-label="خطوات الرفع"><li data-w="1"><b>١</b>الطريقة</li><li data-w="2"><b>٢</b>الفيديو</li><li data-w="3"><b>٣</b>التأكيد</li></ol>
+
+  <!-- v30: shown before the upload step when the account has nothing that pays for this analysis -->
+  <div class="goalbuy matchbuy" id="matchbuy" hidden>
+    <b>ما عندك رصيد تحليل الآن</b>
+    <small>ارفع مباراتك عادي: إذا حُللت قبل نفتح تقريرها بدون رصيد. المباراة الجديدة تحتاج باقة أو اشتراك.</small>
+    <small data-px="باقة 3 مباريات بـ@pack3 ريال، أو اشترك وتحليلات المباريات مشمولة (استخدام عادل).">باقة 3 مباريات بـ29 ريال، أو اشترك وتحليلات المباريات مشمولة (استخدام عادل).</small>
+    <button type="button" class="btn primary sm" id="mb-pack" data-px="اشترِ باقة 3 مباريات (@pack3 ريال)">اشترِ باقة 3 مباريات (29 ريال)</button>
+    <button type="button" class="lnk" id="mb-sub">أو اشترك، وتحليلات المباريات مشمولة ←</button>
+  </div>
+  <!-- step 1: how -->
+  <div class="ws ws1">
+  <p class="free-b" data-free hidden>🎁 تحليلك الأول مجاني، بدون حساب</p>
+  <h2 class="u-title" id="u-h1">كيف تريد رفع مباراتك؟</h2>
+  <div class="srcseg srcpick" role="tablist" aria-label="طريقة الرفع">
+    <button type="button" data-src="one" class="on"><span class="sp-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#2bff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></svg></span><b>مقطع واحد</b><small>فيديو واحد من جهازك للمباراة كاملة</small></button>
+    <button type="button" data-src="link"><span class="sp-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#2bff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></span><b>مباراة كاملة <em>(رابط)</em></b><small>الصق رابط بث المباراة على يوتيوب</small></button>
+    <button type="button" data-src="clips"><span class="sp-ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#2bff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 9h4M3 15h4M17 9h4M17 15h4"/></svg></span><b>مباراة كاملة <em>(مقاطع)</em></b><small>ارفع أجزاء المباراة (حتى ٨) ونحللها كمباراة واحدة</small></button>
+  </div>
+  <div class="ustep">اللعبة</div>
+  <div class="gpick" aria-label="اللعبة"><span class="on">⚽ FC</span></div>
+  </div>
+
+  <!-- step 2: the video -->
+  <div class="ws ws2">
+  <h2 class="u-title u-one" data-for="match">حلّل مباراتك كاملة</h2>
+  <h2 class="u-title u-link">حلّل مباراتك كاملة من رابط البث</h2>
+  <h2 class="u-title u-clips">حلّل مباراتك كاملة من عدة مقاطع</h2>
+  <div class="ustep u-one"><span>٢</span> الفيديو</div>
+  <div class="u-link">
+    <div class="ustep"><span>٢</span> رابط البث</div>
+    <div class="field"><label for="yt">رابط فيديو المباراة على يوتيوب</label>
+      <input id="yt" type="url" inputmode="url" dir="ltr" placeholder="https://youtube.com/watch?v=…" autocomplete="off"><small class="yt-check" id="yt-check" role="status" aria-live="polite" hidden></small><small class="hint" id="yt-hint">يجب أن يكون الفيديو «عامًا» ومدته من ٢ إلى ٢٥ دقيقة. يبقى الفيديو في قناتك على يوتيوب ولا نحفظه عندنا، ويمكنك حذفه بعد وصول التقرير.</small></div>
+    <div class="guide" id="guide-link"><b class="g-t">الطريقة: بث المباراة على يوتيوب من البلايستيشن ٥</b><div class="g-row"><figure class="gstep"><svg viewBox="0 0 300 190" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gg1" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2bff88"/><stop offset="1" stop-color="#19c3ff"/></linearGradient></defs><rect width="300" height="190" rx="16" fill="#0d1622"/><path d="M70 70 Q80 48 110 50 L190 50 Q220 48 230 70 L252 128 Q258 150 238 152 Q222 153 210 132 L198 112 L102 112 L90 132 Q78 153 62 152 Q42 150 48 128 Z" fill="#1b2636" stroke="#2f4560" stroke-width="2"/>
+<rect x="122" y="58" width="56" height="34" rx="6" fill="#26364c"/>
+<rect x="100" y="60" width="12" height="7" rx="3.5" fill="#2bff88"/>
+<circle cx="88" cy="88" r="13" fill="#26364c"/><circle cx="212" cy="88" r="13" fill="#26364c"/>
+<circle cx="125" cy="118" r="11" fill="#26364c"/><circle cx="175" cy="118" r="11" fill="#26364c"/><rect x="97" y="57" width="18" height="13" rx="6" fill="none" stroke="url(#gg1)" stroke-width="2.5"><animate attributeName="opacity" values="1;.35;1" dur="1.6s" repeatCount="indefinite"/></rect><circle cx="106" cy="64" r="9" fill="#2bff88" opacity=".35"><animate attributeName="r" values="7;13;7" dur="1.6s" repeatCount="indefinite"/></circle><circle cx="106" cy="64" r="4" fill="#2bff88"/><text x="106" y="38" font-family="Plex,system-ui,sans-serif" font-size="13" font-weight="700" fill="#2bff88" text-anchor="middle" direction="rtl">Create</text></svg><figcaption><i>١</i><span>في يد التحكم اضغط زر <b>Create</b>.</span></figcaption></figure><figure class="gstep"><svg viewBox="0 0 300 190" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gg2" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2bff88"/><stop offset="1" stop-color="#19c3ff"/></linearGradient></defs><rect width="300" height="190" rx="16" fill="#0d1622"/><rect x="40" y="18" width="220" height="132" rx="10" fill="#05090f" stroke="#2a3a50" stroke-width="3"/><rect x="128" y="150" width="44" height="10" fill="#2a3a50"/><rect x="108" y="160" width="84" height="6" rx="3" fill="#2a3a50"/><rect x="58" y="78" width="56" height="50" rx="8" fill="#1b2636"/><rect x="122" y="78" width="56" height="50" rx="8" fill="#1b2636"/><rect x="186" y="78" width="56" height="50" rx="8" fill="#1b2636"/>
+<path d="M214 96 a9 9 0 0 1 0 14 M208 92 a15 15 0 0 1 0 22" stroke="#2bff88" stroke-width="2.5" fill="none"/><circle cx="203" cy="103" r="3.5" fill="#2bff88"/>
+<rect x="74" y="94" width="24" height="18" rx="3" fill="none" stroke="#7d93ad" stroke-width="2"/><circle cx="150" cy="103" r="9" fill="none" stroke="#7d93ad" stroke-width="2"/><text x="150" y="48" font-family="Plex,system-ui,sans-serif" font-size="12" font-weight="600" fill="#9fb3c8" text-anchor="middle" direction="rtl">قائمة Create</text><text x="214" y="122" font-family="Plex,system-ui,sans-serif" font-size="11" font-weight="600" fill="#e8f1fa" text-anchor="middle" direction="rtl">بث</text><text x="150" y="122" font-family="Plex,system-ui,sans-serif" font-size="10" font-weight="600" fill="#7d93ad" text-anchor="middle" direction="rtl">لقطة</text><text x="86" y="122" font-family="Plex,system-ui,sans-serif" font-size="10" font-weight="600" fill="#7d93ad" text-anchor="middle" direction="rtl">مقطع</text><rect x="183" y="75" width="62" height="56" rx="11" fill="none" stroke="url(#gg2)" stroke-width="2.5"><animate attributeName="opacity" values="1;.35;1" dur="1.6s" repeatCount="indefinite"/></rect></svg><figcaption><i>٢</i><span>اختر <b>«بث»</b> من القائمة.</span></figcaption></figure><figure class="gstep"><svg viewBox="0 0 300 190" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gg3" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2bff88"/><stop offset="1" stop-color="#19c3ff"/></linearGradient></defs><rect width="300" height="190" rx="16" fill="#0d1622"/><rect x="40" y="18" width="220" height="132" rx="10" fill="#05090f" stroke="#2a3a50" stroke-width="3"/><rect x="128" y="150" width="44" height="10" fill="#2a3a50"/><rect x="108" y="160" width="84" height="6" rx="3" fill="#2a3a50"/><rect x="62" y="40" width="176" height="28" rx="6" fill="#1b2636"/><rect x="62" y="74" width="176" height="28" rx="6" fill="#1b2636"/><rect x="62" y="108" width="176" height="28" rx="6" fill="#1b2636"/>
+<circle cx="80" cy="54" r="7" fill="#ff4d4d"/><rect x="190" y="82" width="34" height="12" rx="6" fill="#2bff88"/><circle cx="217" cy="88" r="5" fill="#05090f"/><text x="150" y="58" font-family="Plex,system-ui,sans-serif" font-size="12" font-weight="700" fill="#e8f1fa" text-anchor="middle" direction="rtl">YouTube</text><text x="150" y="92" font-family="Plex,system-ui,sans-serif" font-size="11" font-weight="600" fill="#e8f1fa" text-anchor="middle" direction="rtl">الخصوصية: عام</text><text x="150" y="126" font-family="Plex,system-ui,sans-serif" font-size="11" font-weight="600" fill="#9fb3c8" text-anchor="middle" direction="rtl">اربط الحساب (مرة واحدة)</text><rect x="59" y="71" width="182" height="34" rx="9" fill="none" stroke="url(#gg3)" stroke-width="2.5"><animate attributeName="opacity" values="1;.35;1" dur="1.6s" repeatCount="indefinite"/></rect></svg><figcaption><i>٣</i><span>اختر <b>YouTube</b> واربط حسابك (مرة واحدة فقط)، واجعل الخصوصية <b>«عام»</b>.</span></figcaption></figure><figure class="gstep"><svg viewBox="0 0 300 190" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gg4" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2bff88"/><stop offset="1" stop-color="#19c3ff"/></linearGradient></defs><rect width="300" height="190" rx="16" fill="#0d1622"/><rect x="40" y="18" width="220" height="132" rx="10" fill="#05090f" stroke="#2a3a50" stroke-width="3"/><rect x="128" y="150" width="44" height="10" fill="#2a3a50"/><rect x="108" y="160" width="84" height="6" rx="3" fill="#2a3a50"/><rect x="44" y="22" width="212" height="124" rx="6" fill="#0f3b2a"/><rect x="60" y="34" width="180" height="100" fill="none" stroke="#7fe3b0" stroke-width="1.5" opacity=".6"/><line x1="150" y1="34" x2="150" y2="134" stroke="#7fe3b0" stroke-width="1.5" opacity=".6"/><circle cx="150" cy="84" r="16" fill="none" stroke="#7fe3b0" stroke-width="1.5" opacity=".6"/>
+<circle cx="120" cy="70" r="4" fill="#fff"/><circle cx="170" cy="96" r="4" fill="#19c3ff"/><circle cx="196" cy="62" r="4" fill="#19c3ff"/>
+<rect x="56" y="28" width="44" height="16" rx="8" fill="#ff4d4d"/><circle cx="66" cy="36" r="3" fill="#fff"><animate attributeName="opacity" values="1;.2;1" dur="1s" repeatCount="indefinite"/></circle>
+<rect x="168" y="112" width="80" height="24" rx="12" fill="#05090f" opacity=".85"/><text x="84" y="40" font-family="Plex,system-ui,sans-serif" font-size="9" font-weight="700" fill="#fff" text-anchor="middle" direction="rtl">مباشر</text><text x="208" y="128" font-family="Plex,system-ui,sans-serif" font-size="11" font-weight="700" fill="#fff" text-anchor="middle" direction="rtl">إنهاء البث</text><rect x="165" y="109" width="86" height="30" rx="15" fill="none" stroke="url(#gg4)" stroke-width="2.5"><animate attributeName="opacity" values="1;.35;1" dur="1.6s" repeatCount="indefinite"/></rect></svg><figcaption><i>٤</i><span>العب مباراتك كاملة، ثم اضغط <b>«إنهاء البث»</b>.</span></figcaption></figure><figure class="gstep"><svg viewBox="0 0 300 190" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gg5" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2bff88"/><stop offset="1" stop-color="#19c3ff"/></linearGradient></defs><rect width="300" height="190" rx="16" fill="#0d1622"/><rect x="95" y="10" width="110" height="172" rx="16" fill="#05090f" stroke="#2a3a50" stroke-width="3"/><rect x="135" y="16" width="30" height="5" rx="2.5" fill="#2a3a50"/><rect x="103" y="30" width="94" height="54" rx="6" fill="#1b2636"/><path d="M144 47 v20 l17 -10z" fill="#e8f1fa"/>
+<rect x="103" y="110" width="94" height="66" rx="10" fill="#1b2636"/><rect x="112" y="140" width="76" height="24" rx="8" fill="#26364c"/>
+<path d="M172 96 l8 -6 l8 6 M180 90 v12" stroke="#2bff88" stroke-width="2" fill="none"/><text x="150" y="100" font-family="Plex,system-ui,sans-serif" font-size="10" font-weight="600" fill="#9fb3c8" text-anchor="middle" direction="rtl">مشاركة</text><text x="150" y="128" font-family="Plex,system-ui,sans-serif" font-size="10" font-weight="600" fill="#9fb3c8" text-anchor="middle" direction="rtl">شارك الفيديو</text><text x="150" y="156" font-family="Plex,system-ui,sans-serif" font-size="11" font-weight="700" fill="#fff" text-anchor="middle" direction="rtl">نسخ الرابط</text><rect x="109" y="137" width="82" height="30" rx="11" fill="none" stroke="url(#gg5)" stroke-width="2.5"><animate attributeName="opacity" values="1;.35;1" dur="1.6s" repeatCount="indefinite"/></rect><circle cx="170" cy="152" r="9" fill="#2bff88" opacity=".35"><animate attributeName="r" values="7;13;7" dur="1.6s" repeatCount="indefinite"/></circle><circle cx="170" cy="152" r="4" fill="#2bff88"/></svg><figcaption><i>٥</i><span>افتح الفيديو في يوتيوب على جوالك ← <b>مشاركة</b> ← <b>نسخ الرابط</b>.</span></figcaption></figure><figure class="gstep"><svg viewBox="0 0 300 190" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gg6" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2bff88"/><stop offset="1" stop-color="#19c3ff"/></linearGradient></defs><rect width="300" height="190" rx="16" fill="#0d1622"/><rect x="95" y="10" width="110" height="172" rx="16" fill="#05090f" stroke="#2a3a50" stroke-width="3"/><rect x="135" y="16" width="30" height="5" rx="2.5" fill="#2a3a50"/><rect x="103" y="28" width="94" height="20" rx="6" fill="#1b2636"/><rect x="104" y="29" width="46" height="18" rx="5" fill="#26364c"/>
+<rect x="103" y="62" width="94" height="26" rx="8" fill="#0d1622" stroke="#2a3a50"/><rect x="103" y="140" width="94" height="28" rx="12" fill="url(#gg6)"/><text x="127" y="41" font-family="Plex,system-ui,sans-serif" font-size="9" font-weight="700" fill="#2bff88" text-anchor="middle" direction="rtl">رابط</text><text x="174" y="41" font-family="Plex,system-ui,sans-serif" font-size="9" font-weight="600" fill="#7d93ad" text-anchor="middle" direction="rtl">مقاطع</text><text x="110" y="79" font-family="Plex,system-ui,sans-serif" font-size="9" fill="#cfe3f5" direction="ltr">youtube.com/watch…</text><text x="150" y="110" font-family="Plex,system-ui,sans-serif" font-size="10" font-weight="600" fill="#9fb3c8" text-anchor="middle" direction="rtl">الصق الرابط هنا</text><text x="150" y="158" font-family="Plex,system-ui,sans-serif" font-size="11" font-weight="700" fill="#05110b" text-anchor="middle" direction="rtl">حلّل المباراة</text><rect x="100" y="59" width="100" height="32" rx="11" fill="none" stroke="url(#gg6)" stroke-width="2.5"><animate attributeName="opacity" values="1;.35;1" dur="1.6s" repeatCount="indefinite"/></rect><circle cx="185" cy="75" r="9" fill="#2bff88" opacity=".35"><animate attributeName="r" values="7;13;7" dur="1.6s" repeatCount="indefinite"/></circle><circle cx="185" cy="75" r="4" fill="#2bff88"/></svg><figcaption><i>٦</i><span>ارجع هنا، الصق الرابط واضغط <b>«التالي»</b>.</span></figcaption></figure></div><div class="g-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="g-nav"><button type="button" class="g-prev g-arr" disabled aria-label="الصورة السابقة">›</button><span class="g-num" aria-live="polite"></span><button type="button" class="g-next g-arr" aria-label="الصورة التالية">‹</button></div></div>
+  </div>
+  <div class="u-clips">
+    <div class="ustep"><span>٢</span> مقاطع المباراة <small>(حتى ٨ بالترتيب)</small></div>
+    <label class="drop small" id="cdrop">
+      <input type="file" id="clips" accept="video/*,.mp4,.mov,.webm" multiple>
+      <span class="drop-ic">🎞️</span><b>اختر المقاطع</b><small>حدد كل أجزاء المباراة مرة واحدة (المجموع من ٢ إلى ٢٥ دقيقة)</small>
+    </label>
+    <ol class="cliplist" id="cliplist"></ol>
+    <p class="hint" id="clip-sum" hidden></p>
+    <div class="guide" id="guide-clips"><b class="g-t">الطريقة: قص المباراة إلى أجزاء من البلايستيشن ٥</b><div class="g-row"><figure class="gstep"><svg viewBox="0 0 300 190" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gg7" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2bff88"/><stop offset="1" stop-color="#19c3ff"/></linearGradient></defs><rect width="300" height="190" rx="16" fill="#0d1622"/><rect x="40" y="18" width="220" height="132" rx="10" fill="#05090f" stroke="#2a3a50" stroke-width="3"/><rect x="128" y="150" width="44" height="10" fill="#2a3a50"/><rect x="108" y="160" width="84" height="6" rx="3" fill="#2a3a50"/><rect x="58" y="40" width="40" height="36" rx="5" fill="#1b2636"/><rect x="106" y="40" width="40" height="36" rx="5" fill="#1f4d38"/><rect x="154" y="40" width="40" height="36" rx="5" fill="#1b2636"/><rect x="202" y="40" width="40" height="36" rx="5" fill="#1b2636"/><rect x="58" y="84" width="40" height="36" rx="5" fill="#1b2636"/><rect x="106" y="84" width="40" height="36" rx="5" fill="#1b2636"/><rect x="154" y="84" width="40" height="36" rx="5" fill="#1b2636"/><rect x="202" y="84" width="40" height="36" rx="5" fill="#1b2636"/><text x="150" y="34" font-family="Plex,system-ui,sans-serif" font-size="11" font-weight="600" fill="#9fb3c8" text-anchor="middle" direction="rtl">معرض الوسائط</text><rect x="103" y="37" width="46" height="42" rx="8" fill="none" stroke="url(#gg7)" stroke-width="2.5"><animate attributeName="opacity" values="1;.35;1" dur="1.6s" repeatCount="indefinite"/></rect><text x="126" y="62" font-family="Plex,system-ui,sans-serif" font-size="8" font-weight="600" fill="#e8f1fa" text-anchor="middle" direction="rtl">مباراتك</text><path d="M121 49 v10 l9 -5z" fill="#2bff88"/></svg><figcaption><i>١</i><span>في البلايستيشن افتح <b>معرض الوسائط</b> واختر تسجيل مباراتك.</span></figcaption></figure><figure class="gstep"><svg viewBox="0 0 300 190" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gg8" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2bff88"/><stop offset="1" stop-color="#19c3ff"/></linearGradient></defs><rect width="300" height="190" rx="16" fill="#0d1622"/><rect x="40" y="18" width="220" height="132" rx="10" fill="#05090f" stroke="#2a3a50" stroke-width="3"/><rect x="128" y="150" width="44" height="10" fill="#2a3a50"/><rect x="108" y="160" width="84" height="6" rx="3" fill="#2a3a50"/><text x="150" y="50" font-family="Plex,system-ui,sans-serif" font-size="12" font-weight="700" fill="#e8f1fa" text-anchor="middle" direction="rtl">قصّ (Trim) إلى أجزاء</text><text x="150" y="70" font-family="Plex,system-ui,sans-serif" font-size="10" font-weight="600" fill="#9fb3c8" text-anchor="middle" direction="rtl">كل جزء ٣ دقائق أو أقل</text><rect x="54" y="86" width="29" height="26" rx="4" fill="#1f4d38"/><text x="68.5" y="103" font-family="Plex,system-ui,sans-serif" font-size="11" font-weight="700" fill="#e8f1fa" text-anchor="middle" direction="rtl">١</text><rect x="87" y="86" width="29" height="26" rx="4" fill="#17405a"/><text x="101.5" y="103" font-family="Plex,system-ui,sans-serif" font-size="11" font-weight="700" fill="#e8f1fa" text-anchor="middle" direction="rtl">٢</text><rect x="120" y="86" width="29" height="26" rx="4" fill="#1f4d38"/><text x="134.5" y="103" font-family="Plex,system-ui,sans-serif" font-size="11" font-weight="700" fill="#e8f1fa" text-anchor="middle" direction="rtl">٣</text><rect x="153" y="86" width="29" height="26" rx="4" fill="#17405a"/><text x="167.5" y="103" font-family="Plex,system-ui,sans-serif" font-size="11" font-weight="700" fill="#e8f1fa" text-anchor="middle" direction="rtl">٤</text><rect x="186" y="86" width="29" height="26" rx="4" fill="#1f4d38"/><text x="200.5" y="103" font-family="Plex,system-ui,sans-serif" font-size="11" font-weight="700" fill="#e8f1fa" text-anchor="middle" direction="rtl">٥</text><rect x="219" y="86" width="29" height="26" rx="4" fill="#17405a"/><text x="233.5" y="103" font-family="Plex,system-ui,sans-serif" font-size="11" font-weight="700" fill="#e8f1fa" text-anchor="middle" direction="rtl">٦</text><path d="M84 122 l10 8 M84 130 l10 -8" stroke="#2bff88" stroke-width="2"/><circle cx="81" cy="121" r="3" fill="none" stroke="#2bff88" stroke-width="1.6"/><circle cx="81" cy="131" r="3" fill="none" stroke="#2bff88" stroke-width="1.6"/></svg><figcaption><i>٢</i><span>استخدم <b>«قص» (Trim)</b> واحفظ المباراة أجزاءً، كل جزء <b>٣ دقائق أو أقل</b>.</span></figcaption></figure><figure class="gstep"><svg viewBox="0 0 300 190" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gg9" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2bff88"/><stop offset="1" stop-color="#19c3ff"/></linearGradient></defs><rect width="300" height="190" rx="16" fill="#0d1622"/><rect x="95" y="10" width="110" height="172" rx="16" fill="#05090f" stroke="#2a3a50" stroke-width="3"/><rect x="135" y="16" width="30" height="5" rx="2.5" fill="#2a3a50"/><rect x="103" y="30" width="94" height="30" rx="8" fill="#1b2636"/><rect x="103" y="66" width="94" height="30" rx="8" fill="#1b2636"/><rect x="103" y="140" width="94" height="28" rx="12" fill="#26364c"/>
+<path d="M150 104 v18 M142 116 l8 8 l8 -8" stroke="#2bff88" stroke-width="2.4" fill="none"/><text x="150" y="49" font-family="Plex,system-ui,sans-serif" font-size="9" font-weight="700" fill="#e8f1fa" text-anchor="middle" direction="rtl">تطبيق PlayStation</text><text x="150" y="85" font-family="Plex,system-ui,sans-serif" font-size="9" font-weight="600" fill="#9fb3c8" text-anchor="middle" direction="rtl">اللقطات ← الأجزاء</text><text x="150" y="158" font-family="Plex,system-ui,sans-serif" font-size="10" font-weight="700" fill="#fff" text-anchor="middle" direction="rtl">حفظ على الجهاز</text><rect x="100" y="137" width="100" height="34" rx="15" fill="none" stroke="url(#gg9)" stroke-width="2.5"><animate attributeName="opacity" values="1;.35;1" dur="1.6s" repeatCount="indefinite"/></rect><circle cx="176" cy="154" r="9" fill="#2bff88" opacity=".35"><animate attributeName="r" values="7;13;7" dur="1.6s" repeatCount="indefinite"/></circle><circle cx="176" cy="154" r="4" fill="#2bff88"/></svg><figcaption><i>٣</i><span>الأجزاء تظهر في <b>تطبيق PlayStation</b> على جوالك: احفظها على الجهاز.</span></figcaption></figure><figure class="gstep"><svg viewBox="0 0 300 190" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gg10" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2bff88"/><stop offset="1" stop-color="#19c3ff"/></linearGradient></defs><rect width="300" height="190" rx="16" fill="#0d1622"/><rect x="95" y="10" width="110" height="172" rx="16" fill="#05090f" stroke="#2a3a50" stroke-width="3"/><rect x="135" y="16" width="30" height="5" rx="2.5" fill="#2a3a50"/><rect x="106" y="34" width="27" height="27" rx="4" fill="#1b2636"/><rect x="137" y="34" width="27" height="27" rx="4" fill="#1b2636"/><rect x="168" y="34" width="27" height="27" rx="4" fill="#1b2636"/><rect x="106" y="65" width="27" height="27" rx="4" fill="#1b2636"/><rect x="137" y="65" width="27" height="27" rx="4" fill="#1b2636"/><rect x="168" y="65" width="27" height="27" rx="4" fill="#1b2636"/><rect x="106" y="96" width="27" height="27" rx="4" fill="#1b2636"/><rect x="137" y="96" width="27" height="27" rx="4" fill="#1b2636"/><rect x="168" y="96" width="27" height="27" rx="4" fill="#1b2636"/><circle cx="128" cy="39" r="5.5" fill="#2bff88"/><text x="128" y="42" font-family="Plex,system-ui,sans-serif" font-size="7" font-weight="700" fill="#05110b" text-anchor="middle">١</text><circle cx="159" cy="39" r="5.5" fill="#2bff88"/><text x="159" y="42" font-family="Plex,system-ui,sans-serif" font-size="7" font-weight="700" fill="#05110b" text-anchor="middle">٢</text><circle cx="190" cy="39" r="5.5" fill="#2bff88"/><text x="190" y="42" font-family="Plex,system-ui,sans-serif" font-size="7" font-weight="700" fill="#05110b" text-anchor="middle">٣</text><circle cx="128" cy="70" r="5.5" fill="#2bff88"/><text x="128" y="73" font-family="Plex,system-ui,sans-serif" font-size="7" font-weight="700" fill="#05110b" text-anchor="middle">٤</text><circle cx="159" cy="70" r="5.5" fill="#2bff88"/><text x="159" y="73" font-family="Plex,system-ui,sans-serif" font-size="7" font-weight="700" fill="#05110b" text-anchor="middle">٥</text><circle cx="190" cy="70" r="5.5" fill="#2bff88"/><text x="190" y="73" font-family="Plex,system-ui,sans-serif" font-size="7" font-weight="700" fill="#05110b" text-anchor="middle">٦</text><rect x="103" y="140" width="94" height="28" rx="12" fill="url(#gg10)"/><text x="150" y="158" font-family="Plex,system-ui,sans-serif" font-size="10" font-weight="700" fill="#05110b" text-anchor="middle" direction="rtl">اختر الكل (٦)</text><circle cx="150" cy="154" r="9" fill="#2bff88" opacity=".35"><animate attributeName="r" values="7;13;7" dur="1.6s" repeatCount="indefinite"/></circle><circle cx="150" cy="154" r="4" fill="#2bff88"/></svg><figcaption><i>٤</i><span>هنا اضغط «اختر المقاطع» وحدد <b>كل الأجزاء</b> مرة واحدة (حتى ٨).</span></figcaption></figure><figure class="gstep"><svg viewBox="0 0 300 190" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gg11" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2bff88"/><stop offset="1" stop-color="#19c3ff"/></linearGradient></defs><rect width="300" height="190" rx="16" fill="#0d1622"/><rect x="95" y="10" width="110" height="172" rx="16" fill="#05090f" stroke="#2a3a50" stroke-width="3"/><rect x="135" y="16" width="30" height="5" rx="2.5" fill="#2a3a50"/><rect x="103" y="30" width="94" height="22" rx="6" fill="#1b2636"/><rect x="170" y="33" width="22" height="16" rx="3" fill="#26364c"/><text x="140" y="45" font-family="Plex,system-ui,sans-serif" font-size="9" font-weight="600" fill="#e8f1fa" text-anchor="middle" direction="rtl">الجزء ١</text><path d="M110 37 h8 M110 41 h8 M110 45 h8" stroke="#7d93ad" stroke-width="1.5"/><rect x="103" y="56" width="94" height="22" rx="6" fill="#1b2636"/><rect x="170" y="59" width="22" height="16" rx="3" fill="#26364c"/><text x="140" y="71" font-family="Plex,system-ui,sans-serif" font-size="9" font-weight="600" fill="#e8f1fa" text-anchor="middle" direction="rtl">الجزء ٢</text><path d="M110 63 h8 M110 67 h8 M110 71 h8" stroke="#7d93ad" stroke-width="1.5"/><rect x="103" y="82" width="94" height="22" rx="6" fill="#1b2636"/><rect x="170" y="85" width="22" height="16" rx="3" fill="#26364c"/><text x="140" y="97" font-family="Plex,system-ui,sans-serif" font-size="9" font-weight="600" fill="#e8f1fa" text-anchor="middle" direction="rtl">الجزء ٣</text><path d="M110 89 h8 M110 93 h8 M110 97 h8" stroke="#7d93ad" stroke-width="1.5"/><rect x="103" y="108" width="94" height="22" rx="6" fill="#1b2636"/><rect x="170" y="111" width="22" height="16" rx="3" fill="#26364c"/><text x="140" y="123" font-family="Plex,system-ui,sans-serif" font-size="9" font-weight="600" fill="#e8f1fa" text-anchor="middle" direction="rtl">الجزء ٤</text><path d="M110 115 h8 M110 119 h8 M110 123 h8" stroke="#7d93ad" stroke-width="1.5"/><rect x="103" y="140" width="94" height="28" rx="12" fill="url(#gg11)"/><text x="150" y="158" font-family="Plex,system-ui,sans-serif" font-size="11" font-weight="700" fill="#05110b" text-anchor="middle" direction="rtl">حلّل المباراة</text><rect x="100" y="53" width="100" height="28" rx="9" fill="none" stroke="url(#gg11)" stroke-width="2.5"><animate attributeName="opacity" values="1;.35;1" dur="1.6s" repeatCount="indefinite"/></rect></svg><figcaption><i>٥</i><span>تأكد من ترتيب الأجزاء (اسحبها أو استخدم الأسهم)، ثم <b>«التالي»</b>.</span></figcaption></figure></div><div class="g-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="g-nav"><button type="button" class="g-prev g-arr" disabled aria-label="الصورة السابقة">›</button><span class="g-num" aria-live="polite"></span><button type="button" class="g-next g-arr" aria-label="الصورة التالية">‹</button></div></div>
+  </div>
+  <label class="drop u-one" id="drop">
+    <input type="file" id="video" accept="video/*,.mp4,.mov,.webm">
+    <span class="drop-ic">⬆️</span>
+    <b id="drop-t">اختر الفيديو</b>
+    <small id="drop-s">من الصور أو الملفات</small>
+    <span class="dur-b" id="dur-b" hidden></span>
+    <span class="chg" id="chg" hidden>تغيير الفيديو</span>
+  </label>
+  <details class="tips u-one" open>
+    <summary>نصائح لتحليل أدق</summary>
+    <ul data-for="match">
+      <li>سجّل بكاميرا اللعب العادية، لا بالإعادة السينمائية.</li>
+      <li>في بلايستيشن ٥: زر <b>Create</b> ← «حفظ اللعب الأخير» أو «بدء تسجيل جديد». يسجّل الجهاز مدة أطول، لكننا نقبل المباراة الكاملة <b>من ٢ إلى ٢٥ دقيقة</b>.</li>
+      <li>تطبيق PlayStation ينقل إلى الجوال المقاطع القصيرة (حتى ٣ دقائق تقريبًا). للمباراة كاملة: انسخها إلى ذاكرة USB من «معرض الوسائط»، أو ارفع أطول مقطع لديك.</li>
+      <li>يُرفع الفيديو كاملًا ونشاهده كله. أبقِ الصفحة مفتوحة حتى يكتمل شريط الرفع.</li>
+      <li>تسجيلات إكس بوكس والكمبيوتر تصلح أيضًا إذا كانت تسجيلًا كاملًا لشاشة المباراة.</li>
+    </ul>
+  </details>
+  </div>
+
+  <!-- step 3: confirm -->
+  <div class="ws ws3">
+  <h2 class="u-title">تأكد قبل التحليل</h2>
+  <div class="usum" id="usum"><div class="us-row"><span>الطريقة</span><b id="us-src">—</b></div><div class="us-row"><span>الفيديو</span><b id="us-vid">—</b></div><button type="button" class="lnk us-chg" data-back>→ تغيير</button></div>
+  <div class="ustep"><span>٣</span> فريقك</div>
+  <div class="field">
+    <label for="team">فريقك: لون القميص أو اسمه في لوحة النتيجة <small>(اختياري، يجعل التحليل أدق)</small></label>
+    <input id="team" type="text" maxlength="40" placeholder="مثلًا: غامق، أبيض، أزرق…">
+  </div>
+  <label class="field file-mini">
+    <span>صورة شاشة التكتيك <small>(اختياري)</small></span>
+    <input type="file" id="tactics" accept="image/*">
+    <em id="tactics-t">إضافة صورة</em>
+  </label>
+  </div>
+
+  <p class="upwarn ws-up" id="upwarn"><b>لا تغلق الصفحة حتى يكتمل الرفع.</b> بعدها يمكنك إغلاقها، وسيكون التقرير في «سجلّي».</p>
+  <p class="err" id="err" hidden></p>
+  <div class="cta-bar"><div class="cta-row"><button type="button" id="u-back" class="btn ghost" data-back>→ رجوع</button><button id="go" class="btn primary" disabled>التالي</button></div><small class="cta-hint" id="cta-hint"></small></div>
+</section>
+
+<!-- PROCESSING -->
+<section id="processing" class="screen">
+  <div class="pitch" aria-hidden="true">
+    <svg viewBox="0 0 300 190"><rect x="4" y="4" width="292" height="182" rx="8"/><line x1="150" y1="4" x2="150" y2="186"/><circle cx="150" cy="95" r="26"/><rect x="4" y="52" width="42" height="86"/><rect x="254" y="52" width="42" height="86"/>
+    <circle class="pl a" cx="70" cy="60" r="5"/><circle class="pl a" cx="95" cy="120" r="5"/><circle class="pl a" cx="130" cy="80" r="5"/><circle class="pl b" cx="190" cy="70" r="5"/><circle class="pl b" cx="210" cy="125" r="5"/><circle class="pl b" cx="235" cy="95" r="5"/>
+    <path class="pass" d="M95 120 Q150 150 210 125 T260 95"/></svg>
+    <i class="scan"></i>
+  </div>
+  <h2 id="p-title">نحلل مباراتك…</h2>
+  <ol class="steps">
+    <li id="s1">نأخذ لقطات من الفيديو <span id="s1n"></span></li>
+    <li id="s2">نقرأ اللعب لقطةً لقطة</li>
+    <li id="s3">نستخرج الأخطاء والحلول</li>
+  </ol>
+  <div class="bar"><i id="bar"></i></div>
+  <div class="skel" aria-hidden="true"><i class="sk-ring"></i><i class="sk-l w80"></i><i class="sk-l w60"></i><div class="sk-row"><i></i><i></i><i></i></div></div>
+  <p class="fine p-fine" id="p-fine">لا تغلق الصفحة حتى يكتمل الرفع.</p>
+  <div class="p-done" id="p-done" hidden><b>✓ اكتمل الرفع</b><button type="button" class="btn ghost sm" data-go="history">افتح «سجلّي»</button></div>
+  <button type="button" class="btn ghost sm p-push" id="p-push" hidden>🔔 نبّهني أول ما يجهز</button>
+</section>
+
+<!-- RESULT -->
+<section id="result" class="screen">
+  <div class="demo-banner sample" id="sample-b" hidden>👀 <b>مثال للتوضيح فقط:</b> تقرير لاعب آخر لمباراة ٢٠ دقيقة، لترى شكل التقرير. التشكيلة والخطة فيه تخصّه هو؛ تقريرك يقرأ مباراتك ويعطيك خطة مختلفة حسب لعبك. <button class="lnk" data-start="match">حلّل مباراتك ‹</button></div>
+  <div class="demo-banner" id="demo" hidden>⚠️ <b>نسخة تجريبية:</b> هذه نتيجة مثال من مقطع آخر، وليست تحليل الفيديو الذي رفعته.</div>
+  <div id="r-match" hidden>
+    <div class="shape-card" id="r-shape" hidden></div>
+    <div class="sumcard" id="r-sum">
+      <div class="sc-meta"><span class="rh-game">⚽ مباراة كاملة</span><span id="r-date"></span></div>
+      <div class="sc-top">
+        <div class="ring lg" id="r-ring" style="--v:0"><b id="r-grade">–</b><small id="r-of">/٩٩</small></div>
+        <div class="sc-main"><small class="sc-k" id="r-rk">تقييم R2W</small><span class="rh-word" id="r-word"></span><p class="score" id="m-score" hidden></p><h2 class="sum sc-sum" id="r-headline" hidden>تحليل مباراتك</h2></div>
+      </div>
+      <h3 class="sc-h">أهم ٣ نقاط</h3>
+      <ul class="top3" id="r-top3"></ul>
+      <!-- v49: free analysis before sign-up: the rest of the report opens with an account -->
+      <div class="lockcard" id="r-lock" hidden>
+        <b>🔒 تقريرك الكامل جاهز</b>
+        <p>اللحظات والأهداف، أسلوب لعبك، التكتيك، وتمارين مباراتك الجاية.</p>
+        <button type="button" class="btn primary auth-big" id="r-unlock">افتح التقرير الكامل مجانًا</button>
+        <small>أنشئ حسابك بالبريد في ثوانٍ، بدون أي دفع</small>
+      </div>
+      <div class="nd" id="r-nd" hidden><small id="r-nd-l">🏋️ تمرينك للمباراة القادمة</small><b id="r-nd-n"></b><p id="r-nd-h"></p></div>
+    </div>
+    <button type="button" class="dtl-tg" id="r-dtl-tg" aria-expanded="false" aria-controls="r-dtl"><span>📂 التفاصيل الكاملة</span><small>اللحظات • الأهداف • التكتيك • التمارين</small><i aria-hidden="true">▾</i></button>
+    <div class="dtl" id="r-dtl" hidden>
+      <div class="tabs" role="tablist"></div>
+      <div class="panes">
+        <section class="pane" data-k="km" data-label="🎬 اللحظات والأهداف">
+          <div class="sec" id="m-km-sec" hidden><small class="h-sub pane-sub">كل لحظة تنعاد على الملعب • اضغط اللحظة لشرح المدرب</small><small class="rp-note" id="m-km-rd" hidden></small>
+            <div class="clips mo-list" id="m-km"></div>
+          </div>
+          <div class="sec" id="m-goals-sec" hidden><h3>⚽ أهداف المباراة بوقتها</h3><small class="h-sub pane-sub" id="m-goals-note" hidden></small>
+            <ul class="goals" id="m-goals"></ul>
+          </div>
+        </section>
+        <section class="pane" data-k="style" data-label="🧠 أسلوبك">
+          <div class="sec" id="m-style-sec"><h3>أسلوب لعبك</h3><ul class="bul" id="m-style"></ul></div>
+          <div class="sec" id="m-mis-sec"><h3>🔁 أخطاء تتكرر</h3><ol class="nums" id="m-mis"></ol></div>
+          <div class="sec" id="r-str-sec" hidden><h3>💪 نقاط قوتك</h3><ul class="bul good" id="r-str"></ul></div>
+        </section>
+        <section class="pane" data-k="rat" data-label="📊 التقييم"><div class="sec" id="r-rat-sec" hidden><div class="rats" id="r-rat"></div></div></section>
+        <section class="pane" data-k="tac" data-label="📋 التكتيك">
+          <div class="sec" id="m-read-sec" hidden><h3>🔎 كيف تلعب <small class="h-sub">قراءة المدرب من مباراتك</small></h3><dl class="tac pi" id="m-read"></dl></div>
+          <div class="sec"><h3>قبل المباراة</h3><p class="tac-ex" id="m-tac-ex" hidden>👀 هذه خطة لاعب المثال فقط. خطتك أنت تُبنى من قراءة مباراتك، وتختلف من لاعب لآخر.</p><dl class="tac" id="m-tac"></dl></div>
+          <div class="sec" id="m-why-sec" hidden><h3>✅ ليش هذي الخطة تناسب لعبك</h3><ul class="bul good" id="m-why"></ul></div>
+          <div class="sec" id="m-gp-sec"><h3>🎛️ الأسهم داخل المباراة</h3><dl class="tac pi" id="m-gp"></dl></div>
+        </section>
+        <section class="pane" data-k="pi" data-label="🎯 التعليمات">
+          <div class="sec" id="m-pi-sec"><h3>تعليمات اللاعبين</h3><dl class="tac pi" id="m-pi"></dl></div>
+          <div class="sec" id="m-ig-sec"><h3>⚡ داخل المباراة</h3><ul class="bul" id="m-ig"></ul></div>
+        </section>
+        <section class="pane" data-k="dr" data-label="⚽ مباراتك الجاية">
+          <div class="assign" id="r-assign" hidden><small>🎯 مهمتك في المباراة القادمة</small><b id="r-as-t"></b><p id="r-as-h"></p></div>
+          <div class="sec" id="r-nm-sec" hidden><h3>طبّقها في مباراتك الجاية</h3><p class="nm-sub">بدون تدريب: العبها عادي، ولما يصير الموقف سوّ اللي تحته</p><ol class="nmt" id="r-nm"></ol></div>
+          <div class="xtra" id="r-xtra" hidden><button class="btn ghost xbtn" id="r-xbtn" type="button" aria-expanded="false" aria-controls="r-xbody"><span>🏋️ أبي تمارين إضافية</span><i aria-hidden="true">⌄</i></button>
+            <div class="xbody" id="r-xbody" hidden><p class="nm-sub">لمن يبي يتمرن أكثر في وضع التدريب</p>
+              <div class="sec" id="r-dr-sec" hidden><div class="drills" id="r-dr"></div></div>
+              <div class="sec" id="m-pr-sec"><ol class="nums" id="m-pr"></ol></div>
+            </div>
+          </div>
+        </section>
+        <section class="pane" data-k="jr" data-label="📈 رحلة التحسن"><div class="jr-res" id="r-jr" hidden></div></section>
+      </div>
+      <div class="dots" aria-hidden="true"></div>
+    </div>
+  </div>
+  <div class="invalid" id="invalid" hidden></div>
+  <p class="note" id="note"></p>
+  <p class="conf" id="conf" hidden></p>
+  <div class="fb" id="fb">
+    <span>هل أفادك التحليل؟</span>
+    <button class="fbb" data-v="up" aria-label="مفيد">👍</button><button class="fbb" data-v="down" aria-label="غير مفيد">👎</button>
+    <div class="fb-more" id="fb-more" hidden><textarea id="fb-c" maxlength="600" rows="2" placeholder="ما الذي أعجبك أو لم يعجبك؟ (اختياري)"></textarea><button class="btn ghost sm" id="fb-send">أرسل</button></div>
+    <small id="fb-ok" hidden>شكرًا! وصلنا رأيك 🙏</small>
+  </div>
+  <div class="chat" id="chat">
+    <h3>💬 اسأل المدرّب</h3>
+    <div class="chips"><button>ماذا أفعل إذا لعب الخصم بتمريرات بينية؟</button><button>اشرح لي R1 أكثر</button><button>أي تكتيك يناسبني؟</button></div>
+    <div class="msgs" id="msgs"></div>
+    <form id="ask"><input id="q" maxlength="500" placeholder="اكتب سؤالك…" autocomplete="off"><button class="btn primary sm" id="ask-b">اسأل</button></form>
+    <small class="fine" id="chat-left"></small>
+  </div>
+  <div class="row">
+    <button class="btn primary" id="again">حلّل مباراة أخرى</button>
+    <button class="btn ghost" id="share">شارك النتيجة</button>
+  </div>
+</section>
+
+<!-- PRICING (gate) -->
+<section id="pricing" class="screen">
+  <button type="button" class="backbar" data-back>→ رجوع</button>
+      <h2>اشترك لتحليل مباراتك القادمة</h2>
+  <p class="lead">اختر الخطة المناسبة لك:</p>
+  <div class="plans3" id="plans-gate"></div>
+  <p class="paymsg" id="paymsg-gate" hidden></p>
+  <p class="fine">الدفع آمن عبر مزوّد دفع سعودي مرخّص: مدى، Apple Pay، فيزا وماستركارد.</p>
+  <button type="button" class="btn ghost" data-back>→ رجوع</button>
+</section>
+
+<!-- AUTH -->
+<section id="auth" class="screen">
+  <button type="button" class="backbar" data-back>→ رجوع</button>
+  <div class="authbox">
+    <img src="logo.svg?v=17" alt="" width="54" height="54">
+    <h2 id="auth-h">أنشئ حسابك مجانًا</h2>
+    <p class="lead sm" id="auth-why">بالبريد وكلمة مرور فقط. حسابك يحفظ تقاريرك واشتراكك.</p>
+    <!-- v49: two fields and one button; sign-up first, login one tap below -->
+    <form id="auth-f" novalidate>
+      <div class="field" id="f-name" hidden><label for="a-name">الاسم</label><input id="a-name" type="text" maxlength="40" autocomplete="nickname"></div>
+      <div class="field"><label for="a-email">بريدك الإلكتروني</label><input id="a-email" type="email" dir="ltr" inputmode="email" autocomplete="email" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="name@gmail.com" required></div>
+      <div class="field"><label for="a-pw">كلمة المرور</label><div class="pw-wrap"><input id="a-pw" type="password" dir="ltr" minlength="8" autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false" required><button type="button" class="pw-eye" id="a-pw-eye" aria-pressed="false">إظهار</button></div><small class="hint" id="pw-hint">8 أحرف أو أكثر</small></div>
+      <p class="err" id="auth-err" hidden></p>
+      <button class="btn primary auth-big" id="auth-go" type="submit">أنشئ حسابي</button>
+    </form>
+    <p class="auth-sw"><span id="auth-sw-t">عندك حساب؟</span> <button type="button" class="lnk" id="auth-sw-b">سجّل دخولك</button></p>
+    <p class="fine">بالمتابعة أنت توافق على <a href="terms.html">الشروط والأحكام</a> و<a href="privacy.html">سياسة الخصوصية</a>.</p>
+    <p class="fine" id="auth-forgot" hidden>نسيت كلمة المرور؟ راسلنا من <a href="contact.html">صفحة التواصل</a> بالبريد المسجّل في حسابك، وسنرسل لك رابطًا لتعيين كلمة مرور جديدة.</p>
+  </div>
+</section>
+
+<!-- ACCOUNT -->
+<section id="account" class="screen">
+  <button type="button" class="backbar" data-back>→ رجوع</button>
+  <h2>حسابي</h2>
+  <div class="acct-card">
+    <div class="acct-row"><span>الحساب</span><b id="ac-email" dir="ltr">—</b></div>
+    <div class="acct-row" id="ac-plan-row"><span>الباقة</span><b id="ac-plan">—</b></div>
+    <div class="acct-row" id="ac-use-row" hidden><span>استخدامك في آخر ٣٠ يومًا</span><b id="ac-use">—</b></div>
+    <p class="fair-note" id="ac-use-note" hidden></p>
+    <div class="acct-row" id="ac-left-row"><span>رصيدك</span><b id="ac-left">—</b></div>
+    <div class="acct-row" id="ac-renew-row" hidden><span>التجديد</span><b id="ac-renew">—</b></div>
+    <button type="button" class="btn primary sm" id="ac-sub" hidden>اشترك الآن</button>
+  </div>
+  <p class="paymsg ok" id="ac-msg" hidden></p>
+  <button class="btn primary" id="ac-start" data-start="match">حلّل مباراتك</button>
+  <button class="btn ghost" id="ac-buy">الأسعار والاشتراك</button>
+  <button class="btn ghost" id="ac-jr">📈 رحلتي</button>
+  <button class="btn ghost" data-go="history">سجلّ مبارياتي</button>
+  <button class="btn ghost sm" id="ac-cancel" hidden>إلغاء الاشتراك</button>
+  <div class="owner-box" id="owner-box" hidden>
+    <b>وضع المالك</b>
+    <span>للعرض والدعم: يضيف للحساب الحالي بدون دفع.</span>
+    <button class="btn ghost sm" data-grant="pack3">+ ٣ مباريات</button>
+    <button class="btn ghost sm" data-grant="pro_month">+ شهر</button>
+    <button class="btn ghost sm" data-grant="pro_year">+ سنة</button>
+  </div>
+  <button class="btn ghost sm" id="ac-out">تسجيل الخروج</button>
+  <button class="btn ghost sm del-lnk" id="ac-del" hidden>حذف الحساب</button>
+  <div class="del-acct" id="del-acct" hidden>
+    <b>حذف الحساب نهائيًا</b>
+    <p>سيتم حذف حسابك وكل تحليلاتك ورحلتك ولقبك نهائيًا، ويتوقف أي تجديد تلقائي. لا يمكن التراجع. سجلات الدفع تُحفظ للمدة التي يتطلبها النظام.</p>
+    <input id="del-pw" class="inp" type="password" autocomplete="current-password" placeholder="كلمة المرور للتأكيد" dir="ltr">
+    <p class="err" id="del-err" hidden></p>
+    <button type="button" class="btn danger" id="del-go">حذف الحساب نهائيًا</button>
+    <button type="button" class="btn ghost sm" id="del-x">إلغاء</button>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section id="fair" class="screen">
+  <button type="button" class="backbar" data-back>→ رجوع</button>
+  <h2>الاستخدام العادل</h2>
+  <p class="paymsg" id="fair-msg"></p>
+  <div class="fair-btns">
+    <button type="button" class="btn primary" id="fair-pack" data-px="اشترِ باقة 3 مباريات (@pack3 ريال)">اشترِ باقة 3 مباريات (29 ريال)</button>
+  </div>
+  <p class="fine">الاشتراك يشمل حتى ٣٠ مباراة خلال آخر ٣٠ يومًا، والتحليل الذي لا يكتمل لا يُحسب.</p>
+  <button type="button" class="btn ghost" data-back>→ رجوع</button>
+</section>
+<section id="history" class="screen">
+  <button type="button" class="backbar" data-back>→ رجوع</button>
+  <h2>سجلّ مبارياتك</h2>
+  <p class="lead sm">تحليلاتك الجارية والجاهزة، محفوظة في حسابك.</p>
+  <p class="hist-done" id="hist-done" role="status" hidden></p>
+  <div class="hist" id="hist-jobs" hidden></div>
+  <div class="hist" id="hist"></div>
+  <div class="empty" id="hist-empty"><b>لا توجد تقارير بعد</b><span>حلّل أول مباراة لك، وسيظهر تقريرها هنا.</span><button class="btn primary" data-start="match">حلّل مباراتك</button></div>
+  <div class="hist-tools" id="hist-tools" hidden>
+    <b class="ht-t">إدارة السجل</b>
+    <div class="ht-opt" id="hist-dev" hidden>
+      <button class="btn ghost sm" id="hist-clear">مسح النسخ من هذا الجهاز فقط</button>
+      <small class="fine" id="hist-note"><b>هذا الجهاز فقط:</b> يحذف النسخ المحفوظة على هذا الجهاز. تقاريرك في حسابك تبقى كما هي.</small>
+    </div>
+    <div class="ht-opt" id="hist-acc" hidden>
+      <button class="btn danger sm" id="hist-wipe">حذف السجل من الحساب</button>
+      <small class="fine"><b>الحساب كاملًا:</b> يحذف كل التحليلات من حسابك نهائيًا على كل الأجهزة. اشتراكك ورصيدك لا يتأثران.</small>
+    </div>
+  </div>
+</section>
+
+<!-- v40: confirm dialog (delete from the account) -->
+<div class="cfm" id="cfm" hidden role="dialog" aria-modal="true" aria-labelledby="cfm-t">
+  <div class="cfm-card">
+    <div class="cfm-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></div>
+    <b class="cfm-t" id="cfm-t"></b>
+    <p class="cfm-m" id="cfm-m"></p>
+    <div class="cfm-b"><button class="btn danger" id="cfm-ok"></button><button class="btn ghost" id="cfm-no">إلغاء</button></div>
+  </div>
+</div>
+
+<!-- CHECKOUT (v47, Mishal's spec): payment-method choice first, two options of the same size on every device.
+     Monthly: card = the embedded form with auto-renewal; Apple Pay = one month on Moyasar's secure page.
+     One-time (3-match pack, yearly): Apple Pay first; both go to Moyasar's secure page. -->
+<section id="checkout" class="screen">
+  <button type="button" class="backbar" data-back>→ رجوع</button>
+  <h2 id="co-h">الاشتراك الشهري</h2>
+  <p class="co-sub">ادفع بالبطاقة أو Apple Pay</p>
+  <div class="co-sum" id="co-sum"></div>
+  <p class="co-pick-h">اختر طريقة الدفع</p>
+  <div class="co-pick" id="co-pick" role="radiogroup" aria-label="طريقة الدفع">
+    <button type="button" class="co-opt" data-m="card" role="radio" aria-checked="false"><span class="co-opt-t">💳 بطاقة</span><span class="co-opt-k">(مدى، فيزا، ماستركارد)</span><small id="co-opt-card-s">يتجدد تلقائيًا كل شهر، وتقدر تلغيه متى ما بغيت</small></button>
+    <button type="button" class="co-opt" data-m="apple" role="radio" aria-checked="false"><span class="co-opt-t co-opt-ap" dir="ltr"><svg viewBox="0 0 17 20" width="17" height="20" aria-hidden="true"><path fill="currentColor" d="M14.1 10.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.8-1-2.8-4zM11.6 3c.7-.9 1.2-2 1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.2.1 2.3-.6 3.1-1.5z"/></svg><span>Apple Pay</span></span><span class="co-opt-k">&nbsp;</span><small id="co-opt-ap-s">ادفع شهر واحد، بدون تجديد تلقائي</small></button>
+  </div>
+  <div class="co-panel" id="co-p-apple" hidden>
+    <button type="button" class="btn-apple" id="co-apple" aria-label="ادفع بـ Apple Pay"><span>ادفع بـ</span><b dir="ltr"><svg viewBox="0 0 17 20" width="17" height="20" aria-hidden="true"><path fill="currentColor" d="M14.1 10.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.8-1-2.8-4zM11.6 3c.7-.9 1.2-2 1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.2.1 2.3-.6 3.1-1.5z"/></svg>Pay</b></button>
+    <p class="co-ap-line" id="co-ap-line">شهر واحد، بدون تجديد تلقائي</p>
+    <p class="co-why" id="co-why">التجديد التلقائي يحتاج بطاقة. مع Apple Pay تدفع شهر بشهر.</p>
+    <p class="fine co-ap-note" id="co-ap-note">تنتقل لصفحة الدفع الآمنة لبوابة ميسّر وتدفع بـ Apple Pay، ونذكّرك قبل انتهاء المدة.</p>
+  </div>
+  <div class="co-panel" id="co-p-card" hidden>
+    <p class="co-renew" id="co-renew"></p>
+    <form id="co-f" class="co-f" novalidate autocomplete="on">
+    <div class="field"><label for="co-name">الاسم على البطاقة</label><input id="co-name" class="inp" type="text" dir="ltr" autocomplete="cc-name" placeholder="NAME ON CARD"></div>
+    <div class="field"><label for="co-num">رقم البطاقة</label><input id="co-num" class="inp" type="text" inputmode="numeric" dir="ltr" autocomplete="cc-number" placeholder="0000 0000 0000 0000" maxlength="23"></div>
+    <div class="co-row">
+      <div class="field"><label for="co-exp">الانتهاء</label><input id="co-exp" class="inp" type="text" inputmode="numeric" dir="ltr" autocomplete="cc-exp" placeholder="MM/YY" maxlength="5"></div>
+      <div class="field"><label for="co-cvc">رمز الأمان</label><input id="co-cvc" class="inp" type="password" inputmode="numeric" dir="ltr" autocomplete="cc-csc" placeholder="CVC" maxlength="4"></div>
+    </div>
+    <p class="err" id="co-err" hidden></p>
+    <button class="btn primary" id="co-go" type="submit">ادفع</button>
+  </form>
+    <button type="button" class="btn primary" id="co-card-hosted" hidden>ادفع بالبطاقة</button>
+    <p class="fine" id="co-card-fine"></p>
+  </div>
+  <p class="err" id="co-msg" hidden></p>
+  <div class="pay-marks co-marks" role="img" aria-label="مدى · Apple Pay · فيزا · ماستركارد"><span class="pm pm-mada" title="مدى" aria-label="مدى"><svg viewBox="0 0 52 32" width="52" height="32" aria-hidden="true"><rect width="52" height="32" rx="5" fill="#fff"/><rect x="6" y="10" width="13" height="5" fill="#259BD6"/><rect x="6" y="17" width="13" height="5" fill="#84B740"/><text x="34.5" y="21" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="11.5" font-weight="700" fill="#1D1D1B">mada</text></svg></span><span class="pm pm-ap" title="Apple Pay" aria-label="Apple Pay"><svg viewBox="0 0 52 32" width="52" height="32" aria-hidden="true"><rect width="52" height="32" rx="5" fill="#000"/><g transform="translate(7.5 8) scale(.78)"><path fill="#fff" d="M14.1 10.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.8-1-2.8-4zM11.6 3c.7-.9 1.2-2 1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.2.1 2.3-.6 3.1-1.5z"/></g><text x="34" y="21.2" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif" font-size="13" font-weight="600" fill="#fff">Pay</text></svg></span><span class="pm pm-visa" title="Visa" aria-label="Visa"><svg viewBox="0 0 52 32" width="52" height="32" aria-hidden="true"><rect width="52" height="32" rx="5" fill="#fff"/><text x="26" y="21.5" text-anchor="middle" font-family="Arial Black,Arial,Helvetica,sans-serif" font-size="14" font-weight="900" font-style="italic" fill="#1A1F71" letter-spacing=".5">VISA</text></svg></span><span class="pm pm-mc" title="Mastercard" aria-label="Mastercard"><svg viewBox="0 0 52 32" width="52" height="32" aria-hidden="true"><rect width="52" height="32" rx="5" fill="#fff"/><circle cx="21" cy="16" r="9" fill="#EB001B"/><circle cx="31" cy="16" r="9" fill="#F79E1B"/><path d="M26 8.5a9 9 0 0 1 0 15 9 9 0 0 1 0-15z" fill="#FF5F00"/></svg></span></div>
+</section>
+
+<!-- JOURNEY «رحلتي» -->
+<section id="journey" class="screen">
+  <button type="button" class="backbar" data-back>→ رجوع</button>
+  <h2>رحلتي</h2>
+  <p class="fine jr-note">نقارن مبارياتك أنت ببعضها فقط. الخصم يختلف كل مباراة، فخذ الأرقام كمؤشر لا كحكم نهائي.</p>
+  <div id="jr-body"><p class="fine">لحظة…</p></div>
+</section>
+
+<!-- LEADERBOARD -->
+<section id="leaders" class="screen">
+  <button type="button" class="backbar" data-back>→ رجوع</button>
+  <h2>قائمة المتصدرين</h2>
+  <div class="seg lb-seg"><button type="button" data-lb="top" class="on">الأعلى تقييمًا</button><button type="button" data-lb="month">الأكثر تحسنًا هذا الشهر</button></div>
+  <div class="lb-me" id="lb-me" hidden></div>
+  <ol class="lb" id="lb-list"></ol>
+  <p class="fine">التقييم مبني على المباريات التي رفعها كل لاعب فقط. يظهر اللاعب باسمه المستعار بعد ٣ مباريات محللة، ويمكنه إخفاء نفسه من «رحلتي».</p>
+  <button type="button" class="btn ghost" data-back>→ رجوع</button>
+</section>
+</main>
+<script src="replay.js?v=48"></script>
+<script src="app.js?v=53"></script>
+</body>
+</html>
