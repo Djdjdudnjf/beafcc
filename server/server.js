@@ -105,6 +105,8 @@ ${META_FC27}
 اكتب كل النصوص بالعربي الطبيعي الواضح. أعِد JSON فقط.`;
 }
 
+var SYS_JSON = "أعِد كائن JSON واحدًا صالحًا فقط ولا شيء غيره: لا تكتب أي نص قبله أو بعده، ولا علامات markdown ولا ``` . ابدأ ردّك بـ { واختمه بـ }. كل القيم النصية بالعربي.";
+
 // ---------- نداء OpenAI ----------
 async function callOpenAI(frames, prompt) {
   const content = [{ type: "text", text: prompt }];
@@ -114,8 +116,8 @@ async function callOpenAI(frames, prompt) {
     headers: { "content-type": "application/json", "authorization": "Bearer " + OPENAI_KEY },
     body: JSON.stringify({
       model: OPENAI_MODEL,
-      messages: [{ role: "user", content }],
-      max_tokens: 3000, temperature: 0.5,
+      messages: [{ role: "system", content: SYS_JSON }, { role: "user", content }],
+      max_tokens: 8000,
       response_format: { type: "json_object" }
     })
   });
@@ -136,17 +138,26 @@ async function callAnthropic(frames, prompt) {
   const r = await fetch(ANTHROPIC_BASE+"/v1/messages", {
     method: "POST",
     headers: { "content-type": "application/json", "x-api-key": ANTHROPIC_KEY, "anthropic-version": "2023-06-01" },
-    body: JSON.stringify({ model: ANTHROPIC_MODEL, max_tokens: 4000, messages: [{ role: "user", content }] })
+    body: JSON.stringify({ model: ANTHROPIC_MODEL, max_tokens: 8000, system: SYS_JSON, messages: [{ role: "user", content }] })
   });
   const j = await r.json();
   if (!r.ok) throw new Error("anthropic: " + (j.error && j.error.message || r.status));
-  return (j.content || []).map(b => b.text || "").join("");
+  return (j.content || []).filter(function (b) { return b.type === "text"; }).map(function (b) { return b.text || ""; }).join("");
 }
 
 function extractJSON(txt) {
+  if (!txt) return null;
+  var t = String(txt).trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
+  try { return JSON.parse(t); } catch (e) {}
+  var a = t.indexOf("{"); if (a < 0) return null;
+  var depth = 0, instr = false, esc = false, q = "";
+  for (var i = a; i < t.length; i++) {
+    var c = t[i];
+    if (instr) { if (esc) esc = false; else if (c === "\\") esc = true; else if (c === q) instr = false; }
+    else { if (c === '"' || c === "'") { instr = true; q = c; } else if (c === "{") depth++; else if (c === "}") { depth--; if (depth === 0) { try { return JSON.parse(t.slice(a, i + 1)); } catch (e) {} } } }
+  }
+  var b = t.lastIndexOf("}"); if (b > a) { try { return JSON.parse(t.slice(a, b + 1)); } catch (e) {} }
   try { return JSON.parse(txt); } catch (e) {}
-  const a = txt.indexOf("{"), b = txt.lastIndexOf("}");
-  if (a >= 0 && b > a) { try { return JSON.parse(txt.slice(a, b + 1)); } catch (e) {} }
   return null;
 }
 
@@ -159,7 +170,7 @@ async function runAnalysis(body) {
   const prompt = buildPrompt(body.team, body.tactics, body.duration);
   const raw = PROVIDER === "openai" ? await callOpenAI(s.f, prompt) : await callAnthropic(s.f, prompt);
   const result = extractJSON(raw);
-  if (!result || typeof result !== "object") throw new Error("bad_json");
+  if (!result || typeof result !== "object") throw new Error("bad_json" + (raw ? " · رد النموذج: " + String(raw).replace(/\s+/g, " ").slice(0, 100) : " · رد فارغ"));
   result.sources = META_SOURCES;              // نرفق المصادر الحقيقية
   return result;
 }
