@@ -26,6 +26,13 @@ if (!OPENAI_KEY && !ANTHROPIC_KEY) { // اسم عام: نتعرّف على ال�
   var g = pickKey(["API_KEY", "AI_API_KEY", "LLM_API_KEY", "KEY"]);
   if (g) { if (/^sk-ant/i.test(g)) ANTHROPIC_KEY = g; else if (/^sk-/i.test(g)) OPENAI_KEY = g; else ANTHROPIC_KEY = g; }
 }
+if (!OPENAI_KEY && !ANTHROPIC_KEY) { // الحل الأضمن: ابحث في كل المتغيّرات عن قيمة تشبه مفتاحًا، مهما كان اسمها
+  for (var kname in process.env) {
+    var val = (process.env[kname] || "").trim();
+    if (/^sk-ant-/i.test(val)) { ANTHROPIC_KEY = val; break; }
+    if (/^sk-[A-Za-z0-9_-]{20,}$/.test(val) && !/^sk-ant/i.test(val)) { OPENAI_KEY = val; break; }
+  }
+}
 const PROVIDER = OPENAI_KEY ? "openai" : (ANTHROPIC_KEY ? "anthropic" : "");
 const OPENAI_MODEL = process.env.OPENAI_MODEL || "gpt-4o";
 const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL || "claude-sonnet-5-5";
