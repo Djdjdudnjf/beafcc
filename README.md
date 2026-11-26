@@ -1,6 +1,6 @@
 # Replay — تحليل مبارياتك في EA FC (FIFA)
 
-ترفع مقطع مباراتك، ويطلع لك تقرير بالعربي: تقييم، لحظات، أخطاء ونقاط قوة، تكتيك، تمارين، ومهمة واحدة لمباراتك القادمة. النصائح مبنية على **ميتا EA FC 26 حقيقية من مصادر** (مذكورة أسفل).
+ترفع مقطع مباراتك، ويطلع لك تقرير بالعربي: تقييم، لحظات، أخطاء ونقاط قوة، تكتيك، تمارين، ومهمة واحدة لمباراتك القادمة. النصائح مبنية على **ميتا EA FC 27 حقيقية من مصادر** (مذكورة أسفل).
 
 فيه وضعان للتشغيل:
 
@@ -8,7 +8,7 @@
 
 ## ١) الوضع الحقيقي — ترفع فيديو ويطلع تقرير فعلي 🔥
 
-السيرفر يستقبل لقطات مباراتك (يطلّعها المتصفح نفسه من الفيديو) ويعطيها نموذج رؤية (OpenAI أو Anthropic) ليحللها، ثم يبني التقرير على ميتا FC 26.
+السيرفر يستقبل لقطات مباراتك (يطلّعها المتصفح نفسه من الفيديو) ويعطيها نموذج رؤية (OpenAI أو Anthropic) ليحللها، ثم يبني التقرير على ميتا FC 27.
 
 ### وش تحتاج
 - **Node.js 18 أو أحدث** (تتأكد: `node -v`).
@@ -64,12 +64,12 @@ python3 -m http.server 8099   # ثم افتح http://localhost:8099
 
 الاسم **Replay / RP** واللون **أزرق سماوي** — في الواجهة واللوقو والأيقونات وصورة المشاركة.
 
-## مصادر ميتا EA FC 26 المستخدمة
-- [Dexerto — Best EA FC 26 formations & tactics](https://www.dexerto.com/wikis/ea-fc-26-guides-walkthrough-tips/best-formations-and-custom-tactics/)
-- [itemd2r — How to Defend in EA FC 26](https://www.itemd2r.com/blog/fc-26/how-to-defd-properly-in-ea-fc-26-meta-tips-tricks)
-- [itemd2r — Best Attacking Tips & Meta Skill Moves](https://www.itemd2r.com/blog/fc-26/ea-fc-26-best-attacking-tips-meta-skill-moves-gameplay-guide)
-- [Football Gaming Zone — Best Meta Formations & Custom Tactics](https://footballgamingzone.com/ea-sports-fc/ea-fc-26-best-formations-meta-custom-tactics/)
-- [pinatapin — EA FC 26 Best Tactics & Defense Guide](https://www.pinatapin.com/contents/blog/fc26-defending-tips)
+## مصادر ميتا EA FC 27 المستخدمة
+- [Dexerto — Best EA FC 27 formations & custom tactics](https://www.dexerto.com/wikis/ea-fc-27/best-formations-and-custom-tactics/)
+- [timesaver.gg — FC 27 best formations after Update 1.2.0](https://timesaver.gg/blog/fc-27-best-formations-custom-tactics-launch-week)
+- [G2A — How to Defend in EA FC 27 (manual defending)](https://www.g2a.com/news/features/guide/how-to-defend-in-ea-fc-27-manual-defending-jockeying-tackling-pressing/)
+- [FIFPlay — FC 27 Attacking Tips](https://www.fifplay.com/fc-27-attacking-tips/)
+- [nealguides — Best FC 27 Formations (meta tactics & roles)](https://nealguides.com/best-fc-27-formations/)
 
 > الميتا تتغيّر مع كل تحديث موسمي؛ النصائح مبادئ راسخة، راجع آخر باتش للتفاصيل الدقيقة.
 
@@ -77,6 +77,6 @@ python3 -m http.server 8099   # ثم افتح http://localhost:8099
 | الملف | الوظيفة |
 |------|---------|
 | `server/server.js` | السيرفر الحقيقي (static + API + تحليل) |
-| `server/meta.js` | قاعدة معرفة ميتا FC 26 |
+| `server/meta.js` | قاعدة معرفة ميتا FC 27 |
 | `index.html`, `app.js`, `replay.js`, `app.css` | الموقع |
 | `demo.js` | محاكاة محلية لوضع المعاينة فقط |

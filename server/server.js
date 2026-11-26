@@ -1,14 +1,14 @@
 /* ============================================================
    Replay — سيرفر التحليل الحقيقي (Node 18+ ، بدون مكتبات خارجية)
    يخدم الموقع + يحلّل لقطات مباراتك عبر نموذج رؤية (OpenAI أو Anthropic)
-   ويبني النصائح على ميتا EA FC 26 حقيقية.
+   ويبني النصائح على ميتا EA FC 27 حقيقية.
    التشغيل:  OPENAI_API_KEY=sk-... node server/server.js
    ============================================================ */
 "use strict";
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
-const { META_FC26, META_SOURCES } = require("./meta.js");
+const { META_FC27, META_SOURCES } = require("./meta.js");
 
 // ---------- الإعدادات ----------
 const ROOT = path.resolve(__dirname, "..");          // مجلد الموقع (ملفات index.html ...)
@@ -59,8 +59,8 @@ function buildPrompt(team, tactics, duration) {
 - اجعل التقييم (grade) منطقيًا لما تراه، لا رقمًا عشوائيًا.
 - اللحظات (key_moments) يجب أن تصف مواقف فعلية رأيتها، وأوقاتها تقديرية ضمن مدة المقطع.
 
-اعتمد في كل توصية تكتيكية على مرجع ميتا EA FC 26 الحقيقي التالي (لا تخرج عنه كثيرًا):
-${META_FC26}
+اعتمد في كل توصية تكتيكية على مرجع ميتا EA FC 27 الحقيقي التالي (لا تخرج عنه كثيرًا):
+${META_FC27}
 
 أعِد **فقط** كائن JSON صالح (بدون أي نص قبله أو بعده) بهذا الشكل الحرفي:
 {
@@ -156,9 +156,9 @@ async function chat(body) {
   if (!PROVIDER) throw new Error("no_key");
   const jobs = loadJobs(); const j = jobs[body.job];
   const ctx = j ? JSON.stringify(j.result).slice(0, 6000) : "(لا يوجد تقرير)";
-  const prompt = `أنت مدرّب كرة قدم في EA FC 26. هذا تقرير مباراة اللاعب (JSON): ${ctx}
-استند لميتا EA FC 26 الحقيقي عند الحاجة:
-${META_FC26}
+  const prompt = `أنت مدرّب كرة قدم في EA FC 27. هذا تقرير مباراة اللاعب (JSON): ${ctx}
+استند لميتا EA FC 27 الحقيقي عند الحاجة:
+${META_FC27}
 سؤال اللاعب: ${body.question || ""}
 أجب بالعربي باختصار ووضوح وبنصيحة عملية قابلة للتطبيق.`;
   let answer;
