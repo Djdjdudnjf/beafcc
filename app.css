@@ -1074,3 +1074,64 @@ button.mo-hint{background:none;border:0;padding:0;font:inherit;font-size:12px;fo
 .tag.glow{font-weight:800;letter-spacing:.2px}
 /* ضمان ظهور صورة المقطع حتى لو ما شغّل الفيديو (iOS/الطاقة المنخفضة) */
 .scr-in{background-image:url(demo_screen.jpg?v=18);background-size:cover;background-position:center}
+
+/* ============================================================
+   v57: THEME — رياضي جريء (eSports) : دو-تون نيون + زوايا حادة
+   ============================================================ */
+:root{
+  --neon:#a06bff;      /* بنفسجي نيون */
+  --neon2:#28e0ff;     /* سماوي نيون */
+  --bg:#06060f; --bg2:#0e0e1c; --card:#12121f; --line:#2a2a47;
+  --grad:linear-gradient(90deg,#28e0ff,#a06bff);
+}
+body{background:
+  radial-gradient(1100px 620px at 100% -6%,rgba(160,107,255,.20),transparent 55%),
+  radial-gradient(900px 620px at -12% 18%,rgba(40,224,255,.13),transparent 55%),
+  #06060f;}
+/* شبكة خفيفة خلف كل شي */
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:linear-gradient(rgba(160,107,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(160,107,255,.055) 1px,transparent 1px);
+  background-size:46px 46px;-webkit-mask:linear-gradient(180deg,#000,transparent 72%);mask:linear-gradient(180deg,#000,transparent 72%)}
+
+/* الهيدر */
+.top{border-bottom:1px solid rgba(160,107,255,.16)}
+.pill.cta{background:linear-gradient(135deg,#a06bff,#28e0ff)!important;color:#05060d!important;font-weight:900;border:0;box-shadow:0 0 24px -5px rgba(160,107,255,.85)}
+
+/* الوسم: زاوية نيون */
+.tag.glow{border:1px solid rgba(40,224,255,.5)!important;background:rgba(40,224,255,.07)!important;color:#9fecff!important;
+  box-shadow:0 0 20px -5px rgba(40,224,255,.55),inset 0 0 20px -12px rgba(40,224,255,.7)!important;font-weight:800;
+  clip-path:polygon(11px 0,100% 0,100% calc(100% - 11px),calc(100% - 11px) 100%,0 100%,0 11px)}
+
+/* العنوان الضخم */
+.big,h1.big{font-size:46px;text-shadow:0 0 34px rgba(160,107,255,.3)}
+.big em,.big .shine{background-image:linear-gradient(90deg,#28e0ff,#a06bff)!important;background-size:100% 100%!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important;color:transparent!important;text-shadow:none!important;animation:none!important}
+
+/* الأزرار: نيون + زاوية حادة */
+.btn.primary{background:linear-gradient(120deg,#a06bff,#7a3dff 52%,#28e0ff)!important;color:#fff!important;font-weight:900;letter-spacing:.3px;border:0!important;
+  box-shadow:0 0 0 1px rgba(40,224,255,.35),0 16px 44px -12px rgba(160,107,255,.75)!important;
+  clip-path:polygon(15px 0,100% 0,100% calc(100% - 15px),calc(100% - 15px) 100%,0 100%,0 15px)}
+.btn.ghost{border:1px solid rgba(40,224,255,.4)!important;background:rgba(40,224,255,.05)!important;color:#d6f3ff!important;font-weight:700;
+  clip-path:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px)}
+
+/* الكروت: حافة نيون + حواف أحدّ + توهّج */
+.card,.ft,.mini-rep,.sample-cta,.final,.steps4>li,.phones figure,.faq details,.cmp-wrap{
+  border:1px solid rgba(160,107,255,.24)!important;
+  background:linear-gradient(180deg,rgba(20,20,36,.92),rgba(12,12,24,.95))!important;
+  border-radius:12px!important;
+  box-shadow:0 0 0 1px rgba(40,224,255,.05),0 22px 54px -26px rgba(0,0,0,.85)!important}
+.ft{position:relative;overflow:hidden}
+.ft::before{content:"";position:absolute;top:12px;bottom:12px;right:0;width:3px;border-radius:3px;background:linear-gradient(180deg,#a06bff,#28e0ff)}
+.ft b{color:#fff}
+.card.primary-card{border-color:rgba(40,224,255,.5)!important;box-shadow:0 0 30px -10px rgba(160,107,255,.6),0 22px 54px -26px #000!important}
+
+/* عناوين الأقسام: شريط نيون */
+.sec-t{position:relative;padding-right:16px}
+.sec-t::before{content:"";position:absolute;right:0;top:.12em;width:5px;height:1em;border-radius:3px;
+  background:linear-gradient(180deg,#28e0ff,#a06bff);box-shadow:0 0 14px rgba(40,224,255,.7)}
+
+/* أرقام الإحصاءات: نيون ضخم */
+.stats b{font-size:32px;background:linear-gradient(90deg,#28e0ff,#a06bff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.steps4>li>i{background:linear-gradient(135deg,#a06bff,#28e0ff)!important;color:#05060d!important;box-shadow:0 0 16px -3px rgba(160,107,255,.8)}
+
+/* الإطار العلوي للصورة التوضيحية — توهّج نيون أقوى */
+.scr-in{box-shadow:0 30px 70px -26px rgba(40,224,255,.3),0 0 0 1px rgba(160,107,255,.25),inset 0 1px 0 rgba(255,255,255,.08)!important;border-color:rgba(40,224,255,.3)!important}
