@@ -25,6 +25,7 @@ const OPENAI_MODEL = process.env.OPENAI_MODEL || "gpt-4o";
 const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL || "claude-sonnet-5-5";
 const OPENAI_BASE = (process.env.OPENAI_BASE || "https://api.openai.com").replace(/\/$/, "");
 const ANTHROPIC_BASE = (process.env.ANTHROPIC_BASE || "https://api.anthropic.com").replace(/\/$/, "");
+const APP_PASSWORD = process.env.APP_PASSWORD || ""; // قفل اختياري يحمي رصيد مفتاحك عند الاستضافة العامة
 
 try { fs.mkdirSync(DATA, { recursive: true }); } catch (e) {}
 
@@ -184,9 +185,29 @@ function readBody(req) {
   return new Promise((resolve, reject) => {
     let len = 0; const chunks = [];
     req.on("data", c => { len += c.length; if (len > BODY_LIMIT) { reject(new Error("too_big")); req.destroy(); } else chunks.push(c); });
-    req.on("end", () => { try { resolve(JSON.parse(Buffer.concat(chunks).toString("utf8") || "{}")); } catch (e) { resolve({}); } });
+    req.on("end", () => {
+      const raw = Buffer.concat(chunks).toString("utf8");
+      try { return resolve(JSON.parse(raw || "{}")); } catch (e) {}
+      const o = {}; raw.split("&").forEach(kv => { const i = kv.indexOf("="); if (i >= 0) o[decodeURIComponent(kv.slice(0, i))] = decodeURIComponent(kv.slice(i + 1).replace(/\+/g, " ")); }); resolve(o);
+    });
     req.on("error", reject);
   });
+}
+
+// ---------- قفل كلمة المرور (اختياري) ----------
+function cookies(req) { const o = {}; (req.headers.cookie || "").split(";").forEach(p => { const i = p.indexOf("="); if (i > 0) o[p.slice(0, i).trim()] = decodeURIComponent(p.slice(i + 1).trim()); }); return o; }
+function isUnlocked(req) { return !APP_PASSWORD || cookies(req).rpw === APP_PASSWORD; }
+function unlockPage(bad) {
+  return `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Replay — دخول</title>
+<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#05090f;color:#eef3f8;font-family:system-ui,sans-serif}
+form{background:#111823;border:1px solid #223042;border-radius:18px;padding:28px;width:min(92vw,340px);text-align:center}
+h1{margin:.2em 0 .1em;font-size:22px;background:linear-gradient(90deg,#2bc8ff,#1a7fff);-webkit-background-clip:text;background-clip:text;color:transparent}
+p{color:#93a3b8;font-size:14px;margin:.2em 0 1.1em}input{width:100%;box-sizing:border-box;padding:13px;border-radius:12px;border:1px solid #223042;background:#0a0e14;color:#eef3f8;font-size:16px;text-align:center}
+button{width:100%;margin-top:12px;padding:13px;border:0;border-radius:12px;background:linear-gradient(90deg,#2bc8ff,#1a7fff);color:#04121b;font-weight:800;font-size:16px}
+.e{color:#ff5d6c;font-size:13px;min-height:18px;margin-top:8px}</style></head>
+<body><form method="POST" action="/api/unlock"><h1>Replay</h1><p>اكتب كلمة المرور للدخول</p>
+<input name="pass" type="password" inputmode="text" placeholder="كلمة المرور" autofocus>
+<button type="submit">دخول</button><div class="e">${bad ? "كلمة المرور غير صحيحة" : ""}</div></form></body></html>`;
 }
 
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
@@ -216,9 +237,27 @@ const srv = http.createServer(async (req, res) => {
   const u = req.url || "/";
   const p = u.split("?")[0];
   try {
+    // ---- قفل كلمة المرور (عند الاستضافة العامة) ----
+    if (APP_PASSWORD && p === "/unlock" && req.method === "GET") {
+      res.writeHead(200, { "content-type": "text/html; charset=utf-8" }); return res.end(unlockPage(u.includes("bad=1")));
+    }
+    if (APP_PASSWORD && !isUnlocked(req) && (p === "/" || p === "/index.html")) {
+      res.writeHead(200, { "content-type": "text/html; charset=utf-8" }); return res.end(unlockPage(false));
+    }
     if (p.indexOf("/api/") === 0) {
       const qs = new URL(u, "http://x").searchParams;
       const body = (req.method === "POST") ? await readBody(req) : {};
+      // فتح القفل: يضبط كوكي ويرجّع للصفحة
+      if (p === "/api/unlock") {
+        if (!APP_PASSWORD || (body.pass || "") === APP_PASSWORD) {
+          res.writeHead(303, { "Set-Cookie": "rpw=" + encodeURIComponent(APP_PASSWORD) + "; Path=/; HttpOnly; Max-Age=7776000; SameSite=Lax", "Location": "/" }); return res.end();
+        }
+        res.writeHead(303, { "Location": "/unlock?bad=1" }); return res.end();
+      }
+      // احمِ النقاط المكلفة
+      if ((p === "/api/analyze" || p === "/api/chat") && !isUnlocked(req)) {
+        return send(res, 401, { error: "locked", message: "مقفل. افتح الصفحة وأدخل كلمة المرور." });
+      }
       // --- نقاط الذكاء الحقيقية ---
       if (p === "/api/analyze") {
         try { return send(res, 200, await analyze(body)); }
@@ -259,6 +298,7 @@ srv.listen(PORT, () => {
   console.log("  ────────────────────────────");
   console.log("  افتح:    http://localhost:" + PORT);
   console.log("  المزود:  " + (PROVIDER ? (PROVIDER + " (" + (PROVIDER === "openai" ? OPENAI_MODEL : ANTHROPIC_MODEL) + ")") : "⚠️  لا يوجد مفتاح — ضع OPENAI_API_KEY أو ANTHROPIC_API_KEY"));
+  console.log("  القفل:   " + (APP_PASSWORD ? "مفعّل (كلمة مرور)" : "بدون — يُنصح بـ APP_PASSWORD عند الاستضافة العامة"));
   console.log("  لقطات/تحليل: " + MAX_FRAMES);
   console.log("");
 });
