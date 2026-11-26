@@ -2,18 +2,18 @@
 "use strict";
 /* ===== EDIT HERE: brand name + prices (placeholders, SAR) ===== */
 var CONFIG={
-  brand:"Replay",
-  brandShort:"RP",
+  brand:"Taktika",
+  brandShort:"TK",
   currency:"ريال",
   /* prices come from the server (_worker.js PRICES); these are only the first paint */
   price:{pack3:"29",proMonth:"69",proFirst:"39",proYear:"399",yearSave:"وفّر 52%",yearMonthly:"33",fairM:"30"},
   plans:[
-    {id:"pack",name:"3 مباريات",price:"@pack3",per:"دفعة واحدة",note:"بدون اشتراك ولا تجديد",items:["3 تحليلات مباريات كاملة","مقارنة جزئية لأرقامك","تقييم RP لمستواك","أسئلة للمدرّب عن كل تقرير"],buy:[{label:"اشترِ الباقة (@pack3 ريال)",product:"pack3"}]},
+    {id:"pack",name:"3 مباريات",price:"@pack3",per:"دفعة واحدة",note:"بدون اشتراك ولا تجديد",items:["3 تحليلات مباريات كاملة","مقارنة جزئية لأرقامك","تقييم TK لمستواك","أسئلة للمدرّب عن كل تقرير"],buy:[{label:"اشترِ الباقة (@pack3 ريال)",product:"pack3"}]},
     {id:"month",name:"شهري",price:"@proFirst",was:"@proMonth",per:"أول شهر",note:"ثم @proMonth ريال شهريًا • إلغاء بأي وقت",items:["تحليلات المباريات مشمولة (استخدام عادل)","رحلة التحسن كاملة: المستويات وسلسلة الأسابيع","قائمة المتصدرين","أسئلة للمدرّب عن كل تقرير"],buy:[{label:"ابدأ بـ@proFirst ريال",product:"pro_month"}]},
     {id:"year",name:"سنوي",best:"الأوفر",price:"@proYear",per:"سنويًا",note:"أي نحو @yearMonthly ريال في الشهر (@yearSave)",items:["تحليلات المباريات مشمولة (استخدام عادل)","كل مزايا الشهري","سنة كاملة بدفعة واحدة"],buy:[{label:"اشترك سنويًا (@proYear ريال)",product:"pro_year"}]}
   ],
   compareHead:["","3 مباريات","شهري / سنوي"],
-  compare:[["تحليلات المباريات","3","مشمولة (استخدام عادل)"],["مقارنة أرقامك بين المباريات","جزئي","✓"],["تقييم RP","✓","✓"],["المستويات وسلسلة الأسابيع","—","✓"],["قائمة المتصدرين","—","✓"],["أسئلة المدرّب","✓","✓"]]
+  compare:[["تحليلات المباريات","3","مشمولة (استخدام عادل)"],["مقارنة أرقامك بين المباريات","جزئي","✓"],["تقييم TK","✓","✓"],["المستويات وسلسلة الأسابيع","—","✓"],["قائمة المتصدرين","—","✓"],["أسئلة المدرّب","✓","✓"]]
 };
 function PX(s){return String(s).replace(/@(\w+)/g,function(_,k){return CONFIG.price[k]!=null?CONFIG.price[k]:_})}
 var $=function(s){return document.querySelector(s)}, $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
@@ -411,7 +411,7 @@ $("#share").addEventListener("click",function(){
   var j=st.last;if(!j)return;var r=j.result,t;
   var goal=j.mode!=="match",S=summaryOf(r||{},goal),pts=S.top3.map(function(x){return (x.type==="strength"?"🟢 ":x.type==="fix"?"💡 ":"🔴 ")+x.text}).join("\n");
   if(!goal){var rv=st.r2w!=null?st.r2w:(isFinite(+r.r2w)&&+r.r2w>0?Math.round(+r.r2w):null);
-    t="تحليل مباراتي من "+CONFIG.brand+" ⚽"+(r.score?"\nالنتيجة: "+r.score:"")+(rv!=null?"\nتقييم RP: "+AR(rv):"")+"\n\nأهم ٣ نقاط:\n"+pts+(S.drill?"\n\nتمريني للمباراة القادمة: "+[S.drill.name,S.drill.how].filter(Boolean).join(": "):"")}
+    t="تحليل مباراتي من "+CONFIG.brand+" ⚽"+(r.score?"\nالنتيجة: "+r.score:"")+(rv!=null?"\nتقييم TK: "+AR(rv):"")+"\n\nأهم ٣ نقاط:\n"+pts+(S.drill?"\n\nتمريني للمباراة القادمة: "+[S.drill.name,S.drill.how].filter(Boolean).join(": "):"")}
   else t=CONFIG.brand+" ⚽\n"+wcut(r.summary||"",18)+"\n\nأهم ٣ نقاط:\n"+pts+(S.drill?"\n\nتمريني: "+[S.drill.name,S.drill.how].filter(Boolean).join(": "):"");
   t+="\n\n"+location.origin;
   if(navigator.share)navigator.share({title:CONFIG.brand,text:t}).catch(function(){});
@@ -571,9 +571,9 @@ function nmTasks(r,own){var t=(r.next_match_tasks||[]).filter(function(x){return
   if(!t.length)(r.in_game||[]).slice(0,3).forEach(function(x){if(String(x||"").trim())t.push({when:"",do:String(x).trim(),moment:""})});
   return t}
 document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("#r-xbtn");if(!b)return;var bd=$("#r-xbody"),o=bd.hidden;bd.hidden=!o;b.setAttribute("aria-expanded",o?"true":"false");b.classList.toggle("on",o)});
-// the ring: «تقييم RP» (the journey's number when it has this match, else this match alone); a report without one shows the match grade out of 10
+// the ring: «تقييم TK» (the journey's number when it has this match, else this match alone); a report without one shows the match grade out of 10
 function paintRing(j){var r=j.result||{},g=+r.grade,hasG=isFinite(g)&&g>0,v=st.r2w!=null?st.r2w:(isFinite(+r.r2w)&&+r.r2w>0?Math.round(+r.r2w):null),ring=$("#r-ring");
-  if(v!=null){$("#r-grade").textContent=AR(v);$("#r-of").textContent="/٩٩";ring.style.setProperty("--v",Math.min(100,v));ring.classList.toggle("lo",v<50);$("#r-rk").textContent="تقييم RP";
+  if(v!=null){$("#r-grade").textContent=AR(v);$("#r-of").textContent="/٩٩";ring.style.setProperty("--v",Math.min(100,v));ring.classList.toggle("lo",v<50);$("#r-rk").textContent="تقييم TK";
     $("#r-word").textContent=hasG?"المباراة "+ARd(Math.round(g*10)/10)+"/١٠ • "+word(g):""}
   else{$("#r-grade").textContent=hasG?ARd(Math.round(g*10)/10):"–";$("#r-of").textContent="/١٠";ring.style.setProperty("--v",hasG?Math.round(g*10):0);ring.classList.toggle("lo",hasG&&g<5);$("#r-rk").textContent="تقييم المباراة";$("#r-word").textContent=hasG?word(g):""}}
 function paneOn(id,k,on){var p=document.querySelector("#"+id+" .pane[data-k='"+k+"']");if(p)p.dataset.on=on?"1":""}
@@ -973,7 +973,7 @@ var MO_IC={
 var MO_NAME={goal:"هدف",chance:"فرصة",attack:"هجمة",mistake:"خطأ",stop:"إيقاف"};
 function pitchSvg(ic){var s='<svg class="mo-svg" viewBox="0 0 160 100" aria-hidden="true" focusable="false"><rect width="160" height="100" fill="#0c1c16"/>';
   for(var k=0;k<8;k++)s+='<rect x="'+(k*20)+'" width="10" height="100" fill="rgba(255,255,255,.028)"/>';
-  s+='<g fill="none" stroke="rgba(214,240,255,.3)" stroke-width="1.2"><rect x="6" y="6" width="148" height="88" rx="2"/><path d="M80 6V94"/><circle cx="80" cy="50" r="13"/><rect x="6" y="28" width="22" height="44"/><rect x="132" y="28" width="22" height="44"/><rect x="6" y="40" width="8" height="20"/><rect x="146" y="40" width="8" height="20"/></g>';
+  s+='<g fill="none" stroke="rgba(226,215,255,.3)" stroke-width="1.2"><rect x="6" y="6" width="148" height="88" rx="2"/><path d="M80 6V94"/><circle cx="80" cy="50" r="13"/><rect x="6" y="28" width="22" height="44"/><rect x="132" y="28" width="22" height="44"/><rect x="6" y="40" width="8" height="20"/><rect x="146" y="40" width="8" height="20"/></g>';
   return s+'<g transform="translate(80 50)"><circle r="19" class="mo-bg"/><g class="mo-ic">'+(MO_IC[ic]||MO_IC.mistake)+'</g></g></svg>'}
 // the moment's type, read from its own words (the report has no type field: only for/against)
 function moType(m){var w=String(m.what||"");
@@ -994,15 +994,15 @@ function kmOrder(a){a=(a||[]).filter(Boolean);var b=a.filter(function(m){return 
 function setupClips(j){
   var r=j.result||{},src=(j._reel?(r.key_moments||[]):kmOrder(r.key_moments||[])),ms=src.map(function(m){var mn=String(m.minute||"").replace(/['’`]/g,"").trim();return {t:m.t||(mn&&!/غير/.test(mn)?"د "+mn:""),s:tsec(m.t),kind:m.kind,what:m.what||"",lesson:m.lesson||"",replay:m.replay}});
   CP.ms=ms;(CP.rps||[]).forEach(function(x){try{x&&x.destroy()}catch(e){}});CP.rps=[];
-  var box=$("#m-km");box.innerHTML="";var RP=window.R2WReplay;
+  var box=$("#m-km");box.innerHTML="";var TK=window.R2WReplay;
   ms.forEach(function(m,i){var ic=moType(m),kc=m.kind==="good"?"good":m.kind==="bad"?"bad":"";
-    if(!RP){/* the replay script did not load: the v33 drawn card */var b=el("button","clip mo "+kc);b.type="button";b.appendChild(moArt(ic,arT(m.t),MO_NAME[ic]));var tx0=el("span","clip-tx");tx0.appendChild(el("small",null,m.kind==="good"?"لصالحك":m.kind==="bad"?"ضدك":"لحظة"));tx0.appendChild(el("b",null,m.what));if(m.lesson){tx0.appendChild(el("span","mo-more","💡 "+m.lesson));tx0.appendChild(el("span","mo-hint","شرح المدرب"));b.setAttribute("aria-expanded","false")}b.appendChild(tx0);b.addEventListener("click",function(){moToggle(i)});box.appendChild(b);return}
+    if(!TK){/* the replay script did not load: the v33 drawn card */var b=el("button","clip mo "+kc);b.type="button";b.appendChild(moArt(ic,arT(m.t),MO_NAME[ic]));var tx0=el("span","clip-tx");tx0.appendChild(el("small",null,m.kind==="good"?"لصالحك":m.kind==="bad"?"ضدك":"لحظة"));tx0.appendChild(el("b",null,m.what));if(m.lesson){tx0.appendChild(el("span","mo-more","💡 "+m.lesson));tx0.appendChild(el("span","mo-hint","شرح المدرب"));b.setAttribute("aria-expanded","false")}b.appendChild(tx0);b.addEventListener("click",function(){moToggle(i)});box.appendChild(b);return}
     // v34: each moment is an animated replay — real (from the radar of the player's own clip) or illustrative (always labelled)
     var c=el("div","clip mo rp "+kc);c.setAttribute("role","group");
     var hd=el("div","rp-head");hd.appendChild(el("span","rp-tag",m.kind==="good"?"لصالحك":m.kind==="bad"?"ضدك":"لحظة"));hd.appendChild(el("span","rp-type",MO_NAME[ic]));if(m.t)hd.appendChild(el("span","rp-time",arT(m.t)));c.appendChild(hd);
     var host=el("div","rp-host");c.appendChild(host);
-    var R=rpValid(m.replay)?m.replay:RP.illustrate(ic,m.kind,String(j._id||j.job||"")+"|"+i+"|"+m.what);
-    try{CP.rps[i]=RP.mount(host,R,{})}catch(e){host.appendChild(moArt(ic,null,null))}
+    var R=rpValid(m.replay)?m.replay:TK.illustrate(ic,m.kind,String(j._id||j.job||"")+"|"+i+"|"+m.what);
+    try{CP.rps[i]=TK.mount(host,R,{})}catch(e){host.appendChild(moArt(ic,null,null))}
     var tx=el("div","clip-tx");tx.appendChild(el("b",null,m.what));
     if(m.lesson){tx.appendChild(el("span","mo-more","💡 "+m.lesson));var hb=el("button","mo-hint","شرح المدرب");hb.type="button";tx.appendChild(hb);c.setAttribute("aria-expanded","false")}
     c.appendChild(tx);c.addEventListener("click",function(e){if(e.target.closest&&e.target.closest(".rp-wrap"))return;moToggle(i)});box.appendChild(c)});
@@ -1301,7 +1301,7 @@ function cmpRow(x,i,entry){var r=el("div","jr-cmp s-"+(ST[x.status]||ST.unknown)
   if(x.mastered){r.appendChild(el("p","jc-m","🏅 أتقنته! تحسّنت مباراتين متتاليتين"))}
   if(x.status==="up"||x.status==="best"){var sb=el("button","btn ghost sm","🖼️ شارك بطاقة تحسّن");sb.addEventListener("click",function(){shareCard(x,entry)});r.appendChild(sb)}
   return r}
-function chartSvg(entries,metrics){var W=340,Hh=170,pl=26,pr=12,pt=14,pb=26,n=entries.length,cols=["#2bc8ff","#1a7fff","#ffc048"];
+function chartSvg(entries,metrics){var W=340,Hh=170,pl=26,pr=12,pt=14,pb=26,n=entries.length,cols=["#a06bff","#6b4bff","#ffc048"];
   var ns="http://www.w3.org/2000/svg",svg=document.createElementNS(ns,"svg");svg.setAttribute("viewBox","0 0 "+W+" "+Hh);svg.setAttribute("class","jr-svg");svg.setAttribute("role","img");svg.setAttribute("aria-label","رسم تقدّمك عبر المباريات");
   function E(t,a,tx){var e=document.createElementNS(ns,t);for(var k in a)e.setAttribute(k,a[k]);if(tx!=null)e.textContent=tx;svg.appendChild(e);return e}
   var mx=1;metrics.forEach(function(m){entries.forEach(function(e){var v=e.metrics[m];if(v!=null&&v>mx)mx=v})});mx=Math.ceil(mx*1.15);
@@ -1312,7 +1312,7 @@ function chartSvg(entries,metrics){var W=340,Hh=170,pl=26,pr=12,pt=14,pb=26,n=en
     if(pts.length>1)E("polyline",{points:pts.map(function(p){return p[0].toFixed(1)+","+p[1].toFixed(1)}).join(" "),fill:"none",stroke:cols[k],"stroke-width":2.5,"stroke-linejoin":"round","stroke-linecap":"round"});
     pts.forEach(function(p){E("circle",{cx:p[0],cy:p[1],r:3.5,fill:cols[k]});E("text",{x:p[0],y:p[1]-7,fill:cols[k],"font-size":10,"text-anchor":"middle","font-weight":700},AR(p[2]))})});
   return svg}
-function ratingCard(r,tier){var c=el("div","jr-rate");var big=el("div","rt-big");big.appendChild(el("small",null,"تقييم RP"));big.appendChild(el("b",null,r.now==null?"–":AR(r.now)));
+function ratingCard(r,tier){var c=el("div","jr-rate");var big=el("div","rt-big");big.appendChild(el("small",null,"تقييم TK"));big.appendChild(el("b",null,r.now==null?"–":AR(r.now)));
   if(r.delta!=null&&r.delta!==0)big.appendChild(el("span","rt-d "+(r.delta>0?"up":"down"),(r.delta>0?"▲":"▼")+AR(Math.abs(r.delta))));else if(r.delta===0)big.appendChild(el("span","rt-d","= بدون تغيير"));
   c.appendChild(big);var subs=el("div","rt-subs");r.subs.forEach(function(s){var row=el("div","rs");row.appendChild(el("span",null,s.name));var bar=el("i");var f=el("u");f.style.width=(s.score||0)+"%";bar.appendChild(f);row.appendChild(bar);row.appendChild(el("b",null,s.score==null?"–":AR(s.score)));subs.appendChild(row)});c.appendChild(subs);
   c.appendChild(el("small","rt-note","من ٩٩. مبني على آخر ٥ مباريات رفعتها، ويرتفع كل ما تحسّنت أرقامك وأتقنت مستوى."));return c}
@@ -1383,24 +1383,24 @@ $$(".lb-seg button").forEach(function(b){b.addEventListener("click",function(){L
 
 /* «بطاقة تحسّن»: our own card, drawn here and saved as a PNG (no game logos) */
 function shareCard(x,entry){var cv=document.createElement("canvas"),W=1080,Hh=1350;cv.width=W;cv.height=Hh;var g=cv.getContext("2d");
-  var bg=g.createLinearGradient(0,0,W,Hh);bg.addColorStop(0,"#0b2440");bg.addColorStop(.55,"#0a0e14");bg.addColorStop(1,"#0f2a3b");g.fillStyle=bg;g.fillRect(0,0,W,Hh);
-  g.strokeStyle="rgba(43,200,255,.55)";g.lineWidth=6;roundRect(g,40,40,W-80,Hh-80,48);g.stroke();
-  g.direction="ltr";g.textAlign="center";g.fillStyle="#eef3f8";g.font="italic 800 64px ReplayWM, Plex, sans-serif";g.fillText("Replay",W/2,200);
-  g.fillStyle="#2bc8ff";g.font="700 30px Plex, sans-serif";g.fillText("RP",W/2,248);
+  var bg=g.createLinearGradient(0,0,W,Hh);bg.addColorStop(0,"#0b2440");bg.addColorStop(.55,"#0a0e14");bg.addColorStop(1,"#231a3b");g.fillStyle=bg;g.fillRect(0,0,W,Hh);
+  g.strokeStyle="rgba(160,107,255,.55)";g.lineWidth=6;roundRect(g,40,40,W-80,Hh-80,48);g.stroke();
+  g.direction="ltr";g.textAlign="center";g.fillStyle="#eef3f8";g.font="italic 800 64px ReplayWM, Plex, sans-serif";g.fillText("Taktika",W/2,200);
+  g.fillStyle="#a06bff";g.font="700 30px Plex, sans-serif";g.fillText("TK",W/2,248);
   g.direction="rtl";g.fillStyle="#eef3f8";g.font="700 64px Plex, sans-serif";g.fillText("بطاقة تحسّن",W/2,350);
   g.fillStyle="#93a3b8";g.font="600 40px Plex, sans-serif";g.fillText(x.name,W/2,420);
   g.font="400 32px Plex, sans-serif";g.fillText(metName(x.metric),W/2,475);
   // before → after
-  g.direction="ltr";g.font="700 190px Plex, sans-serif";g.fillStyle="#93a3b8";g.fillText(AR(x.before),W*0.72,760);g.fillStyle="#2bc8ff";g.fillText(AR(x.after),W*0.28,760);
+  g.direction="ltr";g.font="700 190px Plex, sans-serif";g.fillStyle="#93a3b8";g.fillText(AR(x.before),W*0.72,760);g.fillStyle="#a06bff";g.fillText(AR(x.after),W*0.28,760);
   g.font="700 90px Plex, sans-serif";g.fillStyle="#eef3f8";g.fillText("←",W/2,730);
-  g.direction="rtl";g.font="600 34px Plex, sans-serif";g.fillStyle="#93a3b8";g.fillText("قبل",W*0.72,830);g.fillStyle="#2bc8ff";g.fillText("بعد",W*0.28,830);
-  g.fillStyle="#2bc8ff";g.font="700 60px Plex, sans-serif";g.fillText(x.mastered?"🏅 أتقنته":"تحسّن ✅",W/2,970);
-  if(JR&&JR.rating&&JR.rating.now!=null){g.fillStyle="#eef3f8";g.font="600 40px Plex, sans-serif";g.fillText("تقييم RP: "+AR(JR.rating.now),W/2,1060)}
+  g.direction="rtl";g.font="600 34px Plex, sans-serif";g.fillStyle="#93a3b8";g.fillText("قبل",W*0.72,830);g.fillStyle="#a06bff";g.fillText("بعد",W*0.28,830);
+  g.fillStyle="#a06bff";g.font="700 60px Plex, sans-serif";g.fillText(x.mastered?"🏅 أتقنته":"تحسّن ✅",W/2,970);
+  if(JR&&JR.rating&&JR.rating.now!=null){g.fillStyle="#eef3f8";g.font="600 40px Plex, sans-serif";g.fillText("تقييم TK: "+AR(JR.rating.now),W/2,1060)}
   g.fillStyle="#93a3b8";g.font="400 28px Plex, sans-serif";g.fillText("مقارنة بين مباراتين من مبارياتي",W/2,1150);
-  g.direction="ltr";g.fillStyle="#1a7fff";g.font="600 30px Plex, sans-serif";g.fillText(location.host,W/2,1230);
+  g.direction="ltr";g.fillStyle="#6b4bff";g.font="600 30px Plex, sans-serif";g.fillText(location.host,W/2,1230);
   var img=new Image();img.onload=function(){try{g.drawImage(img,W/2-45,70,90,90)}catch(e){}done()};img.onerror=done;img.src="logo.svg?v=17";
   var fin=false;function done(){if(fin)return;fin=true;cv.toBlob(function(bl){if(!bl)return;var f=new File([bl],"r2w-progress.png",{type:"image/png"});
-    if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:"Replay"}).catch(function(){dl(bl)})}else dl(bl)},"image/png")}
+    if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:"Taktika"}).catch(function(){dl(bl)})}else dl(bl)},"image/png")}
   function dl(bl){var a=document.createElement("a");a.href=URL.createObjectURL(bl);a.download="r2w-progress.png";document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},4000)}
   setTimeout(done,1500);window.__r2wCard=cv}
 if("serviceWorker" in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})});
@@ -1464,15 +1464,15 @@ if("serviceWorker" in navigator)window.addEventListener("load",function(){naviga
   window.addEventListener("scroll",function(){scrollT=performance.now()},{passive:true});
   window.addEventListener("touchmove",function(){scrollT=performance.now()},{passive:true});
   function size(){W=cv.width=Math.round(innerWidth);H=cv.height=Math.round(innerHeight);var n=Math.round(Math.min(coarse?24:46,Math.max(coarse?12:18,W*H/(coarse?40000:26000))));P=[];
-    for(var i=0;i<n;i++)P.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.18,vy:-(.08+Math.random()*.22),r:.6+Math.random()*1.6,h:Math.random()<.6?"43,200,255":"25,195,255",a:.25+Math.random()*.45})}
+    for(var i=0;i<n;i++)P.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.18,vy:-(.08+Math.random()*.22),r:.6+Math.random()*1.6,h:Math.random()<.6?"160,107,255":"130,92,255",a:.25+Math.random()*.45})}
   size();window.addEventListener("resize",size);
   document.addEventListener("visibilitychange",function(){run=!document.hidden;if(run)requestAnimationFrame(fr)});
   function fr(ts){if(!run)return;requestAnimationFrame(fr);if(ts-last<(coarse?50:33))return;if(ts-scrollT<220)return;last=ts;
     g.clearRect(0,0,W,H);var t=(ts-t0)/1000;
     // two slow HUD scan lines
-    for(var s=0;s<2;s++){var y=((t*18+s*H/2)%(H+80))-40;var gr=g.createLinearGradient(0,y-30,0,y+2);gr.addColorStop(0,"rgba(43,200,255,0)");gr.addColorStop(1,"rgba(43,200,255,.05)");g.fillStyle=gr;g.fillRect(0,y-30,W,32)}
+    for(var s=0;s<2;s++){var y=((t*18+s*H/2)%(H+80))-40;var gr=g.createLinearGradient(0,y-30,0,y+2);gr.addColorStop(0,"rgba(160,107,255,0)");gr.addColorStop(1,"rgba(160,107,255,.05)");g.fillStyle=gr;g.fillRect(0,y-30,W,32)}
     for(var i=0;i<P.length;i++){var p=P[i];p.x+=p.vx;p.y+=p.vy;if(p.y<-6){p.y=H+6;p.x=Math.random()*W}if(p.x<-6)p.x=W+6;if(p.x>W+6)p.x=-6;
       g.beginPath();g.fillStyle="rgba("+p.h+","+(p.a*(.55+.45*Math.sin(t*1.3+i)))+")";g.arc(p.x,p.y,p.r,0,6.283);g.fill()}
-    g.lineWidth=.6;for(var a=0;a<P.length;a++)for(var b=a+1;b<P.length;b++){var dx=P[a].x-P[b].x,dy=P[a].y-P[b].y,d=dx*dx+dy*dy;if(d<9000){g.strokeStyle="rgba(25,195,255,"+(.10*(1-d/9000))+")";g.beginPath();g.moveTo(P[a].x,P[a].y);g.lineTo(P[b].x,P[b].y);g.stroke()}}}
+    g.lineWidth=.6;for(var a=0;a<P.length;a++)for(var b=a+1;b<P.length;b++){var dx=P[a].x-P[b].x,dy=P[a].y-P[b].y,d=dx*dx+dy*dy;if(d<9000){g.strokeStyle="rgba(130,92,255,"+(.10*(1-d/9000))+")";g.beginPath();g.moveTo(P[a].x,P[a].y);g.lineTo(P[b].x,P[b].y);g.stroke()}}}
   requestAnimationFrame(fr);
 })();

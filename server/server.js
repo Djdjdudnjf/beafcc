@@ -1,5 +1,5 @@
 /* ============================================================
-   Replay — سيرفر التحليل الحقيقي (Node 18+ ، بدون مكتبات خارجية)
+   Taktika — سيرفر التحليل الحقيقي (Node 18+ ، بدون مكتبات خارجية)
    يخدم الموقع + يحلّل لقطات مباراتك عبر نموذج رؤية (OpenAI أو Anthropic)
    ويبني النصائح على ميتا EA FC 27 حقيقية.
    التشغيل:  OPENAI_API_KEY=sk-... node server/server.js
@@ -198,14 +198,14 @@ function readBody(req) {
 function cookies(req) { const o = {}; (req.headers.cookie || "").split(";").forEach(p => { const i = p.indexOf("="); if (i > 0) o[p.slice(0, i).trim()] = decodeURIComponent(p.slice(i + 1).trim()); }); return o; }
 function isUnlocked(req) { return !APP_PASSWORD || cookies(req).rpw === APP_PASSWORD; }
 function unlockPage(bad) {
-  return `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Replay — دخول</title>
+  return `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Taktika — دخول</title>
 <style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#05090f;color:#eef3f8;font-family:system-ui,sans-serif}
 form{background:#111823;border:1px solid #223042;border-radius:18px;padding:28px;width:min(92vw,340px);text-align:center}
 h1{margin:.2em 0 .1em;font-size:22px;background:linear-gradient(90deg,#2bc8ff,#1a7fff);-webkit-background-clip:text;background-clip:text;color:transparent}
 p{color:#93a3b8;font-size:14px;margin:.2em 0 1.1em}input{width:100%;box-sizing:border-box;padding:13px;border-radius:12px;border:1px solid #223042;background:#0a0e14;color:#eef3f8;font-size:16px;text-align:center}
 button{width:100%;margin-top:12px;padding:13px;border:0;border-radius:12px;background:linear-gradient(90deg,#2bc8ff,#1a7fff);color:#04121b;font-weight:800;font-size:16px}
 .e{color:#ff5d6c;font-size:13px;min-height:18px;margin-top:8px}</style></head>
-<body><form method="POST" action="/api/unlock"><h1>Replay</h1><p>اكتب كلمة المرور للدخول</p>
+<body><form method="POST" action="/api/unlock"><h1>Taktika</h1><p>اكتب كلمة المرور للدخول</p>
 <input name="pass" type="password" inputmode="text" placeholder="كلمة المرور" autofocus>
 <button type="submit">دخول</button><div class="e">${bad ? "كلمة المرور غير صحيحة" : ""}</div></form></body></html>`;
 }
@@ -294,7 +294,7 @@ const srv = http.createServer(async (req, res) => {
 });
 
 srv.listen(PORT, () => {
-  console.log("\n  Replay — سيرفر التحليل الحقيقي");
+  console.log("\n  Taktika — سيرفر التحليل الحقيقي");
   console.log("  ────────────────────────────");
   console.log("  افتح:    http://localhost:" + PORT);
   console.log("  المزود:  " + (PROVIDER ? (PROVIDER + " (" + (PROVIDER === "openai" ? OPENAI_MODEL : ANTHROPIC_MODEL) + ")") : "⚠️  لا يوجد مفتاح — ضع OPENAI_API_KEY أو ANTHROPIC_API_KEY"));

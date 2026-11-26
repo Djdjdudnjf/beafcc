@@ -1,4 +1,4 @@
-/* Replay — offline app shell. API calls always go to the network. */
+/* Taktika — offline app shell. API calls always go to the network. */
 var V="fccoach-v53";
 var SHELL=["./","app.css?v=50","replay.js?v=48","app.js?v=53","logo.svg?v=17","fonts/plex-regular.woff2","fonts/plex-semibold.woff2","fonts/plex-bold.woff2","icon-180.png?v=17","icon-192.png?v=17","icon-512.png?v=17","icon-maskable-512.png?v=17","favicon.png?v=17","stadium.webp","hero-v.jpg?v=16","hero-h.jpg?v=16","manifest.webmanifest"];
 self.addEventListener("install",function(e){e.waitUntil(caches.open(V).then(function(c){return c.addAll(SHELL)}).then(function(){return self.skipWaiting()}))});

@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Replay">
-<defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2bc8ff"/><stop offset=".55" stop-color="#1a7fff"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs>
+<defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a06bff"/><stop offset=".55" stop-color="#6b4bff"/><stop offset="1" stop-color="#7c5cff"/></linearGradient></defs>
 <path d="M32 3 56 12v18c0 15-10 26-24 31C18 56 8 45 8 30V12z" fill="url(#lg)"/>
 <path d="M32 8.5 51 15.6V30c0 12-7.8 21-19 25.6C20.8 51 13 42 13 30V15.6z" fill="#0a0e14" opacity=".9"/>
 <path d="M27.5 23.5v15l12.2-7.5z" fill="#fff"/>
 <path d="M43.2 25.6A12.6 12.6 0 1 1 36.3 19.1" fill="none" stroke="url(#lg)" stroke-width="3.6" stroke-linecap="round"/>
-<path d="M36.6 13.9 42.2 21.2 33.4 23.4z" fill="#2bc8ff" stroke="#2bc8ff" stroke-width="1" stroke-linejoin="round"/>
+<path d="M36.6 13.9 42.2 21.2 33.4 23.4z" fill="#a06bff" stroke="#a06bff" stroke-width="1" stroke-linejoin="round"/>
 </svg>
