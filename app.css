@@ -1063,3 +1063,14 @@ button.mo-hint{background:none;border:0;padding:0;font:inherit;font-size:12px;fo
 /* === الاسم: تدرّج متحرك خفيف يعطي إحساسًا أرقى === */
 .bn{background-size:220% 100%;animation:bnShift 7s ease-in-out infinite}
 @keyframes bnShift{0%,100%{background-position:0 0}50%{background-position:100% 0}}
+
+/* === v56: هوية مميّزة — خط عريض للعناوين + خلفية ثابتة للصورة التوضيحية === */
+.big, h1.big, .sec-t, .stats b, .final b, .sample-cta b, .mini-rep .mr-lab, .plan-h b{
+  font-family:"Cairo","Plex",system-ui,sans-serif;
+}
+.big, h1.big{font-weight:900;letter-spacing:-1px;line-height:1.18}
+.sec-t{font-weight:800;letter-spacing:-.3px}
+.stats b{font-weight:900}
+.tag.glow{font-weight:800;letter-spacing:.2px}
+/* ضمان ظهور صورة المقطع حتى لو ما شغّل الفيديو (iOS/الطاقة المنخفضة) */
+.scr-in{background-image:url(demo_screen.jpg?v=18);background-size:cover;background-position:center}
