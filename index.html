@@ -35,7 +35,7 @@ new Response(new Blob([a]).stream().pipeThrough(new DecompressionStream("gzip"))
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="app.css?v=54">
+<link rel="stylesheet" href="app.css?v=55">
 </head>
 <body>
 <div id="splash" aria-hidden="true"><div class="sp-in"><img src="logo.svg?v=18" alt=""><b class="bn" dir="ltr">Taktika</b><span class="sp-bar"><i></i></span></div></div>
@@ -75,9 +75,12 @@ new Response(new Blob([a]).stream().pipeThrough(new DecompressionStream("gzip"))
       <video class="lazyv" data-src="m/demo_screen.mp4?v=32" poster="demo_screen.jpg?v=18" muted loop playsinline preload="none"></video>
       <svg class="scr-ov" viewBox="0 0 640 400" preserveAspectRatio="none">
         <path class="br" d="M18 60V18h42M622 60V18h-42M18 340v42h42M622 340v42h-42"/>
-        <circle class="rg" cx="300" cy="190" r="34"/>
-        <path class="ar" d="M300 190 C 360 150, 430 120, 500 110"/>
-        <path class="ah" d="M488 100 L502 110 L486 118"/>
+        <g class="scan">
+          <circle class="rg" cx="280" cy="205" r="30"/>
+          <path class="ar" d="M280 205 C 320 186, 352 176, 382 170"/>
+          <path class="ah" d="M372 162 L386 170 L371 180"/>
+          <animateTransform attributeName="transform" type="translate" values="0 0; 44 -26; -22 16; 0 0" dur="9s" repeatCount="indefinite"/>
+        </g>
       </svg>
       <span class="scr-live"><i></i> نحلل اللقطة</span>
       <div class="scr-cap"><b class="scr-t" dir="ltr">١٤:٠٢</b><span class="scr-txt">مساحة مفتوحة خلف الدفاع</span></div>
@@ -565,6 +568,6 @@ new Response(new Blob([a]).stream().pipeThrough(new DecompressionStream("gzip"))
 </main>
 <script src="demo.js?v=2"></script>
 <script src="replay.js?v=49"></script>
-<script src="app.js?v=54"></script>
+<script src="app.js?v=55"></script>
 </body>
 </html>

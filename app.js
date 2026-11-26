@@ -1442,10 +1442,13 @@ if("serviceWorker" in navigator)window.addEventListener("load",function(){naviga
   function ar(n){return String(n).replace(/\d/g,function(d){return "٠١٢٣٤٥٦٧٨٩"[d]})}
   function count(b){var to=+b.dataset.count;if(still||!to){b.textContent=ar(to);return}var t0=null,D=1300;
     function f(t){if(!t0)t0=t;var k=Math.min(1,(t-t0)/D),e=1-Math.pow(1-k,3);b.textContent=ar(Math.round(to*e));if(k<1)requestAnimationFrame(f)}requestAnimationFrame(f)}
-  var caps=[["١٤:٠٢","مساحة مفتوحة خلف الدفاع","good"],["١٤:٠٤","المدافع خرج من مكانه","bad"],["١٤:٠٦","تسديدة على المرمى","good"]],ci=0;
-  var cap=document.querySelector(".scr-cap");
-  if(cap&&!still)setInterval(function(){if(document.hidden)return;ci=(ci+1)%caps.length;var c=caps[ci],tx=cap.querySelector(".scr-txt");tx.style.opacity=0;
-    setTimeout(function(){cap.querySelector(".scr-t").textContent=c[0];tx.textContent=c[1];cap.className="scr-cap "+c[2];tx.style.opacity=1},300)},2600);
+  // v57: الكلام والوقت مربوطان بزمن المقطع الفعلي (هجمة دفاعية: الخصم يضغط ثم الكرة تعود للمنطقة)
+  var caps=[[0,"٨٠:٢٠","الخصم يضغط عاليًا على بنائك","bad"],[2.8,"٨٠:٣٥","الكرة ترجع لعمق منطقتك","bad"],[5.4,"٨٠:٥٠","تمركز دفاعي داخل الصندوق","good"]];
+  var cap=document.querySelector(".scr-cap"),scv=document.querySelector(".scr video"),lastCi=-1;
+  function setCap(i){if(i===lastCi||!cap)return;lastCi=i;var c=caps[i],tx=cap.querySelector(".scr-txt");tx.style.opacity=0;
+    setTimeout(function(){cap.querySelector(".scr-t").textContent=c[1];tx.textContent=c[2];cap.className="scr-cap "+c[3];tx.style.opacity=1},300)}
+  if(cap&&!still){setCap(0);setInterval(function(){if(document.hidden)return;var t=(scv&&scv.currentTime)||0,i=0;
+    for(var k=caps.length-1;k>=0;k--){if(t>=caps[k][0]){i=k;break}}setCap(i)},500)}
 })();
 
 

@@ -1135,3 +1135,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
 
 /* الإطار العلوي للصورة التوضيحية — توهّج نيون أقوى */
 .scr-in{box-shadow:0 30px 70px -26px rgba(40,224,255,.3),0 0 0 1px rgba(160,107,255,.25),inset 0 1px 0 rgba(255,255,255,.08)!important;border-color:rgba(40,224,255,.3)!important}
+
+/* v57: السهم بلون الثيم (سماوي) بدل الأصفر + أصل تحويل الدائرة بعد نقلها */
+.scr-ov .ar,.scr-ov .ah{stroke:#28e0ff!important}
+.scr-ov .rg{transform-origin:280px 205px!important}

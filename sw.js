@@ -1,6 +1,6 @@
 /* Taktika — offline app shell. API calls always go to the network. */
-var V="fccoach-v57";
-var SHELL=["./","app.css?v=54","replay.js?v=49","app.js?v=54","logo.svg?v=18","fonts/plex-regular.woff2","fonts/plex-semibold.woff2","fonts/plex-bold.woff2","icon-180.png?v=18","icon-192.png?v=18","icon-512.png?v=18","icon-maskable-512.png?v=18","favicon.png?v=18","stadium.webp","hero-v.jpg?v=16","hero-h.jpg?v=16","manifest.webmanifest"];
+var V="fccoach-v58";
+var SHELL=["./","app.css?v=55","replay.js?v=49","app.js?v=55","logo.svg?v=18","fonts/plex-regular.woff2","fonts/plex-semibold.woff2","fonts/plex-bold.woff2","icon-180.png?v=18","icon-192.png?v=18","icon-512.png?v=18","icon-maskable-512.png?v=18","favicon.png?v=18","stadium.webp","hero-v.jpg?v=16","hero-h.jpg?v=16","manifest.webmanifest"];
 self.addEventListener("install",function(e){e.waitUntil(caches.open(V).then(function(c){return c.addAll(SHELL)}).then(function(){return self.skipWaiting()}))});
 self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return k.indexOf("fccoach-")===0&&k!==V}).map(function(k){return caches.delete(k)}))}).then(function(){return self.clients.claim()}))});
 self.addEventListener("fetch",function(e){var req=e.request;if(req.method!=="GET")return;var u=new URL(req.url);
