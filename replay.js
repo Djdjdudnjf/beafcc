@@ -1,4 +1,4 @@
-/* R2W v34 — attack replay from the in-game radar.
+/* RP v34 — attack replay from the in-game radar.
    Frames are read from the player's own file on this device only, reduced to dot coordinates and discarded.
    Nothing visual is kept or sent: the output is numbers only. */
 (function(W){"use strict";
@@ -174,7 +174,7 @@ function moType(m){var w=String(m.what||"");if(/هدف|أهداف|الشباك|�
 W.R2WRadar={extract:extract,moType:moType};
 })(window);
 
-/* R2W v34 — animated attack replay: a top-down pitch, two teams as dots, the ball and its trail.
+/* RP v34 — animated attack replay: a top-down pitch, two teams as dots, the ball and its trail.
    Real replays come from the radar of the player's own clip (numbers only); without them an illustrative
    animation for the moment's type is shown and always labelled «محاكاة توضيحية». */
 (function(W){"use strict";
@@ -184,7 +184,7 @@ function H(n,c,t){var e=document.createElement(n);if(c)e.className=c;if(t!=null)
 var UID=0;
 function pitch(svg,id){
   var d=E("defs",null,svg);
-  var lg=E("linearGradient",{id:"rpg"+id,x1:0,y1:0,x2:0,y2:1},d);E("stop",{offset:0,"stop-color":"#1d6b43"},lg);E("stop",{offset:1,"stop-color":"#155a37"},lg);
+  var lg=E("linearGradient",{id:"rpg"+id,x1:0,y1:0,x2:0,y2:1},d);E("stop",{offset:0,"stop-color":"#1d556b"},lg);E("stop",{offset:1,"stop-color":"#155a37"},lg);
   var rg=E("radialGradient",{id:"rpv"+id,cx:"50%",cy:"50%",r:"75%"},d);E("stop",{offset:"60%","stop-color":"#000","stop-opacity":0},rg);E("stop",{offset:"100%","stop-color":"#000","stop-opacity":.38},rg);
   var mk=E("marker",{id:"rpa"+id,viewBox:"0 0 10 10",refX:8,refY:5,markerWidth:5,markerHeight:5,orient:"auto-start-reverse"},d);E("path",{d:"M0 0L10 5L0 10z",fill:"#ffd166"},mk);
   var sh=E("filter",{id:"rps"+id,x:"-50%",y:"-50%",width:"200%",height:"200%"},d);E("feDropShadow",{dx:0,dy:3,stdDeviation:3,"flood-color":"#000","flood-opacity":.45},sh);
