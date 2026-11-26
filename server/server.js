@@ -18,8 +18,14 @@ const PORT = parseInt(process.env.PORT || "8787", 10);
 const MAX_FRAMES = parseInt(process.env.MAX_FRAMES || "14", 10); // كم لقطة نرسل للذكاء (تحكّم بالتكلفة)
 const BODY_LIMIT = 80 * 1024 * 1024;                  // 80MB (اللقطات)
 
-const OPENAI_KEY = process.env.OPENAI_API_KEY || "";
-const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY || "";
+// يقبل المفتاح حتى لو اسم المتغيّر مختلف قليلًا، ويتجاهل القيم الفارغة/النموذجية
+function pickKey(names) { for (var i = 0; i < names.length; i++) { var v = process.env[names[i]]; if (v && v.trim() && !/x{4,}/i.test(v)) return v.trim(); } return ""; }
+var OPENAI_KEY = pickKey(["OPENAI_API_KEY", "OPENAI_KEY", "OPENAI"]);
+var ANTHROPIC_KEY = pickKey(["ANTHROPIC_API_KEY", "ANTHROPIC_KEY", "CLAUDE_API_KEY", "CLAUDE_KEY", "ANTHROPIC"]);
+if (!OPENAI_KEY && !ANTHROPIC_KEY) { // اسم عام: نتعرّف على المزوّد من شكل المفتاح
+  var g = pickKey(["API_KEY", "AI_API_KEY", "LLM_API_KEY", "KEY"]);
+  if (g) { if (/^sk-ant/i.test(g)) ANTHROPIC_KEY = g; else if (/^sk-/i.test(g)) OPENAI_KEY = g; else ANTHROPIC_KEY = g; }
+}
 const PROVIDER = OPENAI_KEY ? "openai" : (ANTHROPIC_KEY ? "anthropic" : "");
 const OPENAI_MODEL = process.env.OPENAI_MODEL || "gpt-4o";
 const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL || "claude-sonnet-5-5";
