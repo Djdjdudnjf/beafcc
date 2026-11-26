@@ -150,7 +150,8 @@ function extractJSON(txt) {
   return null;
 }
 
-async function analyze(body) {
+// يُرجع كائن النتيجة فقط (استدعاء المزوّد + تحليل JSON)
+async function runAnalysis(body) {
   if (!PROVIDER) throw new Error("no_key");
   const frames = Array.isArray(body.frames) ? body.frames.filter(x => typeof x === "string" && x.indexOf("data:image") === 0) : [];
   if (!frames.length) throw new Error("no_frames");
@@ -160,10 +161,30 @@ async function analyze(body) {
   const result = extractJSON(raw);
   if (!result || typeof result !== "object") throw new Error("bad_json");
   result.sources = META_SOURCES;              // نرفق المصادر الحقيقية
+  return result;
+}
+
+// المسار المتزامن: يرجّع الوظيفة كاملة
+async function analyze(body) {
+  const result = await runAnalysis(body);
   const id = hex32();
-  const job = { job: id, mode: body.mode || "match", video: true, _reel: [], result, _ts: Date.now() };
+  const job = { job: id, mode: body.mode || "match", video: true, _reel: [], result, state: "done", _ts: Date.now() };
   const jobs = loadJobs(); jobs[id] = job; saveJobs(jobs);
   return job;
+}
+
+// المسار غير المتزامن: ينشئ وظيفة، يحلّل في الخلفية، ويرجّع المعرّف فورًا
+function jobStart(body) {
+  const id = hex32();
+  const jobs = loadJobs();
+  jobs[id] = { job: id, mode: body.mode || "match", video: true, state: "working", _ts: Date.now() };
+  saveJobs(jobs);
+  runAnalysis(body).then(function (result) {
+    const j = loadJobs(); j[id] = { job: id, mode: body.mode || "match", video: true, state: "done", result: result, _reel: [], _ts: Date.now() }; saveJobs(j);
+  }).catch(function (e) {
+    const j = loadJobs(); if (j[id]) { j[id].state = "error"; j[id].message = (e.message === "no_frames" ? "ما قدرنا نقرأ لقطات من الفيديو" : "تعذّر التحليل: " + e.message); saveJobs(j); }
+  });
+  return id;
 }
 
 async function chat(body) {
@@ -288,8 +309,18 @@ const srv = http.createServer(async (req, res) => {
       if (p.indexOf("/api/auth/") === 0) { if (p.endsWith("/logout")) return send(res,200,{ok:true}); return send(res, 200, { ok: true, token: "local", user: { email: body.email || "you@replay.local", plan: "pro", pro_until: Math.floor(Date.now()/1000)+31536000, credits: 999 } }); }
       if (p === "/api/video/start") return send(res, 409, {}); // ادفع المسار نحو اللقطات
       if (p === "/api/yt/check") return send(res, 200, { ok: false, message: "طريقة الرابط غير مفعّلة في السيرفر الذاتي بعد — ارفع المقطع كملف." });
-      if (p === "/api/job") { const j = loadJobs()[qs.get("id")]; return j ? send(res, 200, { state: "done", job: j.job, mode: j.mode, video: true, result: j.result, _reel: j._reel || [] }) : send(res, 200, { state: "error", error: "no_job", message: "التقرير غير موجود" }); }
-      if (p === "/api/jobs") { const ids = (qs.get("ids") || "").split(",").filter(Boolean); const all = loadJobs(); const out = ids.map(i => all[i]).filter(Boolean).map(j => ({ job: j.job, result: j.result, mode: j.mode, video: true })); return send(res, 200, { jobs: out, gone: [] }); }
+      if (p === "/api/job/start") {
+        if (!PROVIDER) return send(res, 503, { code: "E-KEY", message: "السيرفر بدون مفتاح ذكاء اصطناعي." });
+        return send(res, 200, { job: jobStart(body) });
+      }
+      if (p === "/api/job") {
+        const j = loadJobs()[qs.get("id")];
+        if (!j) return send(res, 200, { state: "error", error: "no_job", message: "التقرير غير موجود" });
+        if (j.state === "done" && j.result) return send(res, 200, { state: "done", job: j.job, mode: j.mode, video: true, result: j.result, _reel: j._reel || [] });
+        if (j.state === "error") return send(res, 200, { state: "error", message: j.message || "تعذّر التحليل" });
+        return send(res, 200, { state: "working" });
+      }
+      if (p === "/api/jobs") { const ids = (qs.get("ids") || "").split(",").filter(Boolean); const all = loadJobs(); const out = ids.map(i => all[i]).filter(j => j && j.result).map(j => ({ job: j.job, result: j.result, mode: j.mode, video: true })); return send(res, 200, { jobs: out, gone: [] }); }
       if (p === "/api/jobs/delete") { const all = loadJobs(); (body.ids || []).forEach(i => delete all[i]); saveJobs(all); return send(res, 200, { ok: true }); }
       if (p === "/api/journey") return send(res, 200, { ok: true, n: 0 });
       if (p === "/api/leaderboard") return send(res, 200, { rows: [], me: null });
