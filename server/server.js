@@ -283,7 +283,12 @@ const srv = http.createServer(async (req, res) => {
       }
       if (p === "/api/chat") { try { return send(res, 200, await chat(body)); } catch (e) { return send(res, 200, { message: "تعذّر الرد الآن: " + e.message }); } }
       // --- نقاط مساعدة (وضع شخصي مفتوح) ---
-      if (p === "/api/status") return send(res, 200, { live: !!PROVIDER, free: true, provider: PROVIDER || null });
+      if (p === "/api/status") {
+        var _names = Object.keys(process.env).filter(function (k) { return /api|key|anthropic|claude|openai|token/i.test(k); });
+        var _ant = 0, _sk = 0;
+        for (var _k in process.env) { var _v = (process.env[_k] || "").trim(); if (/^sk-ant-/i.test(_v)) _ant++; else if (/^sk-/i.test(_v)) _sk++; }
+        return send(res, 200, { live: !!PROVIDER, free: true, provider: PROVIDER || null, v: "diag1", envNames: _names, antLike: _ant, skLike: _sk });
+      }
       if (p === "/api/me") return send(res, 200, { user: { email: "you@replay.local", plan: "pro", pro_until: Math.floor(Date.now()/1000)+31536000, credits: 999 } });
       if (p.indexOf("/api/auth/") === 0) { if (p.endsWith("/logout")) return send(res,200,{ok:true}); return send(res, 200, { ok: true, token: "local", user: { email: body.email || "you@replay.local", plan: "pro", pro_until: Math.floor(Date.now()/1000)+31536000, credits: 999 } }); }
       if (p === "/api/video/start") return send(res, 409, {}); // ادفع المسار نحو اللقطات
