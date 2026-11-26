@@ -769,7 +769,7 @@ if(location.hash==="#account"&&!location.search)setTimeout(function(){if(ACC.use
 
 /* ===== v19: full match from a YouTube link or from several clips ===== */
 st.src="one";st.clips=[];
-var MAXC=8,MAXS=25*60,MINS=120,SHORTMSG="الفيديو أقصر من دقيقتين. ارفع المباراة كاملة (من ٢ إلى ٢٥ دقيقة).";
+var MAXC=8,MAXS=25*60,MINS=15,SHORTMSG="المقطع قصير جدًا. اختر مقطعًا أطول قليلًا أو أضف مقاطع أكثر.";
 function setSrc(s){st.src=s;document.body.classList.remove("src-one","src-link","src-clips");document.body.classList.add("src-"+s);
   $$(".srcseg button").forEach(function(b){b.classList.toggle("on",b.dataset.src===s)});if(s!=="one")setMode("match");updGo();$("#err").hidden=true}
 $$(".srcseg button").forEach(function(b){b.addEventListener("click",function(){setSrc(b.dataset.src);if(st.ustep===1&&!needBuy())goStep(2)})});
@@ -888,13 +888,20 @@ function ycRun(){var u=$("#yt").value.trim();clearTimeout(ycT);
       st.yc=y;ev(y.state==="bad"?"yt_bad":"yt_ok");ycPaint();updGo()})},350)}
 async function runClips(){var cs=st.clips.slice();if(!cs.length)return;
   setMode("match");$("#p-title").textContent="نحلل مباراتك…";show("processing");step(1);bar(2);$("#p-fine").textContent=UPFINE;
-  stepTxt("نرفع المقاطع","نشاهد المباراة ونكتب الملاحظات","نكتب التقرير");
-  var tot=cs.reduce(function(a,c){return a+c.f.size},0),done=0,ids=[];
+  stepTxt("نأخذ لقطات من مقاطعك","نقرأ اللعب لقطةً لقطة","نكتب التقرير");
+  var frames=[],times=[],base=0,totDur=0;
   for(var k=0;k<cs.length;k++){var c=cs[k];$("#s1n").textContent="("+AR(k+1)+"/"+AR(cs.length)+")";
-    try{ids.push(await uploadOne(c.f,function(p){bar(2+58*(done+p*c.f.size)/tot)}))}catch(e){return fail(e&&e.m||"انقطع رفع الفيديو، حاول مرة أخرى",e&&e.c||"E-UP")}
-    done+=c.f.size}
-  $("#s1n").textContent="";step(3);bar(62);
-  return startJob({videos:ids,durations:cs.map(function(c){return Math.round(c.dur||0)}),team:$("#team").value.trim(),tactics:st.tactics})}
+    var ex;try{ex=await extract(c.f,"match",function(i,n){bar(3+57*(k+i/n)/cs.length)})}catch(e){return fail("ما قدرنا نقرأ أحد المقاطع، جرّب مقطعًا أوضح.","E-CLIP")}
+    for(var q=0;q<ex.frames.length;q++){frames.push(ex.frames[q]);times.push(Math.round(base+(ex.times[q]||0)))}
+    base+=ex.duration||0;totDur+=ex.duration||0}
+  $("#s1n").textContent="";step(3);bar(64);
+  if(!frames.length)return fail("ما طلّعنا لقطات من المقاطع، جرّب مقاطع أوضح.","E-CLIP");
+  if(frames.length>24){var fr=[],tm=[],N=frames.length;for(var z=0;z<24;z++){var idx=Math.round(z*(N-1)/23);fr.push(frames[idx]);tm.push(times[idx])}frames=fr;times=tm}
+  try{var r=await fetch("/api/analyze",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({mode:"match",frames:frames,times:times,duration:totDur,team:$("#team").value.trim(),tactics:st.tactics})});
+    var j=await r.json().catch(function(){return {}});
+    if(!r.ok||!j.result)return fail(j.message||"تعذّر التحليل، حاول مرة أخرى.",j.code||(j.error?String(j.error):"E-CLIP"));
+    bar(100);step(4);try{localStorage.setItem("fc_count",String(count()+1))}catch(e){}render(j)}
+  catch(e){return fail("انقطع الاتصال أثناء التحليل، حاول مرة أخرى.","E-CONN")}}
 // v29: FAQ «كيف أسجّل مباراتي من البلايستيشن؟» shows the upload step's own guide. One source: the nodes are
 // copied from the upload step at load (method names, ul[data-for=match] tips, #guide-link, #guide-clips), so the two never drift.
 (function(){var box=$("#faq-rec");if(!box)return;var n=0;
