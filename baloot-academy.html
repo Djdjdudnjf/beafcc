@@ -51,7 +51,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 /* ===== Nav ===== */
 .nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:color-mix(in srgb,var(--surface) 86%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .nav-in{display:flex;align-items:center;gap:14px;height:62px}
-.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-d);font-weight:700;font-size:1.15rem;margin-left:auto}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-d);font-weight:700;font-size:1.15rem;margin-left:auto;cursor:pointer}
 .brand .mark{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(145deg,var(--felt),var(--felt-2));color:var(--gold-soft);font-size:1.1rem;box-shadow:inset 0 0 0 1px var(--gold)}
 .navlinks{display:flex;gap:4px;flex-wrap:wrap}
 .navlinks button{background:none;border:0;color:var(--muted);font-weight:600;font-size:.95rem;padding:8px 12px;border-radius:10px;transition:.15s}
@@ -282,7 +282,11 @@ footer .brand{justify-content:center;margin:0 0 10px;color:#f1ead6}
 
 @media(max-width:720px){
   .prog-grid{grid-template-columns:1fr}
-  .navlinks{display:none}
+  .nav-in{gap:8px}
+  .navlinks{flex-wrap:nowrap;overflow-x:auto;gap:2px;min-width:0}
+  .navlinks::-webkit-scrollbar{display:none}
+  .navlinks button{padding:8px 10px;font-size:.86rem;white-space:nowrap}
+  .brand .btxt{display:none}
   .felt{min-height:460px}
   .myhand .card{--cw:46px}
   .center-play .slot .card{--cw:40px}
@@ -303,7 +307,7 @@ footer .brand{justify-content:center;margin:0 0 10px;color:#f1ead6}
       <button data-go="progress">تقدّمي</button>
     </div>
     <button class="icon-btn" id="themeBtn" title="المظهر">◐</button>
-    <div class="brand"><span class="mark">♠</span>أكاديمية البلوت</div>
+    <div class="brand" data-go="home" title="الرئيسية"><span class="mark">♠</span><span class="btxt">أكاديمية البلوت</span></div>
   </div>
 </nav>
 
