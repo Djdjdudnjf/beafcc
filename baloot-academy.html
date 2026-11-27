@@ -449,10 +449,10 @@ document.addEventListener("click",function(e){
 
 /* ============ CARD MODEL ============ */
 var SUITS=[
-  {id:"S",sym:"♠",name:"بستوني",red:false},
-  {id:"H",sym:"♥",name:"هارت",red:true},
+  {id:"S",sym:"♠",name:"سبيت",red:false},
+  {id:"H",sym:"♥",name:"هاص",red:true},
   {id:"D",sym:"♦",name:"ديمن",red:true},
-  {id:"C",sym:"♣",name:"سباتي",red:false}
+  {id:"C",sym:"♣",name:"شيريا",red:false}
 ];
 var SUITMAP={}; SUITS.forEach(function(s){SUITMAP[s.id]=s;});
 var RANKS=["7","8","9","10","J","Q","K","A"];
@@ -484,7 +484,7 @@ var LESSONS=[
    vid:"شرح لعبة البلوت للمبتدئين من الصفر",
    body:[
      ["h4","البلوت باختصار"],
-     ["p","البلوت لعبة ورق سعودية لأربعة لاعبين، فريقين، كل فريق لاعبين. شريكك يجلس مقابلك مباشرة، وخصومك على يمينك ويسارك. تنلعب بـ٣٢ ورقة: من السبعة إلى الإكّة في كل نوع (بستوني ♠، هارت ♥، ديمن ♦، سباتي ♣)."],
+     ["p","البلوت لعبة ورق سعودية لأربعة لاعبين، فريقين، كل فريق لاعبين. شريكك يجلس مقابلك مباشرة، وخصومك على يمينك ويسارك. تنلعب بـ٣٢ ورقة: من السبعة إلى الإكّة في كل نوع (سبيت ♠، هاص ♥، ديمن ♦، شيريا ♣)."],
      ["h4","هدف اللعبة"],
      ["p","كل جولة، فريق «يشتري» ويحدد نوع اللعب: صن أو حكم. الفريق المشتري لازم يجمع نقاط أكثر من نصف اللوح وإلا «تنقلب» عليه. أول فريق يوصل للهدف (غالباً ١٥٢) يكسب الصَّكّة."],
      ["note","الترتيب على الطاولة: اللعب يدور بالتناوب. اللي يكسب الأكلة (اليد) هو اللي يبدأ اللي بعدها."],
@@ -495,6 +495,26 @@ var LESSONS=[
      {type:"mcq",q:"كم لاعب في جولة البلوت؟",opts:[["ثلاثة",0,"البلوت دايم أربعة، فريقين."],["أربعة، فريقين",1,"صح. أربعة لاعبين، كل فريق لاعبين، والشريك مقابلك."],["لاعبان",0,"هذا بلوت الزوجي النادر، المتعارف أربعة."],["ستة",0,"كثير. أربعة فقط."]]},
      {type:"mcq",q:"وين يجلس شريكك؟",opts:[["على يميني",0,"هذا خصمك."],["مقابلي مباشرة",1,"بالضبط، الشريك دايم قبالتك."],["على يساري",0,"هذا الخصم الثاني."],["بجنبي",0,"ما فيه أحد بجنبك، أنت بين خصمين."]]},
      {type:"mcq",q:"كم ورقة في دسّة البلوت؟",opts:[["٥٢",0,"هذا الكوتشينة الكاملة. البلوت ينشال منها."],["٣٢",1,"صح، من ٧ إلى الإكّة في أربعة أنواع = ٣٢."],["٣٦",0,"قريب بس لا، ٣٢."],["٢٤",0,"أقل من اللازم."]]}
+   ]},
+  {id:11,tag:"التوزيع",t:"التوزيع والقص",
+   d:"مين يوزّع، كيف يوزّع، والورقة المكشوفة. أساس كل جولة.",
+   pts:["٥ أوراق بالبداية (٣ ثم ٢)","ورقة مكشوفة في النص","٨ أوراق بعد الشراء"],
+   vid:"طريقة توزيع الورق في البلوت والقص",
+   body:[
+     ["h4","مين يوزّع؟"],
+     ["p","الموزّع يتغيّر كل جولة بالدور. اللي على يسار الموزّع يبدأ المزايدة واللعب، واتجاه التوزيع واللعب ثابت طول الشوط."],
+     ["h4","كيف يوزّع؟"],
+     ["p","الموزّع يخلط الورق، واللاعب اللي على يمينه يقص. بعدها يوزّع لكل لاعب ٥ أوراق على دفعتين: ثلاث ثم اثنتين. وبعد ما يكمّل، يكشف الورقة اللي تليها في نص الطاولة."],
+     ["h4","الورقة المكشوفة"],
+     ["p","هذي الورقة مو زينة — تحدد حكم الدورة الأولى: اللي يبي حكم في الدورة الأولى لازم ياخذ نوعها."],
+     ["note","لا تستعجل وتحكم على يدك من الخمس الأوراق الأولى بس — تذكّر إنه باقي لك ثلاث أوراق تجيك بعد الشراء."],
+     ["h4","بعد الشراء"],
+     ["p","أول ما يشتري أحد (صن أو حكم)، يكمّل الموزّع التوزيع: ثلاث أوراق لكل لاعب، فتصير كل يد ٨ أوراق كاملة. والمشتري عادةً يضم الورقة المكشوفة ليده."]
+   ],
+   quiz:[
+     {type:"mcq",q:"كم ورقة توزّع لكل لاعب قبل الشراء؟",opts:[["ثمانية دفعة وحدة",0,"الثمانية تكتمل بعد الشراء."],["خمسة (٣ ثم ٢)",1,"صح، أول التوزيع خمس أوراق على دفعتين."],["سبعة",0,"لا، خمسة أولاً."],["ثلاثة بس",0,"الثلاثة هي الدفعة الأولى، يتبعها اثنتين."]]},
+     {type:"mcq",q:"الورقة المكشوفة في نص الطاولة تحدد؟",opts:[["مين يبدأ اللعب",0,"البداية من يسار الموزّع."],["حكم الدورة الأولى",1,"صح، نوعها هو حكم الدورة الأولى لمن يشتري."],["نقاط الجولة",0,"لا علاقة بالنقاط."],["مين يوزّع الجاية",0,"الموزّع يمشي بالدور."]]},
+     {type:"mcq",q:"بعد ما يشتري أحد، كم تصير اليد؟",opts:[["تبقى خمسة",0,"يكمّل التوزيع بعد الشراء."],["ثمانية أوراق",1,"صح، ثلاث أوراق تنضاف فتصير اليد ٨."],["عشرة",0,"أكثر من اللازم."],["ستة",0,"لا، ثمانية."]]}
    ]},
   {id:2,tag:"الترتيب",t:"ترتيب الأوراق: صن وحكم",
    d:"أي ورقة أقوى من أي؟ وكم تسوّي نقاط؟ هذا أساس كل شي.",
@@ -530,8 +550,8 @@ var LESSONS=[
      ["note","القاعدة العملية: اشترِ حكم إذا عندك ٤ أوراق أو أكثر من نوع واحد قوي (ولد + تسعة ممتاز). اشترِ صن إذا يدك فيها إكّات وعشرات موزّعة."]
    ],
    quiz:[
-     {type:"mcq",q:"في الدورة الأولى، نوع الحكم يكون من؟",opts:[["أي نوع تختاره",0,"هذا بالدورة الثانية."],["نوع الورقة المكشوفة",1,"صح، بالدورة الأولى الحكم مربوط بالمكشوفة."],["نوع أطول سلسلة عندك",0,"حلو كتفكير، بس القاعدة تلزمك بالمكشوفة أول دورة."],["البستوني دايم",0,"ما فيه نوع ثابت."]]},
-     {type:"mcq",q:"عندك ولد وتسعة وشايب وثمانية بستوني، والمكشوفة بستوني. وش تسوّي؟",opts:[["بس أمرّر",0,"خسارة! يد حكم بستوني ممتازة."],["أشتري حكم",1,"أكيد. ولد+تسعة بستوني = ٣٤ نقطة بيدك، اشترِ حكم بلا تردد."],["أشتري صن",0,"الصن ما يستغل قوة الولد والتسعة."],["أطلب إعادة",0,"ما فيه طلب إعادة وأنت ماسك ذهب."]]},
+     {type:"mcq",q:"في الدورة الأولى، نوع الحكم يكون من؟",opts:[["أي نوع تختاره",0,"هذا بالدورة الثانية."],["نوع الورقة المكشوفة",1,"صح، بالدورة الأولى الحكم مربوط بالمكشوفة."],["نوع أطول سلسلة عندك",0,"حلو كتفكير، بس القاعدة تلزمك بالمكشوفة أول دورة."],["السبيت دايم",0,"ما فيه نوع ثابت."]]},
+     {type:"mcq",q:"عندك ولد وتسعة وشايب وثمانية سبيت، والمكشوفة سبيت. وش تسوّي؟",opts:[["بس أمرّر",0,"خسارة! يد حكم سبيت ممتازة."],["أشتري حكم",1,"أكيد. ولد+تسعة سبيت = ٣٤ نقطة بيدك، اشترِ حكم بلا تردد."],["أشتري صن",0,"الصن ما يستغل قوة الولد والتسعة."],["أطلب إعادة",0,"ما فيه طلب إعادة وأنت ماسك ذهب."]]},
      {type:"mcq",q:"إذا مرّر الجميع في الدورتين؟",opts:[["يكسب الموزّع",0,"لا."],["يُعاد التوزيع",1,"صح، ترجع الأوراق وتتوزّع من جديد."],["يُلعب صن إجباري",0,"غير متعارف، الأصل إعادة التوزيع."],["ينتهي الشوط",0,"لا، بس إعادة توزيع."]]}
    ]},
   {id:4,tag:"القوانين",t:"قوانين اللعب والاتباع",
@@ -548,10 +568,10 @@ var LESSONS=[
      ["note","إلزام الأعلى: إذا فُتح بالحكم، لازم تنزل حكم أعلى من اللي نزل إن قدرت. وإذا قطع خصمك وجاء دورك ومعك حكم أعلى، لازم تعلا عليه."]
    ],
    quiz:[
-     {type:"play",q:"فُتحت الأكلة بـ هارت ♥. يدك فيها هارت وغيرها. وش تلعب؟",
+     {type:"play",q:"فُتحت الأكلة بـ هاص ♥. يدك فيها هاص وغيرها. وش تلعب؟",
       hand:[{r:"A",s:"H"},{r:"9",s:"S"},{r:"K",s:"D"},{r:"8",s:"H"}],
-      correct:0,why:"لازم تتبع النوع المفتوح (هارت) وعندك هارت، فتنزل هارت. نزلت الإكّة لأنها تاخذ الأكلة.",
-      alt:[["لا تقدر تنزل غير هارت لأنك ماسكها","صح، الاتباع إجباري."]]},
+      correct:0,why:"لازم تتبع النوع المفتوح (هاص) وعندك هاص، فتنزل هاص. نزلت الإكّة لأنها تاخذ الأكلة.",
+      alt:[["لا تقدر تنزل غير هاص لأنك ماسكها","صح، الاتباع إجباري."]]},
      {type:"mcq",q:"في الحكم، فُتح بنوع ما عندك منه، وعندك حكم، وخصمك كاسب الأكلة. وش تسوّي؟",opts:[["أنزل ورقة رخيصة أي نوع",0,"ممنوع، لازم تقطع."],["ألزم أقطع بالحكم",1,"صح، ما دام الكاسب خصمك ومعك حكم، القطع إجباري."],["أنزل إكّة من نوع ثاني",0,"ما تاخذ الأكلة، والقطع مطلوب."],["أمرّر دوري",0,"ما فيه تمرير داخل الأكلة."]]},
      {type:"mcq",q:"نفس الموقف بس شريكك هو الكاسب للأكلة. وش الأنسب؟",opts:[["أقطع بالحكم إجباري",0,"مو إجباري، شريكك كاسب."],["أنبطح وأنزل ورقة رخيصة",1,"صح، ما دام شريكك كاسب تحتفظ بالحكم وتنبطح."],["أنزل أعلى حكم عندي",0,"حرام تضيّع حكم قوي وشريكك كاسب."],["أعلا على شريكي",0,"ليش تاكل أكلة شريكك؟"]]}
    ]},
@@ -661,6 +681,7 @@ var LESSONS=[
 ];
 
 /* ============ PROGRESS STORE ============ */
+var TOTAL=LESSONS.length;
 var PK="baloot_progress_v1";
 function loadProg(){
   try{var r=JSON.parse(localStorage.getItem(PK));if(r)return r;}catch(e){}
@@ -671,12 +692,12 @@ var PROG=loadProg();
 
 /* ============ LESSON CARDS ============ */
 var grid=document.getElementById("lessonGrid");
-LESSONS.forEach(function(L){
+LESSONS.forEach(function(L,idx){
   var done=PROG.read.indexOf(L.id)>=0;
   var el=document.createElement("div");
   el.className="lesson"+(done?" done":"");
   el.dataset.lid=L.id;
-  el.innerHTML='<div class="num">'+L.id+'</div>'+
+  el.innerHTML='<div class="num">'+(idx+1)+'</div>'+
     '<span class="tag">'+L.tag+'</span>'+
     '<h3>'+L.t+'</h3>'+
     '<p class="desc">'+L.d+'</p>'+
@@ -706,8 +727,9 @@ function renderBody(parts){
 }
 function openLesson(id){
   var L=LESSONS.find(function(x){return x.id===id;});
+  var idx=LESSONS.indexOf(L);
   reader.innerHTML='<div class="reader">'+
-    '<div class="reader-head"><span class="rn">'+L.id+'</span><div><div style="font-size:.8rem;opacity:.8">'+L.tag+'</div><h3 style="color:#f1ead6">'+L.t+'</h3></div></div>'+
+    '<div class="reader-head"><span class="rn">'+(idx+1)+'</span><div><div style="font-size:.8rem;opacity:.8">'+L.tag+'</div><h3 style="color:#f1ead6">'+L.t+'</h3></div></div>'+
     '<div class="reader-body">'+renderBody(L.body)+'</div>'+
     '<div class="reader-foot">'+
       '<a class="chip" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query='+encodeURIComponent(L.vid)+'">▶ شاهد الشرح على يوتيوب</a>'+
@@ -732,11 +754,11 @@ var quizPick=document.getElementById("quizPick");
 var quizMount=document.getElementById("quizMount");
 function renderQuizPick(){
   quizPick.innerHTML="";
-  LESSONS.forEach(function(L){
+  LESSONS.forEach(function(L,idx){
     var best=PROG.quiz[L.id];
     var b=document.createElement("button");
     b.dataset.quizstart=L.id;
-    b.innerHTML='<b>'+L.id+'. '+L.t+'</b><small>'+L.quiz.length+' مواقف · '+L.tag+'</small>'+
+    b.innerHTML='<b>'+(idx+1)+'. '+L.t+'</b><small>'+L.quiz.length+' مواقف · '+L.tag+'</small>'+
       (best!=null?'<span class="pst">★ أفضل نتيجة: '+best+'%</span>':'<span class="pst" style="color:var(--muted)">لم تُختبر بعد</span>');
     quizPick.appendChild(b);
   });
@@ -834,6 +856,7 @@ function answerPlay(idx){
 function quizResult(){
   var pct=Math.round(QS.correct/QS.L.quiz.length*100);
   var prev=PROG.quiz[QS.L.id];
+  var _ci=LESSONS.indexOf(QS.L), _nx=LESSONS[_ci+1];
   if(prev==null||pct>prev){PROG.quiz[QS.L.id]=pct;saveProg(PROG);}
   var grade = pct>=85?"احتراف! 🏆": pct>=60?"ممتاز، كمّل":"راجع الدرس وجرّب مرة ثانية";
   var pass = pct>=60;
@@ -843,7 +866,7 @@ function quizResult(){
     '<p style="color:var(--muted)">جاوبت صح على '+QS.correct+' من '+QS.L.quiz.length+' · أطول سلسلة '+QS.maxStreak+' 🔥</p>'+
     '<div class="btn-row" style="justify-content:center;margin-top:20px">'+
       '<button class="btn btn-gold" style="padding:11px 20px" data-quizstart="'+QS.L.id+'">↻ أعِد الاختبار</button>'+
-      (QS.L.id<10?'<button class="ghost-btn" data-quizstart="'+(QS.L.id+1)+'">الدرس التالي ←</button>':'')+
+      (_nx?'<button class="ghost-btn" data-quizstart="'+_nx.id+'">الدرس التالي ←</button>':'')+
       '<button class="ghost-btn" data-go="progress">شوف تقدّمي</button>'+
     '</div>'+(pass?'<p style="color:var(--good);margin-top:14px;font-weight:700">✓ نجحت في هذا الاختبار</p>':'')+
     '</div></div>';
@@ -908,7 +931,7 @@ function renderLuck(){
   var luck=10+rnd(90);
   window._pendingSeats=seats; window._pendingLuck=luck;
   var lp=document.getElementById("luckPrev");
-  var luckTxt=luck>70?"حظك اليوم ممتاز ✦":luck>40?"حظ متوسط":"الحظ شوي بارد — اعتمد على مهارتك";
+  var luckTxt=luck>70?"حظك اليوم ممتاز ✦":luck>40?"حظ متوسط":"الحظ شوي بارد — اعتمد على مهاصك";
   lp.innerHTML='<div style="font-weight:700">خصومك هالجولة:</div>'+
     [1,3,2].map(function(i){var p=seats[i];return '<span class="who" style="background:var(--surface);border:1px solid var(--line);color:var(--ink)"><span class="av" style="background:'+p.color+'">'+p.name[0]+'</span>'+p.name+' <small style="color:var(--muted)">('+p.level.name+')</small></span>';}).join("")+
     '<div style="width:100%;color:var(--muted);font-size:.86rem">🎲 '+luckTxt+' · شريكك: '+seats[2].name+'</div>';
@@ -1431,21 +1454,21 @@ function computeScore(){
   var quizAvg=0; var vals=Object.values(PROG.quiz);
   if(vals.length)quizAvg=vals.reduce(function(a,b){return a+b;},0)/vals.length;
   var passed=vals.filter(function(v){return v>=60;}).length;
-  var lessonPart=lessons/10*40;       // up to 40
-  var quizPart=passed/10*40;          // up to 40
+  var lessonPart=lessons/TOTAL*40;       // up to 40
+  var quizPart=passed/TOTAL*40;          // up to 40
   var gamePart=Math.min(20,PROG.wins*4); // up to 20
   return {score:Math.round(lessonPart+quizPart+gamePart),lessons:lessons,passed:passed,quizAvg:Math.round(quizAvg)};
 }
 var BADGES=[
   {id:"first",ic:"🎴",nm:"أول درس",ds:"فتحت درساً",test:function(s){return PROG.read.length>=1;}},
   {id:"half",ic:"📘",nm:"نص الطريق",ds:"٥ دروس",test:function(s){return PROG.read.length>=5;}},
-  {id:"allread",ic:"📚",nm:"قرأت الكل",ds:"١٠ دروس",test:function(s){return PROG.read.length>=10;}},
+  {id:"allread",ic:"📚",nm:"قرأت الكل",ds:"كل الدروس",test:function(s){return PROG.read.length>=TOTAL;}},
   {id:"quiz1",ic:"✅",nm:"أول نجاح",ds:"نجحت باختبار",test:function(s){return s.passed>=1;}},
   {id:"perfect",ic:"💯",nm:"علامة كاملة",ds:"١٠٠٪ باختبار",test:function(s){return Object.values(PROG.quiz).some(function(v){return v===100;});}},
-  {id:"allquiz",ic:"🧠",nm:"كل الاختبارات",ds:"نجحت بالكل",test:function(s){return s.passed>=10;}},
+  {id:"allquiz",ic:"🧠",nm:"كل الاختبارات",ds:"نجحت بالكل",test:function(s){return s.passed>=TOTAL;}},
   {id:"play1",ic:"♠",nm:"أول طاولة",ds:"لعبت جولة",test:function(s){return PROG.games>=1;}},
   {id:"win5",ic:"🔥",nm:"خمس انتصارات",ds:"٥ جولات مكسوبة",test:function(s){return PROG.wins>=5;}},
-  {id:"master",ic:"🏆",nm:"محترف",ds:"أكملت كل شي",test:function(s){return PROG.read.length>=10&&s.passed>=10;}}
+  {id:"master",ic:"🏆",nm:"محترف",ds:"أكملت كل شي",test:function(s){return PROG.read.length>=TOTAL&&s.passed>=TOTAL;}}
 ];
 function renderProgress(){
   PROG=loadProg();
@@ -1461,7 +1484,7 @@ function renderProgress(){
   document.getElementById("stQuiz").textContent=s.passed;
   document.getElementById("stGames").textContent=PROG.games;
   document.getElementById("stWins").textContent=PROG.wins;
-  document.getElementById("cert").classList.toggle("on",PROG.read.length>=10&&s.passed>=10);
+  document.getElementById("cert").classList.toggle("on",PROG.read.length>=TOTAL&&s.passed>=TOTAL);
   var bg=document.getElementById("badgeGrid"); bg.innerHTML="";
   BADGES.forEach(function(b){
     var on=b.test(s);
