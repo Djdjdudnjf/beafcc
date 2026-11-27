@@ -750,6 +750,7 @@ function startQuiz(id){
   quizMount.scrollIntoView({behavior:"smooth",block:"start"});
 }
 function renderQ(){
+  QS.answered=false;
   var L=QS.L, q=L.quiz[QS.i], n=L.quiz.length;
   var prog=Math.round(QS.i/n*100);
   var html='<div class="quiz-card">'+
