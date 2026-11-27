@@ -1,0 +1,1484 @@
+<title>أكاديمية البلوت</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<style>
+/* Layout concept: a premium "green felt" card-room identity — gold-on-emerald hero, quiet editorial lessons, a live table for play. */
+:root{
+  --bg:#eef2ec; --surface:#ffffff; --surface2:#f7f9f5;
+  --ink:#14211b; --muted:#566b5e; --line:#dbe3d8;
+  --felt:#0f3d2e; --felt-2:#0a2c20; --felt-line:#1c5a44;
+  --gold:#b8913b; --gold-soft:#e6cf90; --gold-ink:#6e5214;
+  --accent:#0f6b4f; --accent-ink:#0a4e3a;
+  --red:#bb3328; --good:#1c7d52; --warn:#b4791a; --bad:#bb3328;
+  --shadow:0 1px 2px rgba(16,40,30,.06),0 12px 34px -18px rgba(16,40,30,.34);
+  --r:16px;
+  --font-d:"El Messiri",system-ui,sans-serif;
+  --font-b:"IBM Plex Sans Arabic",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0b1210; --surface:#111a15; --surface2:#0e1611;
+  --ink:#e9f0ea; --muted:#98ab9f; --line:#213029;
+  --felt:#0c3727; --felt-2:#07251a; --felt-line:#1a5340;
+  --gold:#d6b561; --gold-soft:#ecd597; --gold-ink:#f0dca6;
+  --accent:#36b68a; --accent-ink:#9fe6cd;
+  --red:#e86b5f; --good:#4cc08a; --warn:#e0ad55; --bad:#e86b5f;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 18px 40px -22px rgba(0,0,0,.7);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0b1210; --surface:#111a15; --surface2:#0e1611;
+  --ink:#e9f0ea; --muted:#98ab9f; --line:#213029;
+  --felt:#0c3727; --felt-2:#07251a; --felt-line:#1a5340;
+  --gold:#d6b561; --gold-soft:#ecd597; --gold-ink:#f0dca6;
+  --accent:#36b68a; --accent-ink:#9fe6cd;
+  --red:#e86b5f; --good:#4cc08a; --warn:#e0ad55; --bad:#e86b5f;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 18px 40px -22px rgba(0,0,0,.7);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-b);line-height:1.6;direction:rtl;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3,h4{font-family:var(--font-d);line-height:1.2;text-wrap:balance;margin:0}
+p{margin:0}
+a{color:inherit}
+button{font-family:inherit;cursor:pointer}
+.wrap{width:min(1120px,100%);margin-inline:auto;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--felt-2)}
+
+/* ===== Nav ===== */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:color-mix(in srgb,var(--surface) 86%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav-in{display:flex;align-items:center;gap:14px;height:62px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-d);font-weight:700;font-size:1.15rem;margin-left:auto}
+.brand .mark{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(145deg,var(--felt),var(--felt-2));color:var(--gold-soft);font-size:1.1rem;box-shadow:inset 0 0 0 1px var(--gold)}
+.navlinks{display:flex;gap:4px;flex-wrap:wrap}
+.navlinks button{background:none;border:0;color:var(--muted);font-weight:600;font-size:.95rem;padding:8px 12px;border-radius:10px;transition:.15s}
+.navlinks button:hover{color:var(--ink);background:var(--surface2)}
+.navlinks button.on{color:var(--accent-ink);background:color-mix(in srgb,var(--accent) 14%,transparent)}
+.icon-btn{background:var(--surface2);border:1px solid var(--line);color:var(--ink);width:40px;height:40px;border-radius:10px;font-size:1.1rem;display:grid;place-items:center}
+
+.view{display:none;animation:fade .3s ease}
+.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ===== Hero ===== */
+.hero{position:relative;background:radial-gradient(120% 140% at 80% -10%,var(--felt-line) 0%,var(--felt) 42%,var(--felt-2) 100%);color:#f3ecd7;margin-top:calc(-1 * env(safe-area-inset-top,0px));padding-top:calc(env(safe-area-inset-top,0px) + 54px);padding-bottom:64px;overflow:hidden}
+.hero::after{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 12% 22%,rgba(255,255,255,.05) 0 2px,transparent 2px),radial-gradient(circle at 70% 80%,rgba(255,255,255,.04) 0 2px,transparent 2px);background-size:46px 46px;opacity:.6;pointer-events:none}
+.hero-in{position:relative;z-index:2}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.8rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-soft);border:1px solid color-mix(in srgb,var(--gold-soft) 40%,transparent);padding:6px 14px;border-radius:999px}
+.hero h1{font-size:clamp(2.3rem,6vw,4rem);font-weight:700;margin:20px 0 0;letter-spacing:-.01em}
+.hero h1 .g{background:linear-gradient(100deg,var(--gold-soft),var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero p.lead{max-width:60ch;margin:18px 0 0;font-size:clamp(1.02rem,2.4vw,1.2rem);color:#d9e6dd}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.btn{border:0;border-radius:12px;padding:13px 22px;font-weight:700;font-size:1rem;font-family:var(--font-b);transition:.16s;display:inline-flex;align-items:center;gap:9px}
+.btn-gold{background:linear-gradient(160deg,var(--gold-soft),var(--gold));color:#3a2c08;box-shadow:0 10px 24px -12px rgba(184,145,59,.8)}
+.btn-gold:hover{transform:translateY(-2px)}
+.btn-ghost{background:rgba(255,255,255,.08);color:#f3ecd7;border:1px solid rgba(255,255,255,.2)}
+.btn-ghost:hover{background:rgba(255,255,255,.15)}
+.hero-stats{display:flex;gap:28px;flex-wrap:wrap;margin-top:40px;padding-top:26px;border-top:1px solid rgba(255,255,255,.12)}
+.hero-stats .s b{font-family:var(--font-d);font-size:1.7rem;display:block;color:var(--gold-soft)}
+.hero-stats .s span{font-size:.86rem;color:#bcccc0}
+.suits-float{position:absolute;inset:0;z-index:1;pointer-events:none}
+.suits-float span{position:absolute;font-size:clamp(3rem,9vw,7rem);color:rgba(255,255,255,.045);font-weight:700}
+
+/* ===== Section headers ===== */
+.section{padding:62px 0}
+.sec-head{max-width:64ch;margin-bottom:34px}
+.sec-head .kick{color:var(--accent-ink);font-weight:700;letter-spacing:.08em;font-size:.82rem;text-transform:uppercase}
+.sec-head h2{font-size:clamp(1.7rem,4vw,2.5rem);margin:10px 0 0}
+.sec-head p{color:var(--muted);margin-top:12px;font-size:1.05rem}
+
+/* ===== Lessons ===== */
+.lessons{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px}
+.lesson{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px;position:relative;transition:.18s}
+.lesson:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--gold) 50%,var(--line))}
+.lesson .num{position:absolute;top:18px;left:20px;font-family:var(--font-d);font-size:2.1rem;font-weight:700;color:color-mix(in srgb,var(--gold) 36%,transparent);line-height:1}
+.lesson .tag{font-size:.74rem;font-weight:600;color:var(--accent-ink);background:color-mix(in srgb,var(--accent) 13%,transparent);padding:4px 10px;border-radius:999px;align-self:flex-start}
+.lesson h3{font-size:1.25rem;padding-left:48px}
+.lesson .desc{color:var(--muted);font-size:.95rem;flex:1}
+.lesson ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px}
+.lesson ul li{display:flex;gap:9px;font-size:.92rem;align-items:flex-start}
+.lesson ul li::before{content:"";width:7px;height:7px;border-radius:2px;background:var(--gold);margin-top:8px;flex:none;transform:rotate(45deg)}
+.lesson .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.chip{border:1px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:10px;padding:9px 13px;font-weight:600;font-size:.88rem;display:inline-flex;align-items:center;gap:7px;transition:.15s;text-decoration:none}
+.chip:hover{border-color:var(--accent);color:var(--accent-ink)}
+.chip.solid{background:var(--accent);color:#fff;border-color:transparent}
+.chip.solid:hover{filter:brightness(1.07);color:#fff}
+.lesson .done-badge{display:none;align-items:center;gap:6px;color:var(--good);font-weight:700;font-size:.82rem}
+.lesson.done .done-badge{display:inline-flex}
+.lesson.done{border-color:color-mix(in srgb,var(--good) 45%,var(--line))}
+
+/* reading panel */
+.reader{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:0;overflow:hidden;margin-top:8px}
+.reader-head{background:linear-gradient(150deg,var(--felt),var(--felt-2));color:#f1ead6;padding:22px 24px;display:flex;align-items:center;gap:14px}
+.reader-head .rn{font-family:var(--font-d);font-size:1.8rem;color:var(--gold-soft)}
+.reader-body{padding:24px}
+.reader-body h4{font-size:1.15rem;margin:22px 0 8px;color:var(--accent-ink)}
+.reader-body h4:first-child{margin-top:0}
+.reader-body p{color:var(--ink);margin-bottom:10px}
+.reader-body .note{background:var(--surface2);border-right:3px solid var(--gold);padding:12px 16px;border-radius:10px;color:var(--muted);font-size:.95rem;margin:14px 0}
+.tbl{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92rem}
+.tbl th,.tbl td{border:1px solid var(--line);padding:8px 10px;text-align:center}
+.tbl th{background:var(--surface2);font-family:var(--font-d)}
+.tbl td.red{color:var(--red)}
+.reader-foot{display:flex;gap:10px;flex-wrap:wrap;padding:18px 24px;border-top:1px solid var(--line);background:var(--surface2)}
+
+/* ===== Quiz ===== */
+.quiz-wrap{max-width:720px;margin-inline:auto}
+.quiz-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.quiz-top{background:linear-gradient(150deg,var(--felt),var(--felt-2));color:#f1ead6;padding:18px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.quiz-top .ttl{font-family:var(--font-d);font-size:1.2rem}
+.quiz-meta{margin-right:auto;display:flex;gap:16px;align-items:center}
+.quiz-meta .m{text-align:center}
+.quiz-meta .m b{display:block;font-family:var(--font-d);font-size:1.25rem;color:var(--gold-soft)}
+.quiz-meta .m span{font-size:.72rem;color:#bccabf}
+.pbar{height:6px;background:var(--line)}
+.pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));transition:.4s;border-radius:0 3px 3px 0}
+.quiz-body{padding:24px}
+.scenario{background:var(--felt);color:#eef3ec;border-radius:14px;padding:16px 18px;margin-bottom:16px;font-size:.96rem;border:1px solid var(--felt-line)}
+.scenario b{color:var(--gold-soft)}
+.q-text{font-size:1.18rem;font-family:var(--font-d);font-weight:600;margin-bottom:16px}
+.hand-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:6px 0 18px;padding:14px;background:var(--felt);border-radius:14px;border:1px solid var(--felt-line)}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:center;gap:12px;text-align:right;background:var(--surface2);border:1.5px solid var(--line);border-radius:12px;padding:13px 16px;font-size:1rem;font-weight:500;color:var(--ink);transition:.14s;width:100%}
+.opt:hover:not(:disabled){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface2))}
+.opt .k{width:28px;height:28px;border-radius:7px;background:var(--surface);border:1px solid var(--line);display:grid;place-items:center;font-weight:700;flex:none;font-family:var(--font-d)}
+.opt.correct{border-color:var(--good);background:color-mix(in srgb,var(--good) 14%,var(--surface2))}
+.opt.correct .k{background:var(--good);color:#fff;border-color:transparent}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--surface2))}
+.opt.wrong .k{background:var(--bad);color:#fff;border-color:transparent}
+.opt-cards{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.opt-card-btn{background:none;border:2px solid transparent;border-radius:12px;padding:3px;transition:.14s}
+.opt-card-btn:hover:not(:disabled){transform:translateY(-6px)}
+.opt-card-btn.correct{border-color:var(--good)}
+.opt-card-btn.wrong{border-color:var(--bad)}
+.explain{margin-top:16px;border-radius:12px;padding:14px 16px;font-size:.95rem;display:none}
+.explain.show{display:block}
+.explain.good{background:color-mix(in srgb,var(--good) 12%,transparent);border:1px solid color-mix(in srgb,var(--good) 40%,transparent)}
+.explain.bad{background:color-mix(in srgb,var(--bad) 10%,transparent);border:1px solid color-mix(in srgb,var(--bad) 38%,transparent)}
+.explain b{display:block;margin-bottom:4px;font-family:var(--font-d)}
+.quiz-foot{padding:16px 24px;border-top:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--surface2)}
+.streak{display:flex;align-items:center;gap:6px;color:var(--warn);font-weight:700;font-size:.9rem;margin-left:auto}
+.quiz-result{text-align:center;padding:36px 24px}
+.quiz-result .big{font-family:var(--font-d);font-size:3.2rem;color:var(--gold);line-height:1}
+.quiz-result .grade{font-size:1.4rem;font-family:var(--font-d);margin:6px 0}
+.pick-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.pick-list button{text-align:right;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;font-weight:600;color:var(--ink);display:flex;flex-direction:column;gap:4px;transition:.15s}
+.pick-list button:hover{border-color:var(--accent);transform:translateY(-2px)}
+.pick-list button small{color:var(--muted);font-weight:500}
+.pick-list button .pst{font-size:.76rem;color:var(--good);font-weight:700}
+
+/* ===== Cards (shared) ===== */
+.card{width:var(--cw,56px);height:calc(var(--cw,56px)*1.46);border-radius:8px;background:#fff;color:#1a1a1a;border:1px solid #d9d9d9;box-shadow:0 2px 5px rgba(0,0,0,.25);display:flex;flex-direction:column;justify-content:space-between;padding:5px 6px;font-weight:700;position:relative;user-select:none;flex:none}
+.card.red{color:#c0241b}
+.card .cr{font-size:calc(var(--cw,56px)*.3);line-height:1;font-family:var(--font-d)}
+.card .cs{font-size:calc(var(--cw,56px)*.34);line-height:1;align-self:flex-end}
+.card .mid{position:absolute;inset:0;display:grid;place-items:center;font-size:calc(var(--cw,56px)*.5);opacity:.16}
+.card.back{background:repeating-linear-gradient(45deg,var(--felt) 0 7px,var(--felt-2) 7px 14px);border-color:var(--felt-line)}
+.card.back::after{content:"♦";position:absolute;inset:0;display:grid;place-items:center;color:var(--gold-soft);font-size:calc(var(--cw,56px)*.5);opacity:.5}
+.card.sel{outline:3px solid var(--gold);outline-offset:1px}
+
+/* ===== Game ===== */
+.game-shell{max-width:1000px;margin-inline:auto}
+.setup{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:26px}
+.setup h3{font-size:1.5rem;margin-bottom:6px}
+.setup .sub{color:var(--muted);margin-bottom:22px}
+.opt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:12px}
+.seg{display:flex;flex-direction:column;gap:8px}
+.seg>label{font-weight:700;font-size:.9rem;color:var(--muted)}
+.seg .pills{display:flex;gap:6px;flex-wrap:wrap}
+.seg .pills button{flex:1;min-width:64px;background:var(--surface2);border:1.5px solid var(--line);border-radius:10px;padding:10px;font-weight:600;color:var(--ink);transition:.14s}
+.seg .pills button.on{background:var(--accent);color:#fff;border-color:transparent}
+.luck-preview{margin-top:18px;padding:16px;border:1px dashed var(--line);border-radius:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--surface2)}
+
+.table-view{display:none}
+.table-view.on{display:block}
+.felt{background:radial-gradient(120% 120% at 50% 40%,var(--felt-line) 0%,var(--felt) 45%,var(--felt-2) 100%);border-radius:22px;border:2px solid var(--gold);box-shadow:inset 0 0 60px rgba(0,0,0,.4),var(--shadow);padding:16px;position:relative;min-height:540px;display:grid;grid-template-rows:auto 1fr auto;gap:8px;overflow:hidden}
+.felt::before{content:"";position:absolute;inset:14px;border:1px solid rgba(230,207,144,.2);border-radius:16px;pointer-events:none}
+.seat{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;z-index:2}
+.seat .who{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.28);padding:5px 12px;border-radius:999px;color:#eef3ec;font-weight:600;font-size:.86rem;border:1px solid rgba(255,255,255,.1)}
+.seat .who .av{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:.8rem;font-weight:700;color:#10231b}
+.seat.turn .who{box-shadow:0 0 0 2px var(--gold),0 0 18px -2px var(--gold);background:rgba(0,0,0,.42)}
+.seat .lvl{font-size:.68rem;color:#bcd}
+.seat .mini{display:flex;gap:-10px}
+.mini .card{--cw:30px;margin-right:-16px;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.seat.partner .who .av,.seat.me .who .av{box-shadow:0 0 0 2px var(--gold-soft)}
+.badge-team{font-size:.64rem;padding:1px 7px;border-radius:6px;font-weight:700}
+.badge-us{background:var(--gold-soft);color:#3a2c08}
+.badge-them{background:#2a4b3e;color:#cfe}
+
+.table-mid{position:relative;display:grid;place-items:center}
+.center-play{display:grid;grid-template-columns:repeat(3,auto);grid-template-rows:repeat(3,auto);gap:5px;align-items:center;justify-items:center}
+.center-play .slot{width:48px;height:70px}
+.center-play .slot .card{--cw:48px}
+.cp-top{grid-column:2;grid-row:1}.cp-right{grid-column:3;grid-row:2}.cp-bottom{grid-column:2;grid-row:3}.cp-left{grid-column:1;grid-row:2}
+.contract-badge{position:absolute;top:8px;right:12px;z-index:3;background:rgba(0,0,0,.4);border:1px solid var(--gold);color:var(--gold-soft);padding:6px 12px;border-radius:10px;font-weight:700;font-size:.82rem;display:flex;gap:8px;align-items:center}
+.score-badge{position:absolute;top:8px;left:12px;z-index:3;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.14);color:#eef3ec;padding:6px 12px;border-radius:10px;font-weight:700;font-size:.82rem;display:flex;gap:10px}
+.score-badge b{color:var(--gold-soft)}
+
+.myhand{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding-top:6px;position:relative;z-index:2}
+.myhand .card{--cw:58px;transition:.16s;cursor:pointer}
+.myhand .card.playable{box-shadow:0 0 0 2px var(--gold),0 6px 14px -4px rgba(0,0,0,.5)}
+.myhand .card.playable:hover{transform:translateY(-12px)}
+.myhand .card.dim{opacity:.45;cursor:not-allowed}
+
+.bid-panel,.toast-mid{position:absolute;inset:0;display:none;place-items:center;z-index:20;background:rgba(6,20,15,.62);backdrop-filter:blur(3px)}
+.bid-panel.on,.toast-mid.on{display:grid}
+.bid-box{background:var(--surface);border:1px solid var(--gold);border-radius:18px;padding:22px;width:min(420px,92%);box-shadow:var(--shadow);text-align:center}
+.bid-box h4{font-size:1.3rem;margin-bottom:4px}
+.bid-box .floor{margin:14px auto;display:flex;flex-direction:column;align-items:center;gap:6px}
+.bid-box .floor .card{--cw:64px}
+.bid-actions{display:flex;flex-direction:column;gap:9px;margin-top:14px}
+.bid-actions .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.bid-btn{flex:1;min-width:90px;border:1.5px solid var(--line);background:var(--surface2);border-radius:12px;padding:12px;font-weight:700;color:var(--ink);transition:.14s;font-size:.98rem}
+.bid-btn:hover{border-color:var(--accent);transform:translateY(-2px)}
+.bid-btn.gold{background:linear-gradient(160deg,var(--gold-soft),var(--gold));color:#3a2c08;border-color:transparent}
+.bid-btn.pass{background:none;color:var(--muted)}
+.suit-pick{display:flex;gap:8px;justify-content:center;margin:8px 0}
+.suit-pick button{width:52px;height:52px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface2);font-size:1.6rem;display:grid;place-items:center}
+.suit-pick button.r{color:var(--red)}
+.suit-pick button:hover{border-color:var(--gold);transform:translateY(-2px)}
+
+.toast-box{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px 26px;text-align:center;width:min(440px,92%);box-shadow:var(--shadow)}
+.toast-box h4{font-size:1.5rem;color:var(--accent-ink)}
+.toast-box .rows{display:flex;justify-content:center;gap:24px;margin:16px 0}
+.toast-box .rows .c{text-align:center}
+.toast-box .rows .c b{display:block;font-family:var(--font-d);font-size:2rem}
+.flash{position:absolute;top:50%;right:50%;transform:translate(50%,-50%);z-index:15;background:rgba(0,0,0,.55);color:var(--gold-soft);font-family:var(--font-d);font-weight:700;padding:10px 24px;border-radius:999px;border:1px solid var(--gold);font-size:1.1rem;opacity:0;transition:.3s;pointer-events:none}
+.flash.show{opacity:1}
+.game-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.log{flex:1;min-width:200px;font-size:.84rem;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 12px;min-height:38px}
+
+/* ===== Progress ===== */
+.prog-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:18px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:22px}
+.rank-badge{display:flex;align-items:center;gap:16px}
+.rank-badge .seal{width:84px;height:84px;border-radius:50%;flex:none;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,var(--gold-soft),var(--gold));color:#3a2c08;font-family:var(--font-d);font-weight:700;font-size:1.9rem;box-shadow:inset 0 0 0 3px rgba(255,255,255,.3),0 8px 20px -8px var(--gold)}
+.rank-badge h3{font-size:1.5rem}
+.meter{height:12px;background:var(--line);border-radius:999px;overflow:hidden;margin-top:14px}
+.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:999px;transition:.6s}
+.stat-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+.stat{flex:1;min-width:90px;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+.stat b{font-family:var(--font-d);font-size:1.7rem;display:block;color:var(--accent-ink)}
+.stat span{font-size:.8rem;color:var(--muted)}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;margin-top:8px}
+.bdg{text-align:center;padding:14px 8px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);opacity:.4;transition:.2s}
+.bdg.on{opacity:1;border-color:var(--gold);background:color-mix(in srgb,var(--gold) 10%,var(--surface2))}
+.bdg .ic{font-size:1.8rem}
+.bdg .nm{font-weight:700;font-size:.82rem;margin-top:4px}
+.bdg .ds{font-size:.7rem;color:var(--muted)}
+.cert{margin-top:16px;padding:20px;border:2px solid var(--gold);border-radius:14px;background:linear-gradient(150deg,var(--surface),var(--surface2));text-align:center;display:none}
+.cert.on{display:block}
+.cert h3{color:var(--gold-ink);font-size:1.4rem}
+
+footer{background:var(--felt-2);color:#bcccc0;padding:30px 0;text-align:center;font-size:.86rem}
+footer .brand{justify-content:center;margin:0 0 10px;color:#f1ead6}
+
+.btn-row{display:flex;gap:10px;flex-wrap:wrap}
+.ghost-btn{background:var(--surface2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px 16px;font-weight:600}
+.ghost-btn:hover{border-color:var(--accent)}
+
+@media(max-width:720px){
+  .prog-grid{grid-template-columns:1fr}
+  .navlinks{display:none}
+  .felt{min-height:460px}
+  .myhand .card{--cw:46px}
+  .center-play .slot .card{--cw:40px}
+}
+@media(max-width:420px){
+  .myhand .card{--cw:40px}
+  .hero-stats{gap:18px}
+}
+</style>
+
+<nav class="nav">
+  <div class="wrap nav-in">
+    <div class="navlinks" id="navlinks">
+      <button data-go="home" class="on">الرئيسية</button>
+      <button data-go="learn">الدروس</button>
+      <button data-go="quiz">الاختبار</button>
+      <button data-go="play">العب</button>
+      <button data-go="progress">تقدّمي</button>
+    </div>
+    <button class="icon-btn" id="themeBtn" title="المظهر">◐</button>
+    <div class="brand"><span class="mark">♠</span>أكاديمية البلوت</div>
+  </div>
+</nav>
+
+<!-- ===== HOME ===== -->
+<section class="view on" id="view-home">
+  <header class="hero">
+    <div class="suits-float"><span style="top:8%;right:6%">♠</span><span style="top:55%;right:30%">♦</span><span style="top:20%;left:8%">♣</span><span style="bottom:6%;left:22%">♥</span></div>
+    <div class="wrap hero-in">
+      <span class="eyebrow">♦ تعلّم · تدرّب · احترف</span>
+      <h1>من أول <span class="g">توزيعة</span><br>إلى احتراف الطاولة</h1>
+      <p class="lead">منهج كامل للبلوت بالطريقة السعودية المعروفة في المجالس: الصن والحكم، الشراء، المشاريع، الدبل والحساب. تشرح، تتدرّب على سيناريوهات حقيقية، وتلعب ضد بوتات ما تتكرر لعبتين. كل درس وراه اختبار على شكل لعبة يقول لك: وش تحط هالحين، وليش.</p>
+      <div class="hero-cta">
+        <button class="btn btn-gold" data-go="learn">ابدأ من الدرس الأول ♠</button>
+        <button class="btn btn-ghost" data-go="play">جرّب طاولة سريعة</button>
+      </div>
+      <div class="hero-stats">
+        <div class="s"><b>10</b><span>دروس متدرّجة</span></div>
+        <div class="s"><b>40+</b><span>سيناريو تدريبي</span></div>
+        <div class="s"><b>∞</b><span>طاولات ما تتكرر</span></div>
+        <div class="s"><b>5</b><span>رتب حتى الأسطورة</span></div>
+      </div>
+    </div>
+  </header>
+  <div class="wrap section">
+    <div class="sec-head">
+      <div class="kick">كيف تشتغل الأكاديمية</div>
+      <h2>ثلاث خطوات، وتصير معتمد عليك في الجلسة</h2>
+    </div>
+    <div class="lessons">
+      <div class="lesson"><div class="tag">١</div><h3 style="padding:0">اقرأ الدرس</h3><p class="desc">شرح مرتّب بلغة بسيطة، جداول ترتيب الأوراق والنقاط، وأمثلة من قلب اللعب — مو كلام نظري ممل.</p></div>
+      <div class="lesson"><div class="tag">٢</div><h3 style="padding:0">اختبر نفسك</h3><p class="desc">بعد كل درس اختبار سيناريوهات: تطلع لك يد ووضع على الطاولة، والسؤال وش تلعب الحين وكيف. تجاوب، ويشرح لك ليش.</p></div>
+      <div class="lesson"><div class="tag">٣</div><h3 style="padding:0">العب وطبّق</h3><p class="desc">انزل الطاولة ضد بوتات بأسماء ومستويات وحظ مختلف كل مرة. ورقك، خصومك، وصعوبتهم ما تتكرر.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LEARN ===== -->
+<section class="view" id="view-learn">
+  <div class="wrap section">
+    <div class="sec-head">
+      <div class="kick">المنهج</div>
+      <h2>عشرة دروس من الصفر للاحتراف</h2>
+      <p>خذها بالترتيب. كل درس فيه زر «شاهد الشرح» يفتح لك مقاطع مختارة على يوتيوب، وزر «ابدأ الاختبار» يختبر فهمك.</p>
+    </div>
+    <div class="lessons" id="lessonGrid"></div>
+    <div id="readerMount"></div>
+  </div>
+</section>
+
+<!-- ===== QUIZ ===== -->
+<section class="view" id="view-quiz">
+  <div class="wrap section">
+    <div class="sec-head">
+      <div class="kick">التدريب</div>
+      <h2>الاختبار على شكل لعبة</h2>
+      <p>اختر درساً وابدأ. تطلع لك مواقف حقيقية من الطاولة — جاوب بسرعة، حافظ على السلسلة، واجمع نقاط.</p>
+    </div>
+    <div id="quizPick" class="pick-list"></div>
+    <div id="quizMount" class="quiz-wrap" hidden></div>
+  </div>
+</section>
+
+<!-- ===== PLAY ===== -->
+<section class="view" id="view-play">
+  <div class="wrap section">
+    <div class="sec-head">
+      <div class="kick">الطاولة</div>
+      <h2>العب ضد البوتات</h2>
+      <p>كل جولة جديدة: خصوم بأسماء وأفتار جدد، مستوى ذكاء مختلف، توزيعة ورق جديدة، ونسبة حظ تتغيّر. ما راح تلعب نفس اللعبة مرتين.</p>
+    </div>
+    <div class="game-shell">
+      <div class="setup" id="gameSetup"></div>
+      <div class="table-view" id="tableView"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROGRESS ===== -->
+<section class="view" id="view-progress">
+  <div class="wrap section">
+    <div class="sec-head">
+      <div class="kick">ملفّك</div>
+      <h2>طريقك للاحتراف</h2>
+      <p>كل درس تقرأه، كل اختبار تنجح فيه، وكل جولة تكسبها ترفع رتبتك. اكمل كل شي وافهمه تنفتح لك شهادة الاحتراف.</p>
+    </div>
+    <div class="prog-grid">
+      <div class="panel">
+        <div class="rank-badge"><div class="seal" id="rankSeal">؟</div><div><div class="kick" style="color:var(--muted)">رتبتك الحالية</div><h3 id="rankName">مبتدئ</h3><div style="color:var(--muted);font-size:.9rem" id="rankNext"></div></div></div>
+        <div class="meter"><i id="rankMeter" style="width:0"></i></div>
+        <div class="stat-row">
+          <div class="stat"><b id="stLessons">0</b><span>دروس مقروءة</span></div>
+          <div class="stat"><b id="stQuiz">0</b><span>اختبارات ناجحة</span></div>
+          <div class="stat"><b id="stGames">0</b><span>جولات لعبتها</span></div>
+          <div class="stat"><b id="stWins">0</b><span>جولات كسبتها</span></div>
+        </div>
+        <div class="cert" id="cert"><div style="font-size:2rem">🏆</div><h3>شهادة احتراف البلوت</h3><p style="color:var(--muted);margin-top:6px">أتممت كل الدروس ونجحت في كل الاختبارات. صرت جاهز تعتمد على نفسك في أي جلسة.</p></div>
+        <div class="btn-row" style="margin-top:18px"><button class="ghost-btn" data-go="learn">أكمل الدروس</button><button class="ghost-btn" id="resetBtn">تصفير التقدّم</button></div>
+      </div>
+      <div class="panel">
+        <h3 style="font-size:1.2rem;margin-bottom:4px">الأوسمة</h3>
+        <p style="color:var(--muted);font-size:.88rem;margin-bottom:12px">تنفتح كل ما تتقدّم.</p>
+        <div class="badges" id="badgeGrid"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="brand" style="justify-content:center"><span class="mark">♠</span>أكاديمية البلوت</div>
+    <p>منهج تعليمي للبلوت السعودي — اقرأ، اختبر، والعب. الحساب والقوانين مبنية على القواعد المتعارف عليها في المجالس.</p>
+  </div>
+</footer>
+
+<script>
+"use strict";
+document.documentElement.dir="rtl";document.documentElement.lang="ar";
+
+/* ============ THEME ============ */
+(function(){
+  var k="baloot_theme";
+  try{var t=localStorage.getItem(k);if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}
+  document.getElementById("themeBtn").onclick=function(){
+    var cur=document.documentElement.getAttribute("data-theme");
+    var isDark=cur?cur==="dark":matchMedia("(prefers-color-scheme:dark)").matches;
+    var next=isDark?"light":"dark";
+    document.documentElement.setAttribute("data-theme",next);
+    try{localStorage.setItem(k,next);}catch(e){}
+  };
+})();
+
+/* ============ NAV ============ */
+function go(id){
+  document.querySelectorAll(".view").forEach(function(v){v.classList.remove("on");});
+  var el=document.getElementById("view-"+id); if(el)el.classList.add("on");
+  document.querySelectorAll("#navlinks button").forEach(function(b){b.classList.toggle("on",b.dataset.go===id);});
+  window.scrollTo({top:0,behavior:"smooth"});
+  if(id==="progress")renderProgress();
+}
+document.addEventListener("click",function(e){
+  var t=e.target.closest("[data-go]"); if(t){go(t.dataset.go);}
+});
+
+/* ============ CARD MODEL ============ */
+var SUITS=[
+  {id:"S",sym:"♠",name:"بستوني",red:false},
+  {id:"H",sym:"♥",name:"كبّة",red:true},
+  {id:"D",sym:"♦",name:"ديناري",red:true},
+  {id:"C",sym:"♣",name:"سباتي",red:false}
+];
+var SUITMAP={}; SUITS.forEach(function(s){SUITMAP[s.id]=s;});
+var RANKS=["7","8","9","10","J","Q","K","A"];
+var RANKDISP={"7":"7","8":"8","9":"9","10":"10","J":"ولد","Q":"بنت","K":"شايب","A":"إكّة"};
+var RANKFACE={"7":"7","8":"8","9":"9","10":"10","J":"J","Q":"Q","K":"K","A":"A"};
+// Sun order (low index = weak). high->low: A,10,K,Q,J,9,8,7
+var SUN_ORDER=["7","8","9","J","Q","K","10","A"];
+var SUN_PTS={"A":11,"10":10,"K":4,"Q":3,"J":2,"9":0,"8":0,"7":0};
+// Hokom trump order high->low: J,9,A,10,K,Q,8,7
+var TRUMP_ORDER=["7","8","Q","K","10","A","9","J"];
+var TRUMP_PTS={"J":20,"9":14,"A":11,"10":10,"K":4,"Q":3,"8":0,"7":0};
+
+function cardEl(c,opts){
+  opts=opts||{};
+  var d=document.createElement("div");
+  if(opts.back){d.className="card back";return d;}
+  var s=SUITMAP[c.s];
+  d.className="card"+(s.red?" red":"");
+  d.innerHTML='<span class="cr">'+RANKFACE[c.r]+'</span><span class="mid">'+s.sym+'</span><span class="cs">'+s.sym+'</span>';
+  return d;
+}
+function cardKey(c){return c.r+c.s;}
+
+/* ============ LESSONS DATA ============ */
+var LESSONS=[
+  {id:1,tag:"الأساسيات",t:"تعرّف على اللعبة",
+   d:"الورق، عدد اللاعبين، الفرق، والجلسة. من وين نبدأ أصلاً.",
+   pts:["٤ لاعبين، فريقين","٣٢ ورقة","الشريك قبالك"],
+   vid:"شرح لعبة البلوت للمبتدئين من الصفر",
+   body:[
+     ["h4","البلوت باختصار"],
+     ["p","البلوت لعبة ورق سعودية لأربعة لاعبين، فريقين، كل فريق لاعبين. شريكك يجلس مقابلك مباشرة، وخصومك على يمينك ويسارك. تنلعب بـ٣٢ ورقة: من السبعة إلى الإكّة في كل نوع (بستوني، كبّة، ديناري، سباتي)."],
+     ["h4","هدف اللعبة"],
+     ["p","كل جولة، فريق «يشتري» ويحدد نوع اللعب: صن أو حكم. الفريق المشتري لازم يجمع نقاط أكثر من نصف اللوح وإلا «تنقلب» عليه. أول فريق يوصل للهدف (غالباً ١٥٢) يكسب الصَّكّة."],
+     ["note","الترتيب على الطاولة: اللعب يدور بالتناوب. اللي يكسب الأكلة (اليد) هو اللي يبدأ اللي بعدها."],
+     ["h4","المصطلحات اللي بتسمعها"],
+     ["p","الأكلة = جولة من ٤ أوراق، واحدة من كل لاعب. اللوح = كل الأكلات. الحاكم/المشتري = اللي اشترى الجولة. أبناط = نص النقاط اللي لازم المشتري يتخطاها."]
+   ],
+   quiz:[
+     {type:"mcq",q:"كم لاعب في جولة البلوت؟",opts:[["ثلاثة",0,"البلوت دايم أربعة، فريقين."],["أربعة، فريقين",1,"صح. أربعة لاعبين، كل فريق لاعبين، والشريك مقابلك."],["لاعبان",0,"هذا بلوت الزوجي النادر، المتعارف أربعة."],["ستة",0,"كثير. أربعة فقط."]]},
+     {type:"mcq",q:"وين يجلس شريكك؟",opts:[["على يميني",0,"هذا خصمك."],["مقابلي مباشرة",1,"بالضبط، الشريك دايم قبالتك."],["على يساري",0,"هذا الخصم الثاني."],["بجنبي",0,"ما فيه أحد بجنبك، أنت بين خصمين."]]},
+     {type:"mcq",q:"كم ورقة في دسّة البلوت؟",opts:[["٥٢",0,"هذا الكوتشينة الكاملة. البلوت ينشال منها."],["٣٢",1,"صح، من ٧ إلى الإكّة في أربعة أنواع = ٣٢."],["٣٦",0,"قريب بس لا، ٣٢."],["٢٤",0,"أقل من اللازم."]]}
+   ]},
+  {id:2,tag:"الترتيب",t:"ترتيب الأوراق: صن وحكم",
+   d:"أي ورقة أقوى من أي؟ وكم تسوّي نقاط؟ هذا أساس كل شي.",
+   pts:["في الصن: الإكّة أقوى","في الحكم: الولد ثم التسعة","احفظ النقاط"],
+   vid:"ترتيب أوراق البلوت صن وحكم والنقاط",
+   body:[
+     ["h4","في الصن (بدون حكم)"],
+     ["p","ترتيب القوة من الأعلى: الإكّة، العشرة، الشايب، البنت، الولد، التسعة، الثمانية، السبعة. وهذا نفس ترتيب النقاط:"],
+     ["table",[["الورقة","النقاط"],["إكّة A","11"],["عشرة 10","10"],["شايب K","4"],["بنت Q","3"],["ولد J","2"],["9 / 8 / 7","0"]]],
+     ["note","لاحظ: العشرة أقوى من الشايب والبنت في الصن! خطأ المبتدئين إنهم يستهينون بالعشرة."],
+     ["h4","في الحكم — نوع الحكم فقط"],
+     ["p","أوراق نوع الحكم تنقلب قوتها: الولد يصير الأقوى (٢٠ نقطة!)، وبعده التسعة (١٤). الترتيب: ولد، تسعة، إكّة، عشرة، شايب، بنت، ثمانية، سبعة."],
+     ["table",[["ورقة الحكم","النقاط"],["ولد J","20"],["تسعة 9","14"],["إكّة A","11"],["عشرة 10","10"],["شايب K","4"],["بنت / 8 / 7","3 / 0 / 0"]]],
+     ["p","أما الأنواع الثانية (غير الحكم) في جولة الحكم، فتبقى بترتيب الصن العادي."]
+   ],
+   quiz:[
+     {type:"mcq",q:"في الصن، أي ورقة أقوى؟",opts:[["الشايب K",0,"الشايب قوي بس فوقه العشرة والإكّة."],["الإكّة A",1,"صح، الإكّة سيّدة الصن بـ١١ نقطة."],["الولد J",0,"الولد ضعيف في الصن (نقطتين)."],["العشرة 10",0,"العشرة ثانية، الإكّة فوقها."]]},
+     {type:"mcq",q:"في الحكم، كم نقطة الولد من نوع الحكم؟",opts:[["2",0,"هذا في الصن. في الحكم يصير وحش."],["11",0,"هذي الإكّة."],["20",1,"صح، ولد الحكم أقوى ورقة وأغلاها: ٢٠ نقطة."],["14",0,"هذي التسعة من الحكم."]]},
+     {type:"mcq",q:"في الصن، العشرة أقوى ولا الشايب؟",opts:[["الشايب",0,"غلط شائع. العشرة تاكل الشايب في الصن."],["العشرة",1,"صح، العشرة ثاني أقوى ورقة في الصن بعد الإكّة."],["متساويين",0,"لا، العشرة أقوى."],["حسب النوع",0,"في الصن ما فيه نوع مميّز، العشرة أقوى دايم."]]},
+     {type:"mcq",q:"ترتيب الحكم بعد الولد مباشرة؟",opts:[["الإكّة",0,"قبلها التسعة."],["التسعة",1,"صح: ولد ثم تسعة (٢٠ ثم ١٤)، وبعدها الإكّة."],["العشرة",0,"بعد الإكّة."],["الشايب",0,"متأخر."]]}
+   ]},
+  {id:3,tag:"الشراء",t:"الشراء: صن أو حكم",
+   d:"متى تشتري؟ وش تختار؟ وقاعدة الدورة الأولى والثانية.",
+   pts:["الدورة الأولى: نوع المكشوفة","الدورة الثانية: أي نوع","اقرأ يدك قبل تشتري"],
+   vid:"شرح الشراء في البلوت متى تشتري صن او حكم",
+   body:[
+     ["h4","الورقة المكشوفة"],
+     ["p","بعد ما يوزّع لكل لاعب خمس أوراق، تنكشف ورقة في النص. هذي الورقة تحدد حكم الدورة الأولى."],
+     ["h4","الدورة الأولى"],
+     ["p","بالترتيب، كل لاعب يقول: «حكم» (ياخذ نوع المكشوفة حكم) أو «صن» أو «بس» (يمرّر). أول واحد يشتري يصير هو الحاكم، ويكمّل التوزيع."],
+     ["h4","الدورة الثانية"],
+     ["p","إذا مرّر الكل، ندخل الدورة الثانية: الحين تقدر تختار حكم من أي نوع (مو بس المكشوفة)، أو صن. إذا مرّر الكل مرة ثانية، يُعاد التوزيع."],
+     ["note","القاعدة العملية: اشترِ حكم إذا عندك ٤ أوراق أو أكثر من نوع واحد قوي (ولد + تسعة ممتاز). اشترِ صن إذا يدك فيها إكّات وعشرات موزّعة."]
+   ],
+   quiz:[
+     {type:"mcq",q:"في الدورة الأولى، نوع الحكم يكون من؟",opts:[["أي نوع تختاره",0,"هذا بالدورة الثانية."],["نوع الورقة المكشوفة",1,"صح، بالدورة الأولى الحكم مربوط بالمكشوفة."],["نوع أطول سلسلة عندك",0,"حلو كتفكير، بس القاعدة تلزمك بالمكشوفة أول دورة."],["البستوني دايم",0,"ما فيه نوع ثابت."]]},
+     {type:"mcq",q:"عندك ولد وتسعة وشايب وثمانية بستوني، والمكشوفة بستوني. وش تسوّي؟",opts:[["بس أمرّر",0,"خسارة! يد حكم بستوني ممتازة."],["أشتري حكم",1,"أكيد. ولد+تسعة بستوني = ٣٤ نقطة بيدك، اشترِ حكم بلا تردد."],["أشتري صن",0,"الصن ما يستغل قوة الولد والتسعة."],["أطلب إعادة",0,"ما فيه طلب إعادة وأنت ماسك ذهب."]]},
+     {type:"mcq",q:"إذا مرّر الجميع في الدورتين؟",opts:[["يكسب الموزّع",0,"لا."],["يُعاد التوزيع",1,"صح، ترجع الأوراق وتتوزّع من جديد."],["يُلعب صن إجباري",0,"غير متعارف، الأصل إعادة التوزيع."],["ينتهي الشوط",0,"لا، بس إعادة توزيع."]]}
+   ]},
+  {id:4,tag:"القوانين",t:"قوانين اللعب والاتباع",
+   d:"اتباع النوع، ومتى تنقطع (تقطع) بالحكم، وإلزام الأعلى.",
+   pts:["اتبع نوع أول ورقة","بالحكم اقطع إذا ما عندك","افتح بالأعلى إذا لزم"],
+   vid:"قوانين اللعب في البلوت الاتباع والقطع بالحكم",
+   body:[
+     ["h4","اتباع النوع"],
+     ["p","أول لاعب يفتح بورقة من أي نوع. الباقي لازم ينزل من نفس النوع إذا عندهم. ما عندك من النوع؟ هنا يفرق الصن عن الحكم."],
+     ["h4","في الصن"],
+     ["p","ما عندك من النوع المفتوح؟ تنزل أي ورقة (ما فيه قطع). اللي ينزل أعلى ورقة من النوع المفتوح ياخذ الأكلة."],
+     ["h4","في الحكم — القطع"],
+     ["p","ما عندك من النوع المفتوح وعندك حكم؟ لازم تقطع بالحكم (تنزل ورقة حكم) وتاخذ الأكلة — إلا إذا شريكك هو اللي كاسب الأكلة أصلاً، وقتها تقدر تنبطح (تنزل ورقة رخيصة)."],
+     ["note","إلزام الأعلى: إذا فُتح بالحكم، لازم تنزل حكم أعلى من اللي نزل إن قدرت. وإذا قطع خصمك وجاء دورك ومعك حكم أعلى، لازم تعلا عليه."]
+   ],
+   quiz:[
+     {type:"play",q:"فُتحت الأكلة بـ كبّة ♥. يدك فيها كبّات وغيرها. وش تلعب؟",
+      hand:[{r:"A",s:"H"},{r:"9",s:"S"},{r:"K",s:"D"},{r:"8",s:"H"}],
+      correct:0,why:"لازم تتبع النوع المفتوح (كبّة) وعندك كبّات، فتنزل كبّة. نزلت الإكّة لأنها تاخذ الأكلة.",
+      alt:[["لا تقدر تنزل غير كبّة لأنك ماسكها","صح، الاتباع إجباري."]]},
+     {type:"mcq",q:"في الحكم، فُتح بنوع ما عندك منه، وعندك حكم، وخصمك كاسب الأكلة. وش تسوّي؟",opts:[["أنزل ورقة رخيصة أي نوع",0,"ممنوع، لازم تقطع."],["ألزم أقطع بالحكم",1,"صح، ما دام الكاسب خصمك ومعك حكم، القطع إجباري."],["أنزل إكّة من نوع ثاني",0,"ما تاخذ الأكلة، والقطع مطلوب."],["أمرّر دوري",0,"ما فيه تمرير داخل الأكلة."]]},
+     {type:"mcq",q:"نفس الموقف بس شريكك هو الكاسب للأكلة. وش الأنسب؟",opts:[["أقطع بالحكم إجباري",0,"مو إجباري، شريكك كاسب."],["أنبطح وأنزل ورقة رخيصة",1,"صح، ما دام شريكك كاسب تحتفظ بالحكم وتنبطح."],["أنزل أعلى حكم عندي",0,"حرام تضيّع حكم قوي وشريكك كاسب."],["أعلا على شريكي",0,"ليش تاكل أكلة شريكك؟"]]}
+   ]},
+  {id:5,tag:"المشاريع",t:"المشاريع: سرا وخمسين ومية",
+   d:"السلاسل والمجموعات اللي تزيدك نقاط لو كانت بيدك.",
+   pts:["سرا = ٣ متتالية","خمسين = ٤ متتالية","مية = ٥ متتالية أو ٤ إكّات"],
+   vid:"شرح المشاريع في البلوت سرا خمسين مية والاربعين",
+   body:[
+     ["h4","وش المشروع؟"],
+     ["p","المشروع أوراق متتالية من نفس النوع بيدك تزيدك نقاط. ترتيب المشاريع يمشي على التسلسل الطبيعي: ٧، ٨، ٩، ١٠، ولد، بنت، شايب، إكّة."],
+     ["table",[["المشروع","الوصف","النقاط"],["سرا","٣ ورقات متتالية","20"],["خمسين","٤ ورقات متتالية","50"],["مية","٥ متتالية أو ٤ إكّات","100"],["أربعمية","٤ أولاد","400"]]],
+     ["note","المشاريع تنعلن في الأكلة الأولى. أقوى مشروع عند فريق هو اللي «يفتح» ويلغي مشاريع الفريق الثاني في نفس الجولة."],
+     ["h4","متى تعلن؟"],
+     ["p","تقول «مشروع» وقت تنزل أول ورقة في الأكلة الأولى، وتكشفه لما يتأكد إنه الأقوى. المشروع مكمّل للنقاط، مو بديل عنها."]
+   ],
+   quiz:[
+     {type:"mcq",q:"بيدك ٩، ١٠، ولد من نفس النوع. وش المشروع؟",opts:[["خمسين",0,"الخمسين أربع ورقات."],["سرا = ٢٠",1,"صح، ثلاث متتالية = سرا بعشرين نقطة."],["مية",0,"المية خمس ورقات أو أربع إكّات."],["ما فيه مشروع",0,"فيه! ثلاث متتالية سرا."]]},
+     {type:"mcq",q:"أربع إكّات (من كل نوع إكّة) تعتبر؟",opts:[["سرا",0,"أكبر من كذا."],["مية",1,"صح، أربع إكّات = مية نقطة."],["خمسين",0,"أكبر."],["ما يُحسب",0,"يُحسب، مية."]]},
+     {type:"mcq",q:"عندك سرا وخصمك عنده خمسين، مين مشروعه يفتح؟",opts:[["مشروعي أنا",0,"الخمسين أقوى من السرا."],["مشروع الخصم (خمسين)",1,"صح، الأقوى يفتح ويلغي مشروعك هالجولة."],["الاثنين يُحسبون",0,"الأقوى بس يفتح للفريقين."],["ما يُحسب ولا واحد",0,"يُحسب الأقوى."]]}
+   ]},
+  {id:6,tag:"البلوت",t:"البلوت: الشايب والبنت",
+   d:"ليش اسمها بلوت أصلاً؟ عشر نقاط بالحكم فقط.",
+   pts:["شايب + بنت من الحكم","١٠ نقاط","تعلنها وقت اللعب"],
+   vid:"شرح البلوت والبنت والشايب في اللعبة",
+   body:[
+     ["h4","وش هو «البلوت»؟"],
+     ["p","البلوت نفسه = امتلاكك الشايب والبنت من نوع الحكم. يزيدك ٢٠ نقطة، ويُعلن وقت ما تنزل ثانيهم على الطاولة."],
+     ["note","البلوت في الحكم فقط. ما فيه بلوت في الصن لأنه ما فيه نوع حكم مميّز."],
+     ["h4","كيف تعلن؟"],
+     ["p","تنزل أول ورقة من الزوج وتسكت، ولما تنزل الثانية تقول «بلوت». لازم تنزلهم فعلاً على الطاولة عشان يُحسب."],
+     ["p","نصيحة: إذا أنت الحاكم بالحكم وماسك البلوت، هذي إشارة إن نوعك قوي، احسبها في خطتك."]
+   ],
+   quiz:[
+     {type:"mcq",q:"البلوت يتكوّن من؟",opts:[["إكّة وعشرة الحكم",0,"لا، شايب وبنت."],["شايب وبنت من نوع الحكم",1,"صح، هذا البلوت بعشرين نقطة."],["ولد وتسعة الحكم",0,"هذولا أقوى أوراق لكن مو البلوت."],["أي شايب وبنت",0,"لازم من نوع الحكم تحديداً."]]},
+     {type:"mcq",q:"ينلعب البلوت في؟",opts:[["الصن والحكم",0,"الصن ما فيه حكم أصلاً."],["الحكم فقط",1,"صح، البلوت للحكم لأنه يحتاج نوع مميّز."],["الصن فقط",0,"عكس الصحيح."],["كل الجولات",0,"بس الحكم."]]}
+   ]},
+  {id:7,tag:"الدبل",t:"الدبل والمضاعفات",
+   d:"دبل، ثري، فور، قهوة، والقفل. كيف تضاعف وتضغط على الخصم.",
+   pts:["دبل = ×٢","القهوة = اللعبة كلها","القفل يمنع الحكم"],
+   vid:"شرح الدبل في البلوت دبل ثري فور قهوة",
+   body:[
+     ["h4","وش الدبل؟"],
+     ["p","الدبل مضاعفة نتيجة الجولة. إذا شفت إن الفريق المشتري ما راح يوصّل، تقول «دبل» وتضاعف النقاط. الكلمة من الإنجليزية double."],
+     ["table",[["المصطلح","المضاعفة"],["دبل","×2"],["ثري","×3"],["فور","×4"],["قهوة","الجولة كاملة"]]],
+     ["note","القهوة أعلى تحدٍّ: اللي يكسب الجولة ياخذها كاملة. لا تقولها إلا وأنت متأكد."],
+     ["h4","القفل"],
+     ["p","في الحكم، الفريق المعارض يقدر «يقفل» فيمنع لعب الأوراق الرابحة بشكل حر ويرفع التحدي. استخدمه لما تكون واثق إن الحاكم ما راح يوصّل أبناطه."],
+     ["p","القاعدة الذهبية: لا تدبل من قوة ورق واحدة، دبّل لما تقرأ إن الخصم اشترى غلط وما بيوصّل."]
+   ],
+   quiz:[
+     {type:"mcq",q:"«دبل» تعني؟",opts:[["إلغاء الجولة",0,"لا."],["مضاعفة النتيجة ×٢",1,"صح، الدبل يضاعف نقاط الجولة."],["طلب إعادة توزيع",0,"لا علاقة."],["نوع من المشاريع",0,"المشاريع شي ثاني."]]},
+     {type:"mcq",q:"أعلى تصعيد في المضاعفات؟",opts:[["ثري",0,"فوقها."],["فور",0,"فوقها القهوة."],["القهوة",1,"صح، القهوة تعني اللعبة كاملة، أعلى تحدٍّ."],["دبل",0,"الأدنى."]]},
+     {type:"mcq",q:"متى الأذكى تدبل؟",opts:[["دايم أول ما أشوف ورقي قوي",0,"متهوّر، بتتعلّم عليك."],["لما أقرأ إن الحاكم اشترى غلط وما بيوصّل",1,"صح، الدبل سلاح قراءة مو حماس."],["لما أخسر كثير وأبي أعوّض",0,"هذا قمار مو حساب."],["ما أدبل أبداً",0,"تضيّع فرص ذهبية."]]}
+   ]},
+  {id:8,tag:"الحساب",t:"الحساب والأبناط",
+   d:"كيف تتحوّل نقاط الورق إلى نقاط لوح، ومتى تنقلب الجولة.",
+   pts:["الحكم ١٦٢ نقطة","الصن ١٣٠ نقطة","لازم تتعدّى النص"],
+   vid:"طريقة حساب النقاط في البلوت صن وحكم الابناط",
+   body:[
+     ["h4","مجموع اللوح"],
+     ["p","في الحكم مجموع نقاط اللوح ١٦٢ (١٥٢ من الورق + ١٠ آخر أكلة). في الصن المجموع ١٣٠ (١٢٠ + ١٠)، ونقاط الصن تُضاعف وقت التحويل."],
+     ["h4","أبناط"],
+     ["p","الفريق المشتري لازم يجمع نقاط أكثر من نصف اللوح (أبناط). ما تعدّى النص؟ «تنقلب» الجولة ويأخذ الخصم كل النقاط."],
+     ["table",[["الجولة","مجموع الورق","التحويل للوح"],["حكم","162","≈ ١٦ نقطة"],["صن","130","≈ ٢٦ نقطة (×٢)"]]],
+     ["note","الكبوت: إذا أخذ فريق كل الأكلات الثمان، يأخذ اللوح كامل زيادة — ضربة قاضية."]
+   ],
+   quiz:[
+     {type:"mcq",q:"مجموع نقاط اللوح في الحكم؟",opts:[["130",0,"هذا الصن."],["162",1,"صح، ١٥٢ ورق + ١٠ آخر أكلة = ١٦٢."],["152",0,"هذا بدون آخر أكلة."],["100",0,"أقل بكثير."]]},
+     {type:"mcq",q:"المشتري جمع أقل من نص اللوح. النتيجة؟",opts:[["يكمّل عادي",0,"لا، فشل بالأبناط."],["تنقلب الجولة للخصم",1,"صح، ما وصّل الأبناط فينقلب اللوح للخصم."],["يُعاد التوزيع",0,"لا، تنقلب فقط."],["يخصم ١٠",0,"أكبر من كذا، ياخذ الخصم كل شي."]]},
+     {type:"mcq",q:"نقاط الصن مقارنة بالحكم عند التحويل؟",opts:[["أقل دايم",0,"بالعكس، تُضاعف."],["تُضاعف (أثقل)",1,"صح، الصن أغلى لأن نقاطه تُضاعف بالتحويل."],["نفسها تماماً",0,"لا، الصن مضاعف."],["ما تُحسب",0,"تُحسب ومضاعفة."]]}
+   ]},
+  {id:9,tag:"الاستراتيجية",t:"قراءة اللعب والإشارات",
+   d:"كيف تفهم شريكك بدون كلام، وتتذكّر الورق، وتخطط للأكلات.",
+   pts:["راقب أول ورقة شريكك","احفظ اللي نزل","اقتصد الحكم"],
+   vid:"استراتيجيات البلوت الاحتراف وقراءة اللعب",
+   body:[
+     ["h4","إشارة الورقة الأولى"],
+     ["p","أول ورقة ينزلها شريكك تحكي. ورقة عالية = «أنا قوي في هذا النوع». ورقة واطية = «أنا ضعيف، لا تعتمد عليّ هنا». تعلّم تقرأها."],
+     ["h4","عدّ الورق"],
+     ["p","المحترف يتذكّر الأوراق العالية اللي نزلت. طلعت الإكّات والعشرات؟ الحين ورقتك المتوسطة صارت رابحة. هذا الفرق بين لاعب ولاعب احترافي."],
+     ["note","اقتصد في الحكم: لا تحرق أولادك وتسعاتك بدري. احتفظ بها للأكلات اللي تهم، خصوصاً أواخر اللوح."],
+     ["h4","تحكّم بالفتح"],
+     ["p","لما تكون الحاكم وقوي، افتح من نوعك عشان تسحب حكم الخصوم وتخليك تتحكّم في بقية اللوح. سحب الحكم أول خطوة في خطة المحترف."]
+   ],
+   quiz:[
+     {type:"mcq",q:"شريكك فتح بورقة عالية من نوع معيّن، وش يقصد؟",opts:[["أنا ضعيف هنا",0,"عكس تماماً."],["أنا قوي بهذا النوع، اعتمد عليّ",1,"صح، الورقة العالية إشارة قوة."],["اقطعني",0,"ما يبي تقطعه وهو قوي."],["ما يقصد شي",0,"كل ورقة تحكي في البلوت."]]},
+     {type:"mcq",q:"أنت الحاكم بالحكم وقوي. أول خطوة ذكية؟",opts:[["أخبّي كل حكمي للآخر",0,"تضيّع التحكّم، الخصوم يقطعون عليك."],["أفتح بالحكم أسحب حكم الخصوم",1,"صح، سحب الحكم يفرّغ أيديهم ويخليك تتحكّم."],["ألعب صن",0,"أنت بجولة حكم أصلاً."],["أنزل أواطي بس",0,"ما تسحب شي بالأواطي."]]},
+     {type:"mcq",q:"نزلت كل الإكّات والعشرات من نوع، وبيدك شايب منه. وضعه الحين؟",opts:[["ضعيف زي ما هو",0,"تغيّر الوضع."],["صار رابحاً — هو الأعلى المتبقّي",1,"صح، بعد نزول الأعلى، شايبك صار سيّد النوع."],["لازم أقطعه",0,"ليش تقطع وهو صار رابح؟"],["ما ينفع",0,"ينفع، صار الأقوى."]]}
+   ]},
+  {id:10,tag:"الاحتراف",t:"أخطاء شائعة ونصائح",
+   d:"آخر درس: الأخطاء اللي تورّطك، وعادات المحترفين.",
+   pts:["لا تشتري من ورقة حلوة وحدة","لا تحرق الحكم","العب لفريقك"],
+   vid:"اخطاء شائعة في البلوت ونصائح للاعب المحترف",
+   body:[
+     ["h4","أخطاء تكلّفك الجولة"],
+     ["p","الشراء المتهوّر: تشوف ولد وحده حلو وتشتري حكم بيد فاضية — كارثة. اشترِ لما تكون اليد متكاملة."],
+     ["p","حرق الحكم بدري: تنزل أولادك وتسعاتك أول اللوح بدون خطة، فتفقد التحكّم في النهاية."],
+     ["p","اللعب الأناني: تاكل أكلة شريكك أو تضيّع فرصة تقويه عشان «ورقتي». البلوت لعبة فريق قبل كل شي."],
+     ["note","عادة المحترف: قبل ما تنزل أي ورقة، اسأل نفسك — وش طلع من الورق؟ وين شريكي؟ وش أبي من هالأكلة؟"],
+     ["h4","خلاصة المنهج"],
+     ["p","تعرف الترتيب والنقاط، تشتري بحساب، تتبع القوانين، تقرأ شريكك، وتحسب الأبناط. كمّل الاختبارات، انزل الطاولة، وبتلاحظ إنك صرت تلعب بثقة. هذي نقطة الاحتراف."]
+   ],
+   quiz:[
+     {type:"mcq",q:"أخطر خطأ في الشراء؟",opts:[["أشتري وعندي يد متكاملة",0,"هذا صح مو خطأ."],["أشتري من ورقة حلوة وحدة واليد فاضية",1,"صح، أكبر غلط يكلّفك الجولة."],["أمرّر وأنا ضعيف",0,"هذا تصرّف سليم."],["أقرأ يدي قبل",0,"هذا ذكاء مو خطأ."]]},
+     {type:"mcq",q:"البلوت قبل كل شي لعبة؟",opts:[["فردية",0,"أبداً، البلوت فريق."],["فريق",1,"صح، تلعب لفريقك مو لورقتك."],["حظ بحت",0,"الحظ جزء بس المهارة أهم."],["سرعة",0,"الحساب أهم من السرعة."]]}
+   ]}
+];
+
+/* ============ PROGRESS STORE ============ */
+var PK="baloot_progress_v1";
+function loadProg(){
+  try{var r=JSON.parse(localStorage.getItem(PK));if(r)return r;}catch(e){}
+  return {read:[],quiz:{},games:0,wins:0};
+}
+function saveProg(p){try{localStorage.setItem(PK,JSON.stringify(p));}catch(e){}}
+var PROG=loadProg();
+
+/* ============ LESSON CARDS ============ */
+var grid=document.getElementById("lessonGrid");
+LESSONS.forEach(function(L){
+  var done=PROG.read.indexOf(L.id)>=0;
+  var el=document.createElement("div");
+  el.className="lesson"+(done?" done":"");
+  el.dataset.lid=L.id;
+  el.innerHTML='<div class="num">'+L.id+'</div>'+
+    '<span class="tag">'+L.tag+'</span>'+
+    '<h3>'+L.t+'</h3>'+
+    '<p class="desc">'+L.d+'</p>'+
+    '<ul>'+L.pts.map(function(p){return "<li>"+p+"</li>";}).join("")+'</ul>'+
+    '<span class="done-badge">✓ مقروء</span>'+
+    '<div class="acts">'+
+      '<button class="chip solid" data-open="'+L.id+'">افتح الدرس</button>'+
+      '<a class="chip" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query='+encodeURIComponent(L.vid)+'">▶ شاهد الشرح</a>'+
+    '</div>';
+  grid.appendChild(el);
+});
+
+var reader=document.getElementById("readerMount");
+function renderBody(parts){
+  return parts.map(function(pt){
+    if(pt[0]==="h4")return "<h4>"+pt[1]+"</h4>";
+    if(pt[0]==="p")return "<p>"+pt[1]+"</p>";
+    if(pt[0]==="note")return '<div class="note">'+pt[1]+"</div>";
+    if(pt[0]==="table"){
+      var rows=pt[1];
+      var h="<table class='tbl'><thead><tr>"+rows[0].map(function(c){return "<th>"+c+"</th>";}).join("")+"</tr></thead><tbody>";
+      for(var i=1;i<rows.length;i++){h+="<tr>"+rows[i].map(function(c){return "<td>"+c+"</td>";}).join("")+"</tr>";}
+      return h+"</tbody></table>";
+    }
+    return "";
+  }).join("");
+}
+function openLesson(id){
+  var L=LESSONS.find(function(x){return x.id===id;});
+  reader.innerHTML='<div class="reader">'+
+    '<div class="reader-head"><span class="rn">'+L.id+'</span><div><div style="font-size:.8rem;opacity:.8">'+L.tag+'</div><h3 style="color:#f1ead6">'+L.t+'</h3></div></div>'+
+    '<div class="reader-body">'+renderBody(L.body)+'</div>'+
+    '<div class="reader-foot">'+
+      '<a class="chip" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query='+encodeURIComponent(L.vid)+'">▶ شاهد الشرح على يوتيوب</a>'+
+      '<button class="chip solid" data-quizstart="'+L.id+'">ابدأ اختبار الدرس ←</button>'+
+      '<button class="chip" id="markRead">✓ علّمه مقروء</button>'+
+    '</div></div>';
+  reader.scrollIntoView({behavior:"smooth",block:"start"});
+  document.getElementById("markRead").onclick=function(){
+    if(PROG.read.indexOf(id)<0){PROG.read.push(id);saveProg(PROG);}
+    var card=document.querySelector('.lesson[data-lid="'+id+'"]');
+    if(card)card.classList.add("done");
+    this.textContent="✓ تم ✓";this.disabled=true;
+  };
+}
+document.addEventListener("click",function(e){
+  var o=e.target.closest("[data-open]"); if(o)openLesson(+o.dataset.open);
+  var q=e.target.closest("[data-quizstart]"); if(q){go("quiz");startQuiz(+q.dataset.quizstart);}
+});
+
+/* ============ QUIZ ============ */
+var quizPick=document.getElementById("quizPick");
+var quizMount=document.getElementById("quizMount");
+function renderQuizPick(){
+  quizPick.innerHTML="";
+  LESSONS.forEach(function(L){
+    var best=PROG.quiz[L.id];
+    var b=document.createElement("button");
+    b.dataset.quizstart=L.id;
+    b.innerHTML='<b>'+L.id+'. '+L.t+'</b><small>'+L.quiz.length+' مواقف · '+L.tag+'</small>'+
+      (best!=null?'<span class="pst">★ أفضل نتيجة: '+best+'%</span>':'<span class="pst" style="color:var(--muted)">لم تُختبر بعد</span>');
+    quizPick.appendChild(b);
+  });
+}
+var QS=null;
+function startQuiz(id){
+  var L=LESSONS.find(function(x){return x.id===id;});
+  QS={L:L,i:0,correct:0,streak:0,maxStreak:0,answered:false};
+  quizPick.hidden=true; quizMount.hidden=false;
+  renderQ();
+  quizMount.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function renderQ(){
+  var L=QS.L, q=L.quiz[QS.i], n=L.quiz.length;
+  var prog=Math.round(QS.i/n*100);
+  var html='<div class="quiz-card">'+
+    '<div class="quiz-top"><span class="ttl">اختبار: '+L.t+'</span>'+
+      '<div class="quiz-meta"><div class="m"><b>'+(QS.i+1)+'/'+n+'</b><span>الموقف</span></div>'+
+      '<div class="m"><b>'+QS.correct+'</b><span>صح</span></div></div></div>'+
+    '<div class="pbar"><i style="width:'+prog+'%"></i></div>'+
+    '<div class="quiz-body">';
+  if(q.type==="play"){
+    html+='<div class="scenario">🎴 <b>الوضع:</b> '+q.q+'</div>';
+    html+='<div class="q-text">اختر الورقة اللي تنزلها:</div>';
+    html+='<div class="opt-cards" id="optCards"></div>';
+  }else{
+    html+='<div class="q-text">'+q.q+'</div>';
+    html+='<div class="opts" id="optList"></div>';
+  }
+  html+='<div class="explain" id="explain"></div></div>'+
+    '<div class="quiz-foot">'+
+      '<button class="btn btn-gold" id="nextBtn" style="padding:10px 20px;display:none">التالي ←</button>'+
+      '<span class="streak">🔥 سلسلة: '+QS.streak+'</span>'+
+    '</div></div>';
+  quizMount.innerHTML=html;
+
+  if(q.type==="play"){
+    var oc=document.getElementById("optCards");
+    q.hand.forEach(function(c,idx){
+      var b=document.createElement("button");
+      b.className="opt-card-btn"; b.dataset.idx=idx;
+      b.appendChild(cardEl(c));
+      b.onclick=function(){answerPlay(idx);};
+      oc.appendChild(b);
+    });
+  }else{
+    var ol=document.getElementById("optList");
+    var keys=["أ","ب","ج","د"];
+    q.opts.forEach(function(o,idx){
+      var b=document.createElement("button");
+      b.className="opt"; b.dataset.idx=idx;
+      b.innerHTML='<span class="k">'+keys[idx]+'</span><span>'+o[0]+'</span>';
+      b.onclick=function(){answerMcq(idx);};
+      ol.appendChild(b);
+    });
+  }
+}
+function finishAnswer(isCorrect,explainHTML){
+  QS.answered=true;
+  if(isCorrect){QS.correct++;QS.streak++;QS.maxStreak=Math.max(QS.maxStreak,QS.streak);}
+  else QS.streak=0;
+  var ex=document.getElementById("explain");
+  ex.className="explain show "+(isCorrect?"good":"bad");
+  ex.innerHTML='<b>'+(isCorrect?"✓ صح عليك":"✗ غلط")+'</b>'+explainHTML;
+  document.querySelector(".streak").textContent="🔥 سلسلة: "+QS.streak;
+  var nb=document.getElementById("nextBtn"); nb.style.display="inline-flex";
+  nb.textContent=(QS.i+1>=QS.L.quiz.length)?"النتيجة ←":"التالي ←";
+  nb.onclick=function(){QS.i++; if(QS.i>=QS.L.quiz.length)quizResult(); else renderQ();};
+}
+function answerMcq(idx){
+  if(QS.answered)return;
+  var q=QS.L.quiz[QS.i];
+  var correctIdx=q.opts.findIndex(function(o){return o[1]===1;});
+  document.querySelectorAll("#optList .opt").forEach(function(b){
+    b.disabled=true;
+    var i=+b.dataset.idx;
+    if(i===correctIdx)b.classList.add("correct");
+    else if(i===idx)b.classList.add("wrong");
+  });
+  finishAnswer(idx===correctIdx, q.opts[idx][2]);
+}
+function answerPlay(idx){
+  if(QS.answered)return;
+  var q=QS.L.quiz[QS.i];
+  document.querySelectorAll("#optCards .opt-card-btn").forEach(function(b){
+    b.disabled=true;
+    var i=+b.dataset.idx;
+    if(i===q.correct)b.classList.add("correct");
+    else if(i===idx)b.classList.add("wrong");
+  });
+  var extra=q.alt?("<br><span style='color:var(--muted)'>"+q.alt[0][1]+"</span>"):"";
+  finishAnswer(idx===q.correct, q.why+extra);
+}
+function quizResult(){
+  var pct=Math.round(QS.correct/QS.L.quiz.length*100);
+  var prev=PROG.quiz[QS.L.id];
+  if(prev==null||pct>prev){PROG.quiz[QS.L.id]=pct;saveProg(PROG);}
+  var grade = pct>=85?"احتراف! 🏆": pct>=60?"ممتاز، كمّل":"راجع الدرس وجرّب مرة ثانية";
+  var pass = pct>=60;
+  quizMount.innerHTML='<div class="quiz-card"><div class="quiz-result">'+
+    '<div class="big">'+pct+'%</div>'+
+    '<div class="grade">'+grade+'</div>'+
+    '<p style="color:var(--muted)">جاوبت صح على '+QS.correct+' من '+QS.L.quiz.length+' · أطول سلسلة '+QS.maxStreak+' 🔥</p>'+
+    '<div class="btn-row" style="justify-content:center;margin-top:20px">'+
+      '<button class="btn btn-gold" style="padding:11px 20px" data-quizstart="'+QS.L.id+'">↻ أعِد الاختبار</button>'+
+      (QS.L.id<10?'<button class="ghost-btn" data-quizstart="'+(QS.L.id+1)+'">الدرس التالي ←</button>':'')+
+      '<button class="ghost-btn" data-go="progress">شوف تقدّمي</button>'+
+    '</div>'+(pass?'<p style="color:var(--good);margin-top:14px;font-weight:700">✓ نجحت في هذا الاختبار</p>':'')+
+    '</div></div>';
+}
+document.getElementById("view-quiz").addEventListener("click",function(e){
+  // handled by global data-quizstart + data-go, but ensure pick re-renders on view entry
+});
+
+/* ============ GAME ENGINE ============ */
+var BOT_NAMES=["أبو فهد","خالد","العنيد","بوحمد","مطلق","سعود","بو تركي","الذيب","فيصل","أبو ناصر","نواف","المحترف","بو سلطان","عبدالله","راكان","بندر","أبو عمر","حمود","الصقر","ماجد","بو يزيد","تركي","مشعل","أبو ريان"];
+var AVATAR_COLORS=["#d8b65e","#7fb5a0","#d98a6a","#9aa7e0","#e0a0c0","#8fc98f","#d5c08a","#a0c4d8"];
+var LEVELS=[
+  {id:"easy",name:"مبتدئ",mistake:0.5,bidAggr:0.7},
+  {id:"mid",name:"متوسط",mistake:0.28,bidAggr:1.0},
+  {id:"hard",name:"قوي",mistake:0.12,bidAggr:1.15},
+  {id:"pro",name:"محترف",mistake:0.04,bidAggr:1.3}
+];
+var TARGETS={quick:52,normal:102,full:152};
+
+var G=null;
+var cfg={difficulty:"mix",target:"normal"};
+
+function buildDeck(){
+  var d=[];
+  SUITS.forEach(function(s){RANKS.forEach(function(r){d.push({r:r,s:s.id});});});
+  return d;
+}
+function shuffle(a,luck){
+  for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
+  // luck bias: with some probability, salt a couple strong cards toward player's deal slice (first 5 go to player seat later)
+  return a;
+}
+function rnd(n){return Math.floor(Math.random()*n);}
+function pick(arr){return arr[rnd(arr.length)];}
+function sample(arr,n){var c=arr.slice();var out=[];while(out.length<n&&c.length){out.push(c.splice(rnd(c.length),1)[0]);}return out;}
+
+function renderSetup(){
+  var s=document.getElementById("gameSetup");
+  s.innerHTML='<h3>جهّز طاولتك</h3><p class="sub">كل خيار يغيّر الجو. حتى لو ثبّتها، الورق والخصوم والحظ يتغيّرون كل جولة.</p>'+
+    '<div class="opt-grid">'+
+      '<div class="seg"><label>مستوى الخصوم</label><div class="pills" data-group="difficulty">'+
+        '<button data-v="easy">مبتدئ</button><button data-v="mid">متوسط</button><button data-v="hard">قوي</button><button data-v="pro">محترف</button><button data-v="mix" class="on">مشكّل</button></div></div>'+
+      '<div class="seg"><label>طول الشوط</label><div class="pills" data-group="target">'+
+        '<button data-v="quick">سريع ٥٢</button><button data-v="normal" class="on">عادي ١٠٢</button><button data-v="full">كامل ١٥٢</button></div></div>'+
+    '</div>'+
+    '<div class="luck-preview" id="luckPrev"></div>'+
+    '<div class="btn-row" style="margin-top:20px"><button class="btn btn-gold" id="dealBtn">وزّع وابدأ ♠</button></div>';
+  renderLuck();
+  s.querySelectorAll(".pills").forEach(function(p){
+    p.addEventListener("click",function(e){
+      var b=e.target.closest("button"); if(!b)return;
+      p.querySelectorAll("button").forEach(function(x){x.classList.remove("on");});
+      b.classList.add("on"); cfg[p.dataset.group]=b.dataset.v;
+      if(p.dataset.group==="difficulty")renderLuck();
+    });
+  });
+  document.getElementById("dealBtn").onclick=startGame;
+}
+function renderLuck(){
+  // preview the randomized opponents + luck for this upcoming game
+  var seats=makeSeats();
+  var luck=10+rnd(90);
+  window._pendingSeats=seats; window._pendingLuck=luck;
+  var lp=document.getElementById("luckPrev");
+  var luckTxt=luck>70?"حظك اليوم ممتاز ✦":luck>40?"حظ متوسط":"الحظ شوي بارد — اعتمد على مهارتك";
+  lp.innerHTML='<div style="font-weight:700">خصومك هالجولة:</div>'+
+    [1,3,2].map(function(i){var p=seats[i];return '<span class="who" style="background:var(--surface);border:1px solid var(--line);color:var(--ink)"><span class="av" style="background:'+p.color+'">'+p.name[0]+'</span>'+p.name+' <small style="color:var(--muted)">('+p.level.name+')</small></span>';}).join("")+
+    '<div style="width:100%;color:var(--muted);font-size:.86rem">🎲 '+luckTxt+' · شريكك: '+seats[2].name+'</div>';
+}
+function makeSeats(){
+  var names=sample(BOT_NAMES,3);
+  var colors=sample(AVATAR_COLORS,4);
+  function lvlFor(){
+    if(cfg.difficulty==="mix")return pick(LEVELS);
+    return LEVELS.find(function(l){return l.id===cfg.difficulty;});
+  }
+  return [
+    {id:0,name:"أنت",color:colors[0],level:{id:"you",name:"أنت",mistake:0},team:0,you:true},
+    {id:1,name:names[0],color:colors[1],level:lvlFor(),team:1},
+    {id:2,name:names[1],color:colors[2],level:lvlFor(),team:0},
+    {id:3,name:names[2],color:colors[3],level:lvlFor(),team:1}
+  ];
+}
+
+function startGame(){
+  var seats=window._pendingSeats||makeSeats();
+  var luck=window._pendingLuck||(10+rnd(90));
+  G={
+    seats:seats, luck:luck,
+    target:TARGETS[cfg.target],
+    score:[0,0], // team0 (you+partner), team1
+    dealer:rnd(4),
+    round:0
+  };
+  document.getElementById("gameSetup").style.display="none";
+  var tv=document.getElementById("tableView"); tv.classList.add("on");
+  tv.innerHTML=
+    '<div class="felt" id="felt">'+
+      '<div class="contract-badge" id="contractBadge">—</div>'+
+      '<div class="score-badge" id="scoreBadge"></div>'+
+      '<div class="seat partner" id="seat2"></div>'+
+      '<div class="table-mid"><div style="display:flex;align-items:center;gap:14px;width:100%;justify-content:space-between">'+
+          '<div class="seat" id="seat1"></div>'+
+          '<div class="center-play" id="centerPlay">'+
+            '<div class="slot cp-top" id="slot2"></div><div class="slot cp-right" id="slot3"></div>'+
+            '<div class="slot cp-bottom" id="slot0"></div><div class="slot cp-left" id="slot1"></div></div>'+
+          '<div class="seat" id="seat3"></div>'+
+      '</div></div>'+
+      '<div class="seat me" id="seat0"><div class="myhand" id="myhand"></div></div>'+
+      '<div class="flash" id="flash"></div>'+
+      '<div class="bid-panel" id="bidPanel"></div>'+
+      '<div class="toast-mid" id="toastMid"></div>'+
+    '</div>'+
+    '<div class="game-bar"><div class="log" id="gameLog">وزّعنا الورق... استعد.</div>'+
+      '<button class="ghost-btn" id="newRoundBtn" style="display:none">جولة جديدة ↻</button>'+
+      '<button class="ghost-btn" id="quitBtn">إنهاء</button></div>';
+  document.getElementById("quitBtn").onclick=quitGame;
+  document.getElementById("newRoundBtn").onclick=function(){reshuffleOpponents();newRound();};
+  tv.scrollIntoView({behavior:"smooth",block:"start"});
+  updateScoreBadge();
+  newRound();
+}
+function reshuffleOpponents(){
+  // each new round: fresh names, levels, luck — so no two games alike
+  G.seats=makeSeats(); G.luck=10+rnd(90);
+}
+function quitGame(){
+  G=null;
+  document.getElementById("tableView").classList.remove("on");
+  document.getElementById("gameSetup").style.display="block";
+  renderLuck();
+}
+function log(t){var l=document.getElementById("gameLog");if(l)l.textContent=t;}
+function updateScoreBadge(){
+  var sb=document.getElementById("scoreBadge");
+  if(sb)sb.innerHTML='لنا <b>'+G.score[0]+'</b> · لهم <b>'+G.score[1]+'</b> <span style="opacity:.6">/ '+G.target+'</span>';
+}
+function flash(txt){
+  var f=document.getElementById("flash"); if(!f)return;
+  f.textContent=txt; f.classList.add("show");
+  setTimeout(function(){f.classList.remove("show");},1100);
+}
+
+function newRound(){
+  G.dealer=(G.dealer+1)%4;
+  var deck=shuffle(buildDeck(),G.luck);
+  // luck: if high, try to ensure player's first-5 slice has at least one strong card
+  var hands=[[],[],[],[]];
+  // deal 5 each
+  var di=0;
+  for(var r=0;r<5;r++)for(var p=0;p<4;p++)hands[p].push(deck[di++]);
+  // apply luck bias to player's hand (seat 0)
+  if(G.luck>55){
+    var strongIdx=deck.findIndex(function(c,k){return k>=20 && (c.r==="A"||c.r==="J"||c.r==="10");});
+    if(strongIdx>=0 && Math.random()<(G.luck/140)){
+      // swap a weak player card with a strong deck card
+      var weak=hands[0].findIndex(function(c){return SUN_PTS[c.r]===0;});
+      if(weak>=0){var tmp=hands[0][weak];hands[0][weak]=deck[strongIdx];deck[strongIdx]=tmp;}
+    }
+  }
+  var floor=deck[di++];
+  G.deckRest=deck.slice(di); // 11 cards remain
+  G.hands=hands; G.floor=floor;
+  G.trick=[]; G.ledSuit=null; G.mode=null; G.trump=null; G.buyer=null;
+  G.tricksWon=[0,0]; G.cardPts=[0,0]; G.lastWinner=null; G.bidRound=1;
+  G.collected=[[],[]];
+  renderSeats(); renderMyHand(true);
+  document.getElementById("newRoundBtn").style.display="none";
+  document.getElementById("contractBadge").textContent="المزايدة...";
+  log("ورقة مكشوفة: "+faceName(floor)+". تبدأ المزايدة من "+G.seats[(G.dealer+1)%4].name+".");
+  // bidding starts left of dealer
+  G.bidTurn=(G.dealer+1)%4; G.bidPasses=0;
+  setTimeout(bidStep,700);
+}
+function faceName(c){var s=SUITMAP[c.s];return RANKDISP[c.r]+" "+s.sym;}
+
+function renderSeats(){
+  [1,2,3].forEach(function(i){
+    var p=G.seats[i], seat=document.getElementById("seat"+i);
+    var teamBadge=p.team===0?'<span class="badge-team badge-us">لنا</span>':'<span class="badge-team badge-them">لهم</span>';
+    var mini='<div class="mini">';
+    var n=G.hands?G.hands[i].length:0;
+    for(var k=0;k<n;k++)mini+='<div class="card back" style="--cw:30px"></div>';
+    mini+='</div>';
+    seat.innerHTML='<div class="who"><span class="av" style="background:'+p.color+'">'+p.name[0]+'</span>'+p.name+' '+teamBadge+'</div>'+
+      '<div class="lvl">'+p.level.name+'</div>'+mini;
+  });
+}
+function renderMyHand(selectable){
+  var mh=document.getElementById("myhand"); if(!mh)return;
+  mh.innerHTML="";
+  var hand=G.hands[0];
+  // sort hand by suit then order for readability
+  hand.sort(function(a,b){
+    if(a.s!==b.s)return a.s<b.s?-1:1;
+    return orderIndex(a,G.mode,G.trump)-orderIndex(b,G.mode,G.trump);
+  });
+  var legal = (G.turn===0 && G.phase==="play") ? legalCards(0) : null;
+  hand.forEach(function(c){
+    var el=cardEl(c);
+    el.style.setProperty("--cw","58px");
+    if(legal){
+      var ok=legal.some(function(x){return x.r===c.r&&x.s===c.s;});
+      el.classList.add(ok?"playable":"dim");
+      if(ok)el.onclick=function(){humanPlay(c);};
+    }
+    mh.appendChild(el);
+  });
+  var me=document.getElementById("seat0");
+  // keep seat label minimal (hand is the focus)
+}
+function orderIndex(c,mode,trump){
+  if(mode==="hokom"&&trump&&c.s===trump)return 100+TRUMP_ORDER.indexOf(c.r);
+  return SUN_ORDER.indexOf(c.r);
+}
+
+/* ---- Bidding ---- */
+function handStrengthHokom(hand,suit){
+  var sc=0,cnt=0;
+  hand.forEach(function(c){
+    if(c.s===suit){cnt++;
+      if(c.r==="J")sc+=11;else if(c.r==="9")sc+=8;else if(c.r==="A")sc+=6;else if(c.r==="10")sc+=4;else if(c.r==="K")sc+=3;else sc+=1.5;
+    }else{ if(c.r==="A")sc+=3; else if(c.r==="10")sc+=1; }
+  });
+  if(cnt>=4)sc+=5; if(cnt>=5)sc+=5; if(cnt<=1)sc-=4;
+  return sc;
+}
+function handStrengthSun(hand){
+  var sc=0; var bySuit={};
+  hand.forEach(function(c){
+    bySuit[c.s]=(bySuit[c.s]||0)+1;
+    if(c.r==="A")sc+=4.5;else if(c.r==="10")sc+=2.5;else if(c.r==="K")sc+=1;
+  });
+  // penalty for a very short suit (easily lost in sun)
+  return sc;
+}
+function botBid(p){
+  var hand=G.hands[p.id];
+  var aggr=p.level.bidAggr;
+  if(G.bidRound===1){
+    var hk=handStrengthHokom(hand,G.floor.s)*aggr;
+    var sn=handStrengthSun(hand)*aggr;
+    // mistakes: weak bots sometimes misjudge
+    if(Math.random()<p.level.mistake){hk+= (Math.random()*8-4); sn+=(Math.random()*6-3);}
+    if(hk>=13 && hk>=sn)return {bid:"hokom",suit:G.floor.s};
+    if(sn>=12 && sn>hk)return {bid:"sun"};
+    return {bid:"pass"};
+  }else{
+    // round 2: choose best hokom suit (any), lower threshold
+    var best=null,bestSc=-99;
+    SUITS.forEach(function(s){var v=handStrengthHokom(hand,s.id)*aggr; if(v>bestSc){bestSc=v;best=s.id;}});
+    var sn2=handStrengthSun(hand)*aggr;
+    if(Math.random()<p.level.mistake){bestSc+=(Math.random()*8-4);}
+    if(bestSc>=10 && bestSc>=sn2)return {bid:"hokom",suit:best};
+    if(sn2>=10)return {bid:"sun"};
+    return {bid:"pass"};
+  }
+}
+function bidStep(){
+  if(!G)return;
+  var p=G.seats[G.bidTurn];
+  if(p.you){ showHumanBid(); return; }
+  var dec=botBid(p);
+  applyBid(p,dec);
+}
+function applyBid(p,dec){
+  if(dec.bid==="pass"){
+    flash(p.name+": بس");
+    G.bidPasses++;
+    log(p.name+" مرّر.");
+    if(G.bidPasses>=4){
+      // move to round 2 or redeal
+      if(G.bidRound===1){ G.bidRound=2; G.bidPasses=0; G.bidTurn=(G.dealer+1)%4; log("دورة ثانية: تقدر تختار أي حكم."); setTimeout(bidStep,650); return;}
+      else { log("مرّر الكل. إعادة توزيع."); setTimeout(newRound,900); return;}
+    }
+    G.bidTurn=(G.bidTurn+1)%4;
+    setTimeout(bidStep,600);
+  }else{
+    G.buyer=p.id; G.mode=dec.bid; G.trump=dec.bid==="hokom"?dec.suit:null;
+    flash(p.name+": "+(dec.bid==="sun"?"صن":"حكم "+SUITMAP[dec.suit].sym));
+    completeDeal();
+  }
+}
+function showHumanBid(){
+  var bp=document.getElementById("bidPanel"); bp.classList.add("on");
+  var fcard=cardEl(G.floor); fcard.style.setProperty("--cw","64px");
+  var html='<div class="bid-box"><h4>دورك في المزايدة</h4>'+
+    '<p style="color:var(--muted);font-size:.9rem">'+(G.bidRound===1?"الدورة الأولى — الحكم من نوع المكشوفة":"الدورة الثانية — اختر أي نوع حكم")+'</p>'+
+    '<div class="floor" id="floorMount"><span style="font-size:.8rem;color:var(--muted)">الورقة المكشوفة</span></div>';
+  html+='<div class="bid-actions" id="bidActions"></div></div>';
+  bp.innerHTML=html;
+  document.getElementById("floorMount").appendChild(fcard);
+  var ba=document.getElementById("bidActions");
+  if(G.bidRound===1){
+    ba.innerHTML='<div class="row">'+
+      '<button class="bid-btn gold" data-bid="hokom">حكم '+SUITMAP[G.floor.s].sym+'</button>'+
+      '<button class="bid-btn" data-bid="sun">صن</button></div>'+
+      '<div class="row"><button class="bid-btn pass" data-bid="pass">بس (مرّر)</button></div>';
+  }else{
+    ba.innerHTML='<div style="font-size:.84rem;color:var(--muted);margin-bottom:4px">اختر نوع الحكم:</div>'+
+      '<div class="suit-pick">'+SUITS.map(function(s){return '<button data-hsuit="'+s.id+'" class="'+(s.red?"r":"")+'">'+s.sym+'</button>';}).join("")+'</div>'+
+      '<div class="row"><button class="bid-btn" data-bid="sun">صن</button><button class="bid-btn pass" data-bid="pass">بس</button></div>';
+  }
+  ba.querySelectorAll("[data-bid]").forEach(function(b){
+    b.onclick=function(){
+      var v=b.dataset.bid;
+      if(v==="hokom"){humanBidDone({bid:"hokom",suit:G.floor.s});}
+      else humanBidDone({bid:v});
+    };
+  });
+  ba.querySelectorAll("[data-hsuit]").forEach(function(b){
+    b.onclick=function(){humanBidDone({bid:"hokom",suit:b.dataset.hsuit});};
+  });
+}
+function humanBidDone(dec){
+  document.getElementById("bidPanel").classList.remove("on");
+  applyBid(G.seats[0],dec);
+}
+function completeDeal(){
+  // buyer gets floor + 2 from deckRest; others get 3 each
+  var rest=G.deckRest.slice(); var give=[[],[],[],[]];
+  for(var p=0;p<4;p++){
+    if(p===G.buyer){ give[p].push(G.floor); for(var k=0;k<2;k++)give[p].push(rest.shift()); }
+    else { for(var k2=0;k2<3;k2++)give[p].push(rest.shift()); }
+  }
+  for(var p2=0;p2<4;p2++)G.hands[p2]=G.hands[p2].concat(give[p2]);
+  var modeTxt=G.mode==="sun"?"صن":"حكم "+SUITMAP[G.trump].sym;
+  document.getElementById("contractBadge").innerHTML="العقد: <b style='color:var(--gold-soft)'>"+modeTxt+"</b> — "+G.seats[G.buyer].name;
+  log(G.seats[G.buyer].name+" اشترى "+modeTxt+". "+(G.buyer===0||G.buyer===2?"عقد لنا":"عقد لهم")+".");
+  renderSeats();
+  G.phase="play"; G.turn=(G.dealer+1)%4; G.trick=[]; G.ledSuit=null;
+  renderMyHand(true);
+  setTimeout(playStep,800);
+}
+
+/* ---- Trick play ---- */
+function cardStrength(c,led){
+  if(G.mode==="hokom"&&c.s===G.trump)return 300+TRUMP_ORDER.indexOf(c.r);
+  if(c.s===led)return 100+SUN_ORDER.indexOf(c.r);
+  return SUN_ORDER.indexOf(c.r);
+}
+function currentWinner(){
+  if(G.trick.length===0)return null;
+  var best=G.trick[0],bi=0;
+  for(var i=1;i<G.trick.length;i++){
+    if(cardStrength(G.trick[i].c,G.ledSuit)>cardStrength(best.c,G.ledSuit)){best=G.trick[i];bi=i;}
+  }
+  return best;
+}
+function legalCards(p){
+  var hand=G.hands[p];
+  if(G.trick.length===0)return hand.slice();
+  var led=G.ledSuit;
+  var sameSuit=hand.filter(function(c){return c.s===led;});
+  if(sameSuit.length){
+    // must follow; if led is trump in hokom, must over-trump if possible
+    if(G.mode==="hokom"&&led===G.trump){
+      var cw=currentWinner();
+      var hi=cw?TRUMP_ORDER.indexOf(cw.c.r):-1;
+      var higher=sameSuit.filter(function(c){return TRUMP_ORDER.indexOf(c.r)>hi;});
+      return higher.length?higher:sameSuit;
+    }
+    return sameSuit;
+  }
+  // void in led
+  if(G.mode!=="hokom")return hand.slice(); // sun: free
+  var trumps=hand.filter(function(c){return c.s===G.trump;});
+  if(!trumps.length)return hand.slice();
+  // partner currently winning? then free
+  var cw2=currentWinner();
+  if(cw2){
+    var winnerSeat=cw2.p, partner=(p+2)%4;
+    var trumpOnTable=G.trick.some(function(t){return t.c.s===G.trump;});
+    if(winnerSeat===partner && !(trumpOnTable===false && false)){
+      // partner winning: not obligated to trump
+      return hand.slice();
+    }
+    // must trump; if trump already on table must over-trump if possible
+    if(trumpOnTable){
+      var hi2=TRUMP_ORDER.indexOf(cw2.c.r);
+      var higher2=trumps.filter(function(c){return TRUMP_ORDER.indexOf(c.r)>hi2;});
+      return higher2.length?higher2:trumps;
+    }
+    return trumps;
+  }
+  return trumps;
+}
+function botChoose(p){
+  var legal=legalCards(p);
+  var seat=G.seats[p];
+  // mistake: random legal card
+  if(Math.random()<seat.level.mistake)return pick(legal);
+  var cw=currentWinner();
+  var partner=(p+2)%4;
+  var partnerWinning = cw && cw.p===partner;
+  function ptsOf(c){return G.mode==="hokom"&&c.s===G.trump?TRUMP_PTS[c.r]:SUN_PTS[c.r];}
+  function strongest(arr){return arr.reduce(function(a,b){return cardStrength(b,G.ledSuit||b.s)>cardStrength(a,G.ledSuit||a.s)?b:a;});}
+  function weakest(arr){return arr.reduce(function(a,b){return cardStrength(b,G.ledSuit||b.s)<cardStrength(a,G.ledSuit||a.s)?b:a;});}
+  if(G.trick.length===0){
+    // leading: pro leads strong in trump (if buyer) else a safe high / long suit
+    if(G.mode==="hokom"&&p===G.buyer){
+      var myTrumps=legal.filter(function(c){return c.s===G.trump;});
+      if(myTrumps.length>=2)return strongest(myTrumps); // pull trumps
+    }
+    // lead an Ace of a side suit if have
+    var aces=legal.filter(function(c){return c.r==="A" && !(G.mode==="hokom"&&c.s===G.trump);});
+    if(aces.length)return pick(aces);
+    return weakest(legal); // conservative
+  }
+  // following
+  // can I win?
+  var winners=legal.filter(function(c){return cardStrength(c,G.ledSuit)>cardStrength(cw.c,G.ledSuit);});
+  if(partnerWinning){
+    // partner winning strongly -> dump points on partner (schmear) or throw low
+    var strongLead = cardStrength(cw.c,G.ledSuit)>=100+SUN_ORDER.indexOf("K");
+    if(strongLead){
+      // give points: highest-point card that is not a winner-waste
+      var pointy=legal.slice().sort(function(a,b){return ptsOf(b)-ptsOf(a);});
+      // avoid wasting a trump if side points exist
+      var sidePoints=pointy.filter(function(c){return !(G.mode==="hokom"&&c.s===G.trump);});
+      return (sidePoints[0]&&ptsOf(sidePoints[0])>0)?sidePoints[0]:weakest(legal);
+    }
+    return weakest(legal);
+  }
+  if(winners.length){
+    // win as cheap as possible, but if last to play win cheapest; else win with controlling card
+    var cheapest=winners.reduce(function(a,b){return cardStrength(b,G.ledSuit)<cardStrength(a,G.ledSuit)?b:a;});
+    // if it's the 4th card, just take cheapest winner
+    if(G.trick.length===3)return cheapest;
+    // otherwise, weigh: take if trick has points or it's opponent winning
+    var trickPts=G.trick.reduce(function(s,t){return s+ptsOf(t.c);},0);
+    if(trickPts>=4||ptsOf(cw.c)>0)return cheapest;
+    // low-value trick: duck to save high card, unless easy win
+    return Math.random()<0.5?cheapest:weakest(legal);
+  }
+  // can't win: throw lowest point card
+  var byPts=legal.slice().sort(function(a,b){return ptsOf(a)-ptsOf(b)||cardStrength(a,G.ledSuit)-cardStrength(b,G.ledSuit);});
+  return byPts[0];
+}
+function playStep(){
+  if(!G||G.phase!=="play")return;
+  if(G.turn===0){
+    // human turn
+    G.awaitHuman=true; renderMyHand(true);
+    document.getElementById("seat0").classList.add("turn");
+    highlightTurn();
+    log("دورك — انزل ورقة.");
+    return;
+  }
+  highlightTurn();
+  var c=botChoose(G.turn);
+  setTimeout(function(){ doPlay(G.turn,c); }, 480+rnd(380));
+}
+function highlightTurn(){
+  [0,1,2,3].forEach(function(i){var s=document.getElementById("seat"+i);if(s)s.classList.toggle("turn",i===G.turn);});
+}
+function humanPlay(c){
+  if(!G||G.turn!==0||!G.awaitHuman)return;
+  var legal=legalCards(0);
+  if(!legal.some(function(x){return x.r===c.r&&x.s===c.s;}))return;
+  G.awaitHuman=false;
+  doPlay(0,c);
+}
+function doPlay(p,c){
+  // remove from hand
+  var hand=G.hands[p];
+  var idx=hand.findIndex(function(x){return x.r===c.r&&x.s===c.s;});
+  if(idx<0)return;
+  hand.splice(idx,1);
+  if(G.trick.length===0)G.ledSuit=c.s;
+  G.trick.push({p:p,c:c});
+  // render card into slot
+  var slot=document.getElementById("slot"+p);
+  slot.innerHTML=""; var ce=cardEl(c); ce.style.setProperty("--cw","48px"); slot.appendChild(ce);
+  if(p!==0)renderSeats(); else renderMyHand(false);
+  // bulut announce
+  if(G.mode==="hokom"&&(c.r==="K"||c.r==="Q")&&c.s===G.trump){
+    var mate=c.r==="K"?"Q":"K";
+    if(!hand.some(function(x){return x.r===mate&&x.s===G.trump;}) && G._bulutShown!==p){
+      // second of pair played
+    }
+  }
+  if(G.trick.length<4){
+    G.turn=(G.turn+1)%4;
+    setTimeout(playStep,360);
+  }else{
+    setTimeout(resolveTrick,650);
+  }
+}
+function resolveTrick(){
+  var w=currentWinner();
+  var team=G.seats[w.p].team;
+  G.tricksWon[team]++;
+  var pts=G.trick.reduce(function(s,t){return s+(G.mode==="hokom"&&t.c.s===G.trump?TRUMP_PTS[t.c.r]:SUN_PTS[t.c.r]);},0);
+  G.cardPts[team]+=pts;
+  G.collected[team]=G.collected[team].concat(G.trick.map(function(t){return t.c;}));
+  G.lastWinner=w.p;
+  flash((team===0?"أكلة لنا":"أكلة لهم")+" +"+pts);
+  log(G.seats[w.p].name+" خذ الأكلة ("+pts+" نقطة).");
+  // clear slots
+  [0,1,2,3].forEach(function(i){var s=document.getElementById("slot"+i);if(s)s.innerHTML="";});
+  G.trick=[]; G.ledSuit=null; G.turn=w.p;
+  if(G.hands[0].length===0){ setTimeout(scoreRound,700); }
+  else { renderMyHand(false); setTimeout(playStep,500); }
+}
+function scoreRound(){
+  // last trick bonus 10
+  var lastTeam=G.seats[G.lastWinner].team;
+  G.cardPts[lastTeam]+=10;
+  // kaboot: all 8 tricks
+  var kaboot = G.tricksWon[0]===8?0 : (G.tricksWon[1]===8?1:-1);
+  var buyerTeam = G.seats[G.buyer].team;
+  var us=G.cardPts[0], them=G.cardPts[1];
+  var total = G.mode==="hokom"?162:130;
+  // convert to board points
+  function conv(raw){ return G.mode==="hokom"?Math.round(raw/10):Math.round(raw*2/10); }
+  var gain=[0,0];
+  var headline="";
+  if(kaboot>=0){
+    // all tricks: kaboot team takes whole board
+    var full = G.mode==="hokom"?16:26;
+    // kaboot bonus: extra
+    gain[kaboot]= full + (G.mode==="hokom"?16:26); // double-ish for kaboot sweep
+    headline = (kaboot===0?"كبّوت لنا! ":"كبّوت لهم! ")+"كسحة كاملة 🧹";
+  } else {
+    var buyerRaw = buyerTeam===0?us:them;
+    var oppRaw = buyerTeam===0?them:us;
+    if(buyerRaw>oppRaw){
+      // success: each keeps its own
+      gain[0]=conv(us); gain[1]=conv(them);
+      headline = (buyerTeam===0?"وصّلنا العقد ✓":"الخصم وصّل عقده");
+    } else {
+      // قلبوها: opponents take all
+      var oppTeam = buyerTeam===0?1:0;
+      gain[oppTeam]=conv(us)+conv(them);
+      gain[buyerTeam]=0;
+      headline = (buyerTeam===0?"انقلبت علينا! ما وصّلنا الأبناط":"قلبناها على الخصم! 🔥");
+    }
+  }
+  G.score[0]+=gain[0]; G.score[1]+=gain[1];
+  updateScoreBadge();
+  showRoundToast(headline,us,them,gain);
+}
+function showRoundToast(headline,us,them,gain){
+  var tm=document.getElementById("toastMid"); tm.classList.add("on");
+  var over = G.score[0]>=G.target || G.score[1]>=G.target;
+  var modeTxt=G.mode==="sun"?"صن":"حكم "+SUITMAP[G.trump].sym;
+  tm.innerHTML='<div class="toast-box"><div style="font-size:.8rem;color:var(--muted)">نتيجة الجولة — '+modeTxt+'</div>'+
+    '<h4>'+headline+'</h4>'+
+    '<div class="rows"><div class="c"><b style="color:var(--accent-ink)">'+us+'</b><span>نقاط ورقنا</span></div>'+
+      '<div class="c"><b>'+them+'</b><span>نقاط ورقهم</span></div></div>'+
+    '<div style="display:flex;justify-content:center;gap:20px;font-weight:700"><span>+'+gain[0]+' لنا</span><span style="color:var(--muted)">+'+gain[1]+' لهم</span></div>'+
+    '<div style="margin:14px 0;font-size:1.05rem">المجموع: <b style="color:var(--accent-ink)">لنا '+G.score[0]+'</b> · لهم '+G.score[1]+'</div>';
+  if(over){
+    var win=G.score[0]>G.score[1];
+    tm.innerHTML+='<h4 style="color:'+(win?'var(--good)':'var(--bad)')+';font-size:1.6rem">'+(win?'🏆 كسبت الصكّة!':'خسرت الصكّة')+'</h4>'+
+      '<div class="btn-row" style="justify-content:center;margin-top:10px"><button class="btn btn-gold" style="padding:11px 20px" id="againBtn">طاولة جديدة ♠</button><button class="ghost-btn" id="quitBtn2">خلاص</button></div></div>';
+  }else{
+    tm.innerHTML+='<div class="btn-row" style="justify-content:center;margin-top:10px"><button class="btn btn-gold" style="padding:11px 20px" id="contBtn">الجولة الجاية ←</button></div></div>';
+  }
+  // record progress
+  PROG.games++;
+  // a "win" counts if our team gained more this round
+  if(gain[0]>gain[1])PROG.wins++;
+  saveProg(PROG);
+  if(over){
+    document.getElementById("againBtn").onclick=function(){tm.classList.remove("on");reshuffleOpponents();G.score=[0,0];updateScoreBadge();newRound();};
+    document.getElementById("quitBtn2").onclick=function(){tm.classList.remove("on");quitGame();};
+  }else{
+    document.getElementById("contBtn").onclick=function(){tm.classList.remove("on");reshuffleOpponents();newRound();};
+  }
+}
+
+/* ============ PROGRESS VIEW ============ */
+var RANKS_DEF=[
+  {min:0,name:"مبتدئ",seal:"ب"},
+  {min:20,name:"هاوي",seal:"هـ"},
+  {min:45,name:"لاعب مجلس",seal:"ل"},
+  {min:70,name:"محترف",seal:"م"},
+  {min:90,name:"أسطورة الطاولة",seal:"★"}
+];
+function computeScore(){
+  var lessons=PROG.read.length; // /10
+  var quizCount=Object.keys(PROG.quiz).length;
+  var quizAvg=0; var vals=Object.values(PROG.quiz);
+  if(vals.length)quizAvg=vals.reduce(function(a,b){return a+b;},0)/vals.length;
+  var passed=vals.filter(function(v){return v>=60;}).length;
+  var lessonPart=lessons/10*40;       // up to 40
+  var quizPart=passed/10*40;          // up to 40
+  var gamePart=Math.min(20,PROG.wins*4); // up to 20
+  return {score:Math.round(lessonPart+quizPart+gamePart),lessons:lessons,passed:passed,quizAvg:Math.round(quizAvg)};
+}
+var BADGES=[
+  {id:"first",ic:"🎴",nm:"أول درس",ds:"فتحت درساً",test:function(s){return PROG.read.length>=1;}},
+  {id:"half",ic:"📘",nm:"نص الطريق",ds:"٥ دروس",test:function(s){return PROG.read.length>=5;}},
+  {id:"allread",ic:"📚",nm:"قرأت الكل",ds:"١٠ دروس",test:function(s){return PROG.read.length>=10;}},
+  {id:"quiz1",ic:"✅",nm:"أول نجاح",ds:"نجحت باختبار",test:function(s){return s.passed>=1;}},
+  {id:"perfect",ic:"💯",nm:"علامة كاملة",ds:"١٠٠٪ باختبار",test:function(s){return Object.values(PROG.quiz).some(function(v){return v===100;});}},
+  {id:"allquiz",ic:"🧠",nm:"كل الاختبارات",ds:"نجحت بالكل",test:function(s){return s.passed>=10;}},
+  {id:"play1",ic:"♠",nm:"أول طاولة",ds:"لعبت جولة",test:function(s){return PROG.games>=1;}},
+  {id:"win5",ic:"🔥",nm:"خمس انتصارات",ds:"٥ جولات مكسوبة",test:function(s){return PROG.wins>=5;}},
+  {id:"master",ic:"🏆",nm:"محترف",ds:"أكملت كل شي",test:function(s){return PROG.read.length>=10&&s.passed>=10;}}
+];
+function renderProgress(){
+  PROG=loadProg();
+  var s=computeScore();
+  var rank=RANKS_DEF[0];
+  for(var i=0;i<RANKS_DEF.length;i++)if(s.score>=RANKS_DEF[i].min)rank=RANKS_DEF[i];
+  var next=RANKS_DEF[RANKS_DEF.indexOf(rank)+1];
+  document.getElementById("rankSeal").textContent=rank.seal;
+  document.getElementById("rankName").textContent=rank.name;
+  document.getElementById("rankMeter").style.width=Math.min(100,s.score)+"%";
+  document.getElementById("rankNext").textContent=next?("نقاطك "+s.score+"/100 — "+( next.min-s.score )+" للترقية إلى «"+next.name+"»"):("نقاطك "+s.score+"/100 — وصلت القمة!");
+  document.getElementById("stLessons").textContent=PROG.read.length;
+  document.getElementById("stQuiz").textContent=s.passed;
+  document.getElementById("stGames").textContent=PROG.games;
+  document.getElementById("stWins").textContent=PROG.wins;
+  document.getElementById("cert").classList.toggle("on",PROG.read.length>=10&&s.passed>=10);
+  var bg=document.getElementById("badgeGrid"); bg.innerHTML="";
+  BADGES.forEach(function(b){
+    var on=b.test(s);
+    var el=document.createElement("div");
+    el.className="bdg"+(on?" on":"");
+    el.innerHTML='<div class="ic">'+b.ic+'</div><div class="nm">'+b.nm+'</div><div class="ds">'+b.ds+'</div>';
+    bg.appendChild(el);
+  });
+}
+document.getElementById("resetBtn").onclick=function(){
+  PROG={read:[],quiz:{},games:0,wins:0}; saveProg(PROG);
+  document.querySelectorAll(".lesson").forEach(function(l){l.classList.remove("done");});
+  renderProgress(); renderQuizPick();
+};
+
+/* ============ INIT ============ */
+renderQuizPick();
+renderSetup();
+// re-render quiz pick whenever entering quiz view
+document.querySelectorAll('#navlinks [data-go="quiz"]').forEach(function(b){b.addEventListener("click",function(){quizPick.hidden=false;quizMount.hidden=true;renderQuizPick();});});
+</script>
